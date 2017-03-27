@@ -1,0 +1,31 @@
+@font-face {
+    font-family: 'FontAwesome';
+    src: url("/fonts/fontawesome-webfont.ttf");
+}
+
+@font-face {
+    font-family: 'Roboto Regular';
+    src: url(/fonts/Roboto/Roboto-Regular.ttf);
+}
+
+@font-face {
+    font-family: 'Roboto Bold';
+    src: url(/fonts/Roboto/Roboto-Bold.ttf);
+}
+
+@font-face {
+    font-family: 'Roboto Thin';
+    src: url(/fonts/Roboto/Roboto-Thin.ttf);
+}
+
+@font-face {
+    font-family: 'Roboto Light';
+    src: url(/fonts/Roboto/Roboto-Light.ttf);
+}
+
+@font-face {
+    font-family: 'DS-Digital';
+    src: url(/fonts/ds_digital/DS-DIGI.TTF);
+}
+
+
