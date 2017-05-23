@@ -5,7 +5,7 @@
 Entwerfen und implementieren Sie ein Custom Control für das OOP2-Projekt 'CountryFX'.
  - Das Custom Control soll eines (oder mehrere) der im OOP2-Projekt verwendeten Standard-Controls 
  (insbesondere `TextField`, `Label`, `Button`, `TableView`) ersetzen.
- - Das Custom Control soll den jeweiligen Arbeitsschritt optimal unterstützen, beispielsweise durch eine hochspezialiserte  Anzeige oder eine 
+ - Das Custom Control soll den jeweiligen Arbeitsschritt optimal unterstützen, beispielsweise durch eine hochspezialisierte  Anzeige oder eine 
 effiziente Eingabemöglichkeit für einen der  Werte.
  - Falls ihr Custom Control ein _'einfaches, interaktives Anzeigeelement'_ ist, verwenden Sie bei der Implementierung die Struktur 
  wie im package `ch.fhnw.cuie.project.template_simplecontrol`.
@@ -14,7 +14,7 @@ effiziente Eingabemöglichkeit für einen der  Werte.
 
 
 ## Präsentation
-- Mittwoch, 7.6.2017, 9:00 bis 9:45 Uhr 
+- Mittwoch, 7.6.2017, 9:00 bis 9:45 Uhr, Raum 1.013
 
 - Die Custom Controls werden der OOP2-Klasse im Rahmen einer **Poster-Session** präsentiert.
 
@@ -30,20 +30,20 @@ in die jeweiligen OOP2-Projekte zu integrieren.
 ## Abgabe
 - Mittwoch, 14.6.2017, 23:42 Uhr
 
-- Die Abgabe erfolgt durch eine push auf den Master-Branch dieses Repositories.
+- Die Abgabe erfolgt durch einen push auf den Master-Branch des Repositories.
 
 
 ## Integriert in diese OOP2-Projekte
-- _**Ergänzen Sie hier welche OOP2-Teams das Custom Control tatsächlich integriert haben.**_
+- _**Ergänzen Sie hier welche OOP2-Teams Ihr Custom Control tatsächlich integriert haben.**_
 
 
 ## Bewertung
-- Mit einer gut wahrnehmbaren Präsentation Ihrer Custom Control an der Postersession haben Sie mindestens 
+- Mit einer gut wahrnehmbaren Präsentation Ihres Custom Control an der Postersession haben Sie mindestens 
   eine 4.0 erreicht.
   
-- Nicht genügend ist eine überwiegend passive Teilnahme an der Postersession.
+- _Nicht genügend_ ist eine überwiegend passive Teilnahme an der Postersession.
 
-- Durch eine gute Code-Qualität der Custom Control, d.h. insbesondere eine klare Struktur des Codes entsprechend der
+- Durch eine gute Code-Qualität des Custom Control, d.h. insbesondere eine klare Struktur des Codes entsprechend der
  im Unterricht erarbeiteten Konzepte, können Sie eine 5.0 erreichen.
  
 - Die Qualität des Controls aus Benutzersicht wird daran gemessen wie oft das Control in ein OOP2-Projekt integriert 
