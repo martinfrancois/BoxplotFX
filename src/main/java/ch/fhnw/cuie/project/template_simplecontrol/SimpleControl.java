@@ -1,4 +1,4 @@
-package ch.fhnw.cuie.assignment_1.template;
+package ch.fhnw.cuie.project.template_simplecontrol;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

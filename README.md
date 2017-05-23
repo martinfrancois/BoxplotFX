@@ -1,45 +1,67 @@
-# CUIE Assignment 1
+# CUIE Projekt
 
-## Einfaches Custom Control
+## Custom Control für CountryFX
 
-Entwerfen und implementieren Sie ein einfaches, interaktives Custom Control.
- - Entwerfen Sie ein interaktives Custom Control mit Hilfe eines Grafik-Programms. 
- - Übertragen Sie den Entwurf in ein Java-Programm und implementieren Sie dieses Custom Control auf Basis JavaFX.
- - Verwenden Sie die im Unterricht besprochene und als Template in diesem Repository mitgelieferte Grundstruktur (das "Template").
- - Grafisch sehr einfache Custom Controls reichen für dieses Assignment vollkommen aus. Im Mittelpunkt steht die Anwendung 
-   des im Unterricht erarbeiteten Grundaufbaus.
+Entwerfen und implementieren Sie ein Custom Control für das OOP2-Projekt 'CountryFX'.
+ - Das Custom Control soll eines (oder mehrere) der im OOP2-Projekt verwendeten Standard-Controls 
+ (insbesondere `TextField`, `Label`, `Button`, `TableView`) ersetzen.
+ - Das Custom Control soll den jeweiligen Arbeitsschritt optimal unterstützen, beispielsweise durch eine hochspezialiserte  Anzeige oder eine 
+effiziente Eingabemöglichkeit für einen der  Werte.
+ - Falls ihr Custom Control ein _'einfaches, interaktives Anzeigeelement'_ ist, verwenden Sie bei der Implementierung die Struktur 
+ wie im package `ch.fhnw.cuie.project.template_simplecontrol`.
+ - Falls ihr Custom Control ein _'Business Control'_ ist, verwenden Sie bei der Implementierung die Struktur 
+  wie im package `ch.fhnw.cuie.project.template_businesscontrol`.
+
+
+## Präsentation
+- Mittwoch, 7.6.2017, 9:00 bis 9:45 Uhr 
+
+- Die Custom Controls werden der OOP2-Klasse im Rahmen einer **Poster-Session** präsentiert.
+
+- Erarbeiten Sie eine geeignete Präsentationsform, so dass das Interesse möglichst vieler OOP2-Teams 
+an Ihrem Custom Control geweckt und ihr CustomControl in die jeweiligen OOP2-Projekte integrieren wird.
+
+- Bedenken Sie, dass alle Custom Controls gleichzeitig vorgestellt werden.
+
+- Im Anschluss an die Postersession besteht die Möglichkeit Ihr Control zusammen mit dem OOP2-Team
+in die jeweiligen OOP2-Projekte zu integrieren.
 
 
 ## Abgabe
-- Dienstag, 5.4.2017, 22:42 Uhr
+- Mittwoch, 14.6.2017, 23:42 Uhr
 
-## Wichtig
+- Die Abgabe erfolgt durch eine push auf den Master-Branch dieses Repositories.
 
-Zum Teil sind Ihre GitHub-Account-Namen für mich nicht einer Person zuzuordnen. 
 
-Bitte schicken Sie mir in einer Mail ihren GitHub-Account-Namen.
+## Integriert in diese OOP2-Projekte
+- _**Ergänzen Sie hier welche OOP2-Teams das Custom Control tatsächlich integriert haben.**_
+
+
+## Bewertung
+- Mit einer gut wahrnehmbaren Präsentation Ihrer Custom Control an der Postersession haben Sie mindestens 
+  eine 4.0 erreicht.
+  
+- Nicht genügend ist eine überwiegend passive Teilnahme an der Postersession.
+
+- Durch eine gute Code-Qualität der Custom Control, d.h. insbesondere eine klare Struktur des Codes entsprechend der
+ im Unterricht erarbeiteten Konzepte, können Sie eine 5.0 erreichen.
+ 
+- Die Qualität des Controls aus Benutzersicht wird daran gemessen wie oft das Control in ein OOP2-Projekt integriert 
+ wird. Jede Integration wird mit +0.5 bewertet.
+
 
 
 ## Bitte beachten Sie
- - Es können in diesem Assignment maximal 2 Punkte erreicht werden. 
+ - Es wird empfohlen das Projekt in 2-er Teams zu bearbeiten. Es wird erwartet, dass die Lösung gemeinsam 
+ erarbeitet und implementiert wird (Stichwort 'Pair-Programming').
  
-   - Einen Punkt gibt es bereits sobald der ernsthafte Wille ein Custom Control zu implementieren erkennbar ist.
- 
-   - Für zwei Punkte muss das Custom Control tatsächlich interaktiv sein und das Template sinnvoll angewendet werden. 
- Mit einem reinen Anzeigeelement kann maximal 1 Punkt erreicht werden.
- 
- - Welches Custom Control Sie implementieren ist Ihnen freigestellt. Einzige Einschränkung: Custom Controls, die bereits
- im Unterricht detailliert besprochen wurden (LED, NumberRange, etc.) sind ausgeschlossen. Dagegen können Sie gerne
- ein Control umsetzen, das bereits als Screendump oder als Demo gezeigt wurde.
- 
- - Die Assignment-Aufgabe kann auch in 2-er Teams bearbeitet werden. 
- Es wird erwartet, dass die Lösung gemeinsam erarbeitet und implementiert wird.
- 
- - Die Teams müssen sich spätestens bis Donnerstag, 29.3., gebildet haben. 
+ - Die Teams müssen sich spätestens bis Mittwoch, 31.5., gebildet haben. 
  
  - Das Team arbeitet dann auf dem Git-Repository eines der Team-Mitglieder. 
  
  - Das jeweils andere Team-Mitglied muss als Collaborator in diesem Repository eingetragen sein.
  
  - Collaborator fügt man über `Settings -> Collaborators & teams` hinzu.
+ 
+ - Schicken Sie zusätzlich eine Mail an dieter.holz@fhnw.ch mit den Namen der beiden Team-Mitglieder.
  

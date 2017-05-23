@@ -1,4 +1,4 @@
-package ch.fhnw.cuie.assignment_1.template.demo;
+package ch.fhnw.cuie.project.template_simplecontrol.demo;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -8,7 +8,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
-import ch.fhnw.cuie.assignment_1.template.SimpleControl;
+import ch.fhnw.cuie.project.template_simplecontrol.SimpleControl;
 
 /**
  * @author Dieter Holz

@@ -1,4 +1,4 @@
-package ch.fhnw.cuie.assignment_1.template.demo;
+package ch.fhnw.cuie.project.template_simplecontrol.demo;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
