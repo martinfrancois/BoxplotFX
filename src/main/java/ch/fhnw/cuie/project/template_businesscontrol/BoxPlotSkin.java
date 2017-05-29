@@ -1,9 +1,8 @@
 package ch.fhnw.cuie.project.template_businesscontrol;
 
-import javafx.beans.property.*;
-import javafx.scene.control.Control;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.SkinBase;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -49,10 +48,10 @@ public class BoxPlotSkin extends SkinBase<BoxPlotControl> {
         initializeSelf();
         initializeParts();
         layoutParts();
-        setupAnimations();
+        //setupAnimations();
         setupEventHandlers();
-        setupValueChangedListeners();
-        setupBindings();
+        //setupValueChangedListeners();
+        //setupBindings();
     }
 
     private void initializeSelf() {
