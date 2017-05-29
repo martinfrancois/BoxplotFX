@@ -1,6 +1,7 @@
 package ch.fhnw.cuie.project.template_businesscontrol;
 
 import javafx.beans.property.*;
+import javafx.geometry.Pos;
 import javafx.scene.control.Control;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
@@ -9,19 +10,13 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Arrays;
+
 /**
  * @author Dieter Holz
  */
 public class BoxPlotSkin extends SkinBase<BoxPlotControl> {
-    // always needed
-    private static final double ARTBOARD_WIDTH = 100;
-    private static final double ARTBOARD_HEIGHT = 100;
-    private static final double ASPECT_RATIO = ARTBOARD_WIDTH / ARTBOARD_HEIGHT;
-    private static final double MINIMUM_WIDTH = 25;
-    private static final double MINIMUM_HEIGHT = MINIMUM_WIDTH / ASPECT_RATIO;
-    private static final double MAXIMUM_WIDTH = 800;
 
-    // needed for resizing
     private StackPane drawingPane;
 
     // ----- Properties --------------------------------
@@ -80,7 +75,10 @@ public class BoxPlotSkin extends SkinBase<BoxPlotControl> {
 //    line id="upperWhisker" class="st1" x1="1798.4" y1="366.1" x2="1798.4" y2="539.8"
 //    circle id="Ausreisser" class="st1" cx="199.3" cy="453" r="14"
 //    line id="Median" class="st3" x1="1257.8" y1="331.4" x2="1257.8" y2="579.1"
-        range = new Line(5,-15, 50,-15);
+        double width = this.widthProperty().getWitdh();
+        double height = this.heightProperty().getHeight();
+
+        range = new Line(5,height/2, width-5,height/2);
         quartiles = new Rectangle(15, -20, 20, 20);
         lowerWhiskerLine = new Line(10, -5, 10, -15);
         upperWhiskerLine = new Line(40, -5, 40, -15);
@@ -96,8 +94,8 @@ public class BoxPlotSkin extends SkinBase<BoxPlotControl> {
     }
 
     private void layoutParts() {
-        drawingPane.getChildren().addAll();
 
+        drawingPane.getChildren().addAll(range, quartiles, lowerWhiskerLine, upperWhiskerLine, ausreisser, medianLine);
         getChildren().add(drawingPane);
     }
 
