@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
  * Created by François Martin on 29.05.17.
  */
 public class BoxPlotTest {
+    private static final double MARGIN_OF_ERROR = 10;
     int[] array = {1, 5, 10, 16, 19, 26, 29, 50, 56, 79, 4, 33, 33, 333, 102, 202};
     HashMap<Object, Number> map = new HashMap<>();
     private int min = 1;
@@ -20,7 +21,7 @@ public class BoxPlotTest {
     private int q3 = 84; // oberes Quartil
     private int upperWhisker = 180;
     private int max = 333;
-    BoxPlot boxPlot;
+    private BoxPlot boxPlot;
 
     @Before
     public void setup(){
@@ -32,13 +33,13 @@ public class BoxPlotTest {
 
     @Test
     public void calculateParams() throws Exception {
-        assertEquals(min, boxPlot.getMin());
-        assertEquals(lowerWhisker, boxPlot.getLowerWhisker());
-        assertEquals(q1, boxPlot.getQ1());
-        assertEquals(median, boxPlot.getMedian());
-        assertEquals(q3, boxPlot.getQ3());
-        assertEquals(upperWhisker, boxPlot.getUpperWhisker());
-        assertEquals(max, boxPlot.getMax());
+        assertEquals("min", min, boxPlot.getMin());
+        assertEquals("lowerWhisker", lowerWhisker, boxPlot.getLowerWhisker().doubleValue(),MARGIN_OF_ERROR);
+        assertEquals("q1", q1, boxPlot.getQ1().doubleValue(), MARGIN_OF_ERROR);
+        assertEquals("median", median, boxPlot.getMedian());
+        assertEquals("q3", q3, boxPlot.getQ3().doubleValue(), MARGIN_OF_ERROR);
+        assertEquals("upperWhisker", upperWhisker, boxPlot.getUpperWhisker().doubleValue(), MARGIN_OF_ERROR);
+        assertEquals("max", max, boxPlot.getMax());
     }
 
 }

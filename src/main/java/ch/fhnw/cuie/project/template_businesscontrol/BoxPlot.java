@@ -39,7 +39,7 @@ public class BoxPlot {
         iqr = q3.doubleValue() - q1.doubleValue();
         Number iqr15 = iqr.doubleValue() * 1.5;
         lowerWhisker = q1.doubleValue() - iqr15.doubleValue();
-        lowerWhisker = q3.doubleValue() + iqr15.doubleValue();
+        upperWhisker = q3.doubleValue() + iqr15.doubleValue();
         return valueArray;
     }
 
