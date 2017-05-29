@@ -13,17 +13,17 @@ public class BoxPlot {
 
     Number min;
     Number lowerWhisker;
-    Number q1;
+    Number q1; // unteres Quartil
     Number median;
-    Number q3;
+    Number q3; // oberes Quartil
     Number upperWhisker;
     Number max;
 
-    double iqr;
+    Number iqr; // Interquartilabstand
 
     public BoxPlot(HashMap<Object, Number> data){
         valueArray = (Number[]) data.values().toArray();
-
+        calculateParams(valueArray);
     }
 
     public Number[] calculateParams(Number[] values) {
@@ -31,7 +31,12 @@ public class BoxPlot {
         min = values[0];
         q1 = quartileSorted(values, 25);
         median = quartileSorted(values, 50);
-        q1 = quartileSorted(values, 75);
+        q3 = quartileSorted(values, 75);
+        max = values[values.length-1];
+        iqr = q3.doubleValue() - q1.doubleValue();
+        Number iqr15 = iqr.doubleValue() * 1.5;
+        lowerWhisker = q1.doubleValue() - iqr15.doubleValue();
+        lowerWhisker = q3.doubleValue() + iqr15.doubleValue();
 
     }
 
