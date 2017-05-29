@@ -1,8 +1,7 @@
 package ch.fhnw.cuie.project.template_businesscontrol;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -24,7 +23,9 @@ public class BoxPlot {
 
     public BoxPlot(HashMap<Object, Number> data){
         this.data = data;
-        valueArray = (Number[]) data.values().toArray();
+        Collection<Number> numberList = data.values();
+        valueArray = new Number[numberList.size()];
+        valueArray = numberList.toArray(valueArray);
         calculateParams(valueArray);
     }
 
@@ -39,7 +40,7 @@ public class BoxPlot {
         Number iqr15 = iqr.doubleValue() * 1.5;
         lowerWhisker = q1.doubleValue() - iqr15.doubleValue();
         lowerWhisker = q3.doubleValue() + iqr15.doubleValue();
-
+        return valueArray;
     }
 
     /**

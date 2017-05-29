@@ -1,7 +1,6 @@
 package ch.fhnw.cuie.project.template_businesscontrol;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -23,15 +22,11 @@ public class BoxPlotTest {
     private int max = 333;
     BoxPlot boxPlot;
 
-    @BeforeClass
-    public void classSetup(){
+    @Before
+    public void setup(){
         for (int num : array) {
             map.put(new Object(), num);
         }
-    }
-
-    @Before
-    public void setup(){
         boxPlot = new BoxPlot(map);
     }
 
