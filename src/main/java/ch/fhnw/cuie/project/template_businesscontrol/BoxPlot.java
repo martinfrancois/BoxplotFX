@@ -9,19 +9,21 @@ import java.util.HashMap;
  * Created by François Martin on 29.05.17.
  */
 public class BoxPlot {
-    Number[] valueArray;
+    private HashMap<Object, Number> data;
+    private Number[] valueArray;
 
-    Number min;
-    Number lowerWhisker;
-    Number q1; // unteres Quartil
-    Number median;
-    Number q3; // oberes Quartil
-    Number upperWhisker;
-    Number max;
+    private Number min;
+    private Number lowerWhisker;
+    private Number q1; // unteres Quartil
+    private Number median;
+    private Number q3; // oberes Quartil
+    private Number upperWhisker;
+    private Number max;
 
     Number iqr; // Interquartilabstand
 
     public BoxPlot(HashMap<Object, Number> data){
+        this.data = data;
         valueArray = (Number[]) data.values().toArray();
         calculateParams(valueArray);
     }
@@ -56,6 +58,34 @@ public class BoxPlot {
         System.arraycopy(values, 0, v, 0, values.length);
         Arrays.sort(v);
         return quartileSorted(values, quartileValue);
+    }
+
+    public Number getMin() {
+        return min;
+    }
+
+    public Number getLowerWhisker() {
+        return lowerWhisker;
+    }
+
+    public Number getQ1() {
+        return q1;
+    }
+
+    public Number getMedian() {
+        return median;
+    }
+
+    public Number getQ3() {
+        return q3;
+    }
+
+    public Number getUpperWhisker() {
+        return upperWhisker;
+    }
+
+    public Number getMax() {
+        return max;
     }
 }
 
