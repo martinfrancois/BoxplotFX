@@ -15,6 +15,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 import ch.fhnw.cuie.project.template_businesscontrol.BusinessControl;
+import javafx.scene.transform.Scale;
 
 /**
  * @author Dieter Holz
@@ -55,6 +56,7 @@ public class DemoPane extends BorderPane {
         mandatoryBox.setSelected(true);
 
         labelField = new TextField();
+
     }
 
     private void layoutControls() {
@@ -64,6 +66,7 @@ public class DemoPane extends BorderPane {
                             new Label("readOnly"), readOnlyBox,
                             new Label("mandatory"), mandatoryBox,
                             new Label("Label"), labelField);
+
         box.setPadding(new Insets(10));
         box.setSpacing(10);
         setRight(box);
