@@ -10,15 +10,15 @@ import java.util.regex.Pattern;
 /**
  * @author Dieter Holz
  */
-public class BoxPlot extends Control {
+public class BoxPlotControl extends Control {
     // ----- Properties --------------------------------
-    private static final DoubleProperty lowerWhisker = new SimpleDoubleProperty();
-    private static final DoubleProperty upperWhisker = new SimpleDoubleProperty();
-    private static final DoubleProperty median = new SimpleDoubleProperty();
-    private static final DoubleProperty lowerQuartil = new SimpleDoubleProperty();
-    private static final DoubleProperty upperQuartil = new SimpleDoubleProperty();
-    private static final DoubleProperty minElement = new SimpleDoubleProperty();
-    private static final DoubleProperty maxElement = new SimpleDoubleProperty();
+    private static final DoubleProperty lowerWhisker = new SimpleDoubleProperty(-13);
+    private static final DoubleProperty upperWhisker = new SimpleDoubleProperty(4);
+    private static final DoubleProperty median = new SimpleDoubleProperty(-2);
+    private static final DoubleProperty lowerQuartil = new SimpleDoubleProperty(-7);
+    private static final DoubleProperty upperQuartil = new SimpleDoubleProperty(1);
+    private static final DoubleProperty minElement = new SimpleDoubleProperty(-15);
+    private static final DoubleProperty maxElement = new SimpleDoubleProperty(5);
 
 
 
@@ -53,7 +53,7 @@ public class BoxPlot extends Control {
 
     private final StringProperty userFacingText = new SimpleStringProperty();
 
-    public BoxPlot() {
+    public BoxPlotControl() {
         initializeSelf();
         addValueChangeListener();
     }
@@ -229,7 +229,7 @@ public class BoxPlot extends Control {
     }
 
     public static void setLowerWhisker(double lowerWhisker) {
-        BoxPlot.lowerWhisker.set(lowerWhisker);
+        BoxPlotControl.lowerWhisker.set(lowerWhisker);
     }
 
     public static double getUpperWhisker() {
@@ -241,7 +241,7 @@ public class BoxPlot extends Control {
     }
 
     public static void setUpperWhisker(double upperWhisker) {
-        BoxPlot.upperWhisker.set(upperWhisker);
+        BoxPlotControl.upperWhisker.set(upperWhisker);
     }
 
     public static double getMedian() {
@@ -253,7 +253,7 @@ public class BoxPlot extends Control {
     }
 
     public static void setMedian(double median) {
-        BoxPlot.median.set(median);
+        BoxPlotControl.median.set(median);
     }
 
     public static double getLowerQuartil() {
@@ -265,7 +265,7 @@ public class BoxPlot extends Control {
     }
 
     public static void setLowerQuartil(double lowerQuartil) {
-        BoxPlot.lowerQuartil.set(lowerQuartil);
+        BoxPlotControl.lowerQuartil.set(lowerQuartil);
     }
 
     public static double getUpperQuartil() {
@@ -277,7 +277,7 @@ public class BoxPlot extends Control {
     }
 
     public static void setUpperQuartil(double upperQuartil) {
-        BoxPlot.upperQuartil.set(upperQuartil);
+        BoxPlotControl.upperQuartil.set(upperQuartil);
     }
 
     public static double getMinElement() {
@@ -289,7 +289,7 @@ public class BoxPlot extends Control {
     }
 
     public static void setMinElement(double minElement) {
-        BoxPlot.minElement.set(minElement);
+        BoxPlotControl.minElement.set(minElement);
     }
 
     public static double getMaxElement() {
@@ -301,6 +301,6 @@ public class BoxPlot extends Control {
     }
 
     public static void setMaxElement(double maxElement) {
-        BoxPlot.maxElement.set(maxElement);
+        BoxPlotControl.maxElement.set(maxElement);
     }
 }
