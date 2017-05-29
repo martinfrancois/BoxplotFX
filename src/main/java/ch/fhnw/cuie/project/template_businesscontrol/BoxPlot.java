@@ -1,6 +1,7 @@
 package ch.fhnw.cuie.project.template_businesscontrol;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -22,7 +23,9 @@ public class BoxPlot {
 
     public BoxPlot(HashMap<Object, Number> data){
         this.data = data;
-        valueArray = (Number[]) data.values().toArray();
+        Collection<Number> numberList = data.values();
+        valueArray = new Number[numberList.size()];
+        valueArray = numberList.toArray(valueArray);
         calculateParams(valueArray);
     }
 
