@@ -20,7 +20,7 @@ public class BoxPlot {
     private double upperWhisker;
     private double max;
 
-    double iqr; // Interquartilabstand
+    private double iqr; // Interquartilabstand
 
     public BoxPlot(HashMap<Object, Double> data){
         this.data = data;
