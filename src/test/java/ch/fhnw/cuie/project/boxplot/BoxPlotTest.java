@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by François Martin on 29.05.17.
@@ -40,6 +41,9 @@ public class BoxPlotTest {
         assertEquals("q3", q3, boxPlot.getQ3(), MARGIN_OF_ERROR);
         assertEquals("upperWhisker", upperWhisker, boxPlot.getUpperWhisker(), MARGIN_OF_ERROR);
         assertEquals("max", max, boxPlot.getMax(), MARGIN_OF_ERROR);
+        assertEquals(2, boxPlot.getOutliers().size());
+        assertTrue(boxPlot.getOutliers().containsValue(202d));
+        assertTrue(boxPlot.getOutliers().containsValue(333d));
     }
 
 }
