@@ -76,13 +76,13 @@ public class BoxPlotTest {
         boxPlot = new BoxPlot<>(map);
         long endTime = System.nanoTime();
         System.out.println("Time: " + TimeUnit.NANOSECONDS.toMillis(endTime - startTime) + " ms");
-        System.out.println(boxPlot.getMin());
-        System.out.println(boxPlot.getLowerWhisker());
-        System.out.println(boxPlot.getQ1());
-        System.out.println(boxPlot.getMedian());
-        System.out.println(boxPlot.getQ3());
-        System.out.println(boxPlot.getUpperWhisker());
-        System.out.println(boxPlot.getMax());
+        System.out.println("Min: " + boxPlot.getMin());
+        System.out.println("Lower Whisker: " + boxPlot.getLowerWhisker());
+        System.out.println("Q1: " + boxPlot.getQ1());
+        System.out.println("Median: " + boxPlot.getMedian());
+        System.out.println("Q3: " + boxPlot.getQ3());
+        System.out.println("Upper Whisker: " + boxPlot.getUpperWhisker());
+        System.out.println("Max: " + boxPlot.getMax());
         System.out.println("Outliers:");
         boxPlot.getOutliers().forEach((country, population) -> {
             System.out.println(country + ", " + population);
