@@ -1,91 +1,71 @@
 package ch.fhnw.cuie.project.template_businesscontrol;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
+
+import static com.google.common.math.Quantiles.quartiles;
 
 /**
  * Created by François Martin on 29.05.17.
  */
 public class BoxPlot {
-    private HashMap<Object, Number> data;
-    private Number[] valueArray;
+    private HashMap<Object, Double> data;
 
-    private Number min;
-    private Number lowerWhisker;
-    private Number q1; // unteres Quartil
-    private Number median;
-    private Number q3; // oberes Quartil
-    private Number upperWhisker;
-    private Number max;
+    private double min;
+    private double lowerWhisker;
+    private double q1; // unteres Quartil
+    private double median;
+    private double q3; // oberes Quartil
+    private double upperWhisker;
+    private double max;
 
-    Number iqr; // Interquartilabstand
+    double iqr; // Interquartilabstand
 
-    public BoxPlot(HashMap<Object, Number> data){
+    public BoxPlot(HashMap<Object, Double> data){
         this.data = data;
-        Collection<Number> numberList = data.values();
-        valueArray = new Number[numberList.size()];
-        valueArray = numberList.toArray(valueArray);
-        calculateParams(valueArray);
+        Collection<Double> numberList = data.values();
+        calculateParams(numberList);
     }
 
-    public Number[] calculateParams(Number[] values) {
-        Arrays.sort(valueArray);
-        min = values[0];
-        q1 = quartileSorted(values, 25);
-        median = quartileSorted(values, 50);
-        q3 = quartileSorted(values, 75);
-        max = values[values.length-1];
-        iqr = q3.doubleValue() - q1.doubleValue();
-        Number iqr15 = iqr.doubleValue() * 1.5;
-        lowerWhisker = q1.doubleValue() - iqr15.doubleValue();
-        upperWhisker = q3.doubleValue() + iqr15.doubleValue();
-        return valueArray;
+    public void calculateParams(Collection<Double> values) {
+        Map<Integer, Double> quartiles = quartiles().indexes(0, 1, 2, 3, 4).compute(values);
+        min = quartiles.get(0);
+        q1 = quartiles.get(1);
+        median = quartiles.get(2);
+        q3 = quartiles.get(3);
+        max = quartiles.get(4);
+        iqr = q3 - q1;
+        double iqr15 = iqr * 1.5;
+        lowerWhisker = q1 - iqr15;
+        upperWhisker = q3 + iqr15;
     }
 
-    /**
-     * Runs on sorted array.
-     * @param quartileValue 25 will return q1
-     *                      50 will return median
-     *                      75 will return q3
-     */
-    public Number quartileSorted(Number[] values, double quartileValue) {
-        int n = (int) Math.round(values.length * quartileValue / 100);
-        return values[n];
-    }
-
-    public Number quartile(Number[] values, double quartileValue) {
-        Number[] v = new Number[values.length];
-        System.arraycopy(values, 0, v, 0, values.length);
-        Arrays.sort(v);
-        return quartileSorted(values, quartileValue);
-    }
-
-    public Number getMin() {
+    public double getMin() {
         return min;
     }
 
-    public Number getLowerWhisker() {
+    public double getLowerWhisker() {
         return lowerWhisker;
     }
 
-    public Number getQ1() {
+    public double getQ1() {
         return q1;
     }
 
-    public Number getMedian() {
+    public double getMedian() {
         return median;
     }
 
-    public Number getQ3() {
+    public double getQ3() {
         return q3;
     }
 
-    public Number getUpperWhisker() {
+    public double getUpperWhisker() {
         return upperWhisker;
     }
 
-    public Number getMax() {
+    public double getMax() {
         return max;
     }
 }
