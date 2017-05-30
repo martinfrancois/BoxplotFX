@@ -10,7 +10,7 @@ effiziente Eingabemöglichkeit für einen der  Werte.
  - Falls ihr Custom Control ein _'einfaches, interaktives Anzeigeelement'_ ist, verwenden Sie bei der Implementierung die Struktur 
  wie im package `ch.fhnw.cuie.project.template_simplecontrol`.
  - Falls ihr Custom Control ein _'Business Control'_ ist, verwenden Sie bei der Implementierung die Struktur 
-  wie im package `ch.fhnw.cuie.project.template_businesscontrol`.
+  wie im package `ch.fhnw.cuie.project.boxplot`.
 
 
 ## Präsentation
@@ -64,4 +64,3 @@ in die jeweiligen OOP2-Projekte zu integrieren.
  - Collaborator fügt man über `Settings -> Collaborators & teams` hinzu.
  
  - Schicken Sie zusätzlich eine Mail an dieter.holz@fhnw.ch mit den Namen der beiden Team-Mitglieder.
- 

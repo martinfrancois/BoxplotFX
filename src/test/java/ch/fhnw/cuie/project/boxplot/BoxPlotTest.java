@@ -1,11 +1,9 @@
-package ch.fhnw.cuie.project.template_businesscontrol;
+package ch.fhnw.cuie.project.boxplot;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,4 +1,4 @@
-package ch.fhnw.cuie.project.template_businesscontrol.demo;
+package ch.fhnw.cuie.project.boxplot.demo;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -14,8 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
-import ch.fhnw.cuie.project.template_businesscontrol.BusinessControl;
-import javafx.scene.transform.Scale;
+import ch.fhnw.cuie.project.boxplot.BusinessControl;
 
 /**
  * @author Dieter Holz

@@ -1,7 +1,6 @@
-package ch.fhnw.cuie.project.template_businesscontrol;
+package ch.fhnw.cuie.project.boxplot;
 
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.layout.VBox;
 
 /**
