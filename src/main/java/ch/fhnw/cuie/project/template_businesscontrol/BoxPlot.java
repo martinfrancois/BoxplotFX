@@ -35,29 +35,31 @@ public class BoxPlot<T> {
     }
 
     private void calculate(ObservableMap<T, Double> data) {
-        // convert into collection of values
-        Collection<Double> values = data.values();
+        if(data.size() != 0) {
+            // convert into collection of values
+            Collection<Double> values = data.values();
 
-        // calculate quartiles
-        Map<Integer, Double> quartiles = quartiles().indexes(0, 1, 2, 3, 4).compute(values);
+            // calculate quartiles
+            Map<Integer, Double> quartiles = quartiles().indexes(0, 1, 2, 3, 4).compute(values);
 
-        // set values
-        setMin(quartiles.get(0));
-        setQ1(quartiles.get(1));
-        setMedian(quartiles.get(2));
-        setQ3(quartiles.get(3));
-        setMax(quartiles.get(4));
-        double iqr = getQ3() - getQ1(); // interquartile range
-        double iqr15 = iqr * 1.5;
-        setLowerWhisker(getQ1() - iqr15);
-        setUpperWhisker(getQ3() + iqr15);
+            // set values
+            setMin(quartiles.get(0));
+            setQ1(quartiles.get(1));
+            setMedian(quartiles.get(2));
+            setQ3(quartiles.get(3));
+            setMax(quartiles.get(4));
+            double iqr = getQ3() - getQ1(); // interquartile range
+            double iqr15 = iqr * 1.5;
+            setLowerWhisker(getQ1() - iqr15);
+            setUpperWhisker(getQ3() + iqr15);
 
-        // define outliers
-        outliers.clear();
-        data.entrySet().stream()
-            .distinct()
-            .filter(entry -> entry.getValue() > getUpperWhisker() || entry.getValue() < getLowerWhisker())
-            .forEach(entry -> outliers.put(entry.getKey(), entry.getValue()));
+            // define outliers
+            outliers.clear();
+            data.entrySet().stream()
+                .distinct()
+                .filter(entry -> entry.getValue() > getUpperWhisker() || entry.getValue() < getLowerWhisker())
+                .forEach(entry -> outliers.put(entry.getKey(), entry.getValue()));
+        }
     }
 
     public double getMin() {
