@@ -62,6 +62,10 @@ public class BoxPlot<T> {
         }
     }
 
+    public ObservableMap<T, Double> getOutliers() {
+        return outliers;
+    }
+
     public double getMin() {
         return min.get();
     }
