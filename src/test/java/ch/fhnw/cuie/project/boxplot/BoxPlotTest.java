@@ -5,6 +5,7 @@ import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import org.junit.Before;
@@ -74,7 +75,7 @@ public class BoxPlotTest {
         long startTime = System.nanoTime();
         boxPlot = new BoxPlot<>(map);
         long endTime = System.nanoTime();
-        System.out.println("Time: " + (endTime - startTime));
+        System.out.println("Time: " + TimeUnit.NANOSECONDS.toMillis(endTime - startTime) + " ms");
         System.out.println(boxPlot.getMin());
         System.out.println(boxPlot.getLowerWhisker());
         System.out.println(boxPlot.getQ1());
