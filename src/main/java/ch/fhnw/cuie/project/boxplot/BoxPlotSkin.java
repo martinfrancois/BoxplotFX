@@ -42,54 +42,34 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private Line medianLine;
 
     // ------ Variables ---------------------------------
-    private double width;
-    private double height;
-    private double offset;
+    private final DoubleProperty width = new SimpleDoubleProperty();
+    private final DoubleProperty height = new SimpleDoubleProperty();
+    private final DoubleProperty widthFactor = new SimpleDoubleProperty();
+//    private double width;
+//    private double height;
 
     public BoxPlotSkin(BoxPlotControl control) {
         super(control);
+        boxPlot = getSkinnable().getBoxPlot();
+        outliers = boxPlot.getOutliers();
+
         initializeSelf();
         initializeParts();
         layoutParts();
-        setupAnimations();
-        setupEventHandlers();
+//        setupAnimations();
+//        setupEventHandlers();
         setupBindings();
-        boxPlot = getSkinnable().getBoxPlot();
-        outliers = boxPlot.getOutliers();
         initOutliers();
         setupValueChangeListeners();
-    }
-
-    private void drawOutlier(T element, double value) {
-        // TODO: Do some magic to create the outlier and attach listener to setOnAction to change currently selected object
-        Circle outlier = new Circle();
-        circles.put(element, outlier);
-    }
-
-    private void removeOutlier(T element) {
-        // remove the outlier associated with this element
-        drawingPane.getChildren().remove(circles.get(element));
-    }
-
-    private void initOutliers() {
-        outliers.entrySet().stream()
-                .forEach(entry -> {
-                    drawOutlier(entry.getKey(), entry.getValue());
-                });
-    }
-
-    private void setupBindings() {
     }
 
     private void initializeSelf() {
         // ----- Initialize Properties ----------------------
         drawingPane = new StackPane();
-//        height=100;
-//        width=200;
 
         minElement.set(-15);
         //    Computes the offset, from 0 to the minElement. This is needed for scaling
-        offset = minElement.get() * -1;
+        double offset = minElement.get() * -1;
 
         lowerWhisker.set(-13 + offset);
         upperWhisker.set(4 + offset);
@@ -98,8 +78,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         upperQuartile.set(1 + offset);
         maxElement.set(5 + offset);
         minElement.set(0);
-        System.out.println(lowerWhisker.get());
-        System.out.println(upperWhisker.get());
 
         // ----- CSS ----------------------------------------
         String fonts = getClass().getResource(FONTS_CSS).toExternalForm();
@@ -112,18 +90,17 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private void initializeParts() {
         drawingPane.getStyleClass().add("drawingPane");
 
-        adapt(width, height);
+        range = new Line();
+        quartiles = new Rectangle();
+        lowerWhiskerLine = new Line();
+        upperWhiskerLine = new Line();
+        medianLine = new Line();
 
         quartiles.setFill(Color.LIGHTBLUE);
         quartiles.setStroke(Color.BLACK);
         medianLine.setStrokeWidth(10);
         lowerWhiskerLine.setStrokeWidth(5);
         upperWhiskerLine.setStrokeWidth(5);
-    }
-
-    //    Returns the factor, which is needed to resize the data
-    private double getWidthFactor() {
-        return width / (maxElement.get() - minElement.get());
     }
 
     private void layoutParts() {
@@ -149,26 +126,65 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         });
 
         drawingPane.heightProperty().addListener((observable, oldValue, newValue) -> {
-            adapt(width, newValue.doubleValue());
+            adapt(newValue.doubleValue());
         });
 
         drawingPane.widthProperty().addListener((observable, oldValue, newValue) -> {
-            adapt(newValue.doubleValue(), height);
+            adapt(height.get());
         });
     }
 
 //    Draws the BoxPlot
-    private void adapt(double width, double height) {
-        double widthFactor = getWidthFactor();
-        range = new Line(lowerWhisker.get() * widthFactor, height / 2, upperWhisker.get() * widthFactor, height / 2);
-        quartiles = new Rectangle(lowerQuartile.get() * widthFactor, 0, (upperQuartile.get() - lowerQuartile.get()) * widthFactor, height);
-        lowerWhiskerLine = new Line(lowerWhisker.get() * widthFactor, 0, lowerWhisker.get() * widthFactor, height);
-        upperWhiskerLine = new Line(upperWhisker.get() * widthFactor, 0, upperWhisker.get() * widthFactor, height);
-        medianLine = new Line(median.get() * widthFactor, 0, median.get() * widthFactor, height);
+    private void adapt(double height) {
+        widthFactor.set(width.get()/(maxElement.get()-minElement.get()));
+
+        range.startXProperty().set(lowerWhisker.get() * widthFactor.get());
+        range.startYProperty().set(height / 2);
+        range.endXProperty().set(upperWhisker.get() * widthFactor.get());
+        range.endYProperty().set(height / 2);
+
+        quartiles.xProperty().set(lowerQuartile.get() * widthFactor.get());
+        quartiles.yProperty().set(0);
+        quartiles.heightProperty().set((upperQuartile.get() - lowerQuartile.get()) * widthFactor.get());
+        quartiles.widthProperty().set(height);
+
+        lowerWhiskerLine.startXProperty().set(lowerWhisker.get() * widthFactor.get());
+        lowerWhiskerLine.startYProperty().set(0);
+        lowerWhiskerLine.endXProperty().set(lowerWhisker.get() * widthFactor.get());
+        lowerWhiskerLine.endYProperty().set(height);
+
+        upperWhiskerLine.startXProperty().set(upperWhisker.get() * widthFactor.get());
+        upperWhiskerLine.startYProperty().set(0);
+        upperWhiskerLine.endXProperty().set(upperWhisker.get() * widthFactor.get());
+        upperWhiskerLine.endYProperty().set(height);
+
+        medianLine.startXProperty().set(median.get() * widthFactor.get());
+        medianLine.startYProperty().set(0);
+        medianLine.endXProperty().set(median.get() * widthFactor.get());
+        medianLine.endYProperty().set(height);
     }
 
-    private void setupBinding() {
+    private void setupBindings() {
+        width.bind(drawingPane.widthProperty());
+        height.bind(drawingPane.heightProperty());
+    }
 
+    private void drawOutlier(T element, double value) {
+        // TODO: Do some magic to create the outlier and attach listener to setOnAction to change currently selected object
+        Circle outlier = new Circle();
+        circles.put(element, outlier);
+    }
+
+    private void removeOutlier(T element) {
+        // remove the outlier associated with this element
+        drawingPane.getChildren().remove(circles.get(element));
+    }
+
+    private void initOutliers() {
+        outliers.entrySet().stream()
+                .forEach(entry -> {
+                    drawOutlier(entry.getKey(), entry.getValue());
+                });
     }
 
     // ------- Properties -------------------------------------------

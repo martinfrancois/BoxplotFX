@@ -22,6 +22,7 @@ import ch.fhnw.cuie.project.boxplot.BusinessControl;
  * @author Dieter Holz
  */
 public class DemoPane extends BorderPane {
+//    private BusinessControl boxPlotControl;
     private BoxPlotControl boxPlotControl;
 
     private Slider ageSlider;
@@ -46,6 +47,7 @@ public class DemoPane extends BorderPane {
     private void initializeControls() {
         setPadding(new Insets(10));
 
+//        boxPlotControl = new BusinessControl();
         boxPlotControl = new BoxPlotControl(FXCollections.observableHashMap());
 
         ageSlider = new Slider(0, 130, 0);

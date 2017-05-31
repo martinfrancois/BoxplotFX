@@ -53,7 +53,7 @@ public class BusinessControl extends Control {
 
     @Override
     protected Skin<?> createDefaultSkin() {
-        return new BusinessSkin(this);
+        return new TestSkin(this);
     }
 
     public void reset() {
