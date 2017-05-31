@@ -1,13 +1,14 @@
 package ch.fhnw.cuie.project.boxplot;
 
-import java.util.Collection;
-import java.util.Map;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
+
+import java.util.Collection;
+import java.util.Map;
 
 import static com.google.common.math.Quantiles.quartiles;
 

@@ -2,6 +2,7 @@ package ch.fhnw.cuie.project.boxplot;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.ObservableMap;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
@@ -11,7 +12,11 @@ import javafx.scene.shape.Rectangle;
 /**
  * @author Dieter Holz
  */
-public class BoxPlotSkin extends SkinBase<BoxPlotControl> {
+public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
+    private final ObservableMap<T, Double> outliers;
+    private final BoxPlot<T> boxPlot;
+
+
     // always needed
     private static final double ARTBOARD_WIDTH = 100;
     private static final double ARTBOARD_HEIGHT = 100;
@@ -52,6 +57,20 @@ public class BoxPlotSkin extends SkinBase<BoxPlotControl> {
         setupEventHandlers();
         //setupValueChangedListeners();
         //setupBindings();
+        boxPlot = getSkinnable().getBoxPlot();
+        outliers = boxPlot.getOutliers();
+        initOutliers();
+    }
+
+    private void drawOutlier(T element, double value){
+        // do some magic to create the outlier and attach listener to setOnAction to change currently selected object
+    }
+
+    private void initOutliers(){
+        outliers.entrySet().stream()
+                .forEach(entry -> {
+                    drawOutlier(entry.getKey(), entry.getValue());
+                });
     }
 
     private void initializeSelf() {

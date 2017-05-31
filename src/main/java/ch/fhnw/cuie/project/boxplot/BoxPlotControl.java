@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
  */
 public class BoxPlotControl<T> extends Control {
     private final ObjectProperty<T> currentElement = new SimpleObjectProperty<>();
-    private final ObservableMap<T, Double> outliers;
     private final BoxPlot<T> boxPlot;
 
     static final String FORMATTED_INTEGER_PATTERN = "%,d";
@@ -50,12 +49,6 @@ public class BoxPlotControl<T> extends Control {
         initializeSelf();
         addValueChangeListener();
         boxPlot = new BoxPlot<>(map);
-        outliers = boxPlot.getOutliers();
-
-    }
-
-    private void createOutlier(){
-
     }
 
     @Override
@@ -206,5 +199,19 @@ public class BoxPlotControl<T> extends Control {
         return invalid.get();
     }
 
+    public T getCurrentElement() {
+        return currentElement.get();
+    }
 
+    public ObjectProperty<T> currentElementProperty() {
+        return currentElement;
+    }
+
+    public void setCurrentElement(T currentElement) {
+        this.currentElement.set(currentElement);
+    }
+
+    public BoxPlot<T> getBoxPlot() {
+        return boxPlot;
+    }
 }
