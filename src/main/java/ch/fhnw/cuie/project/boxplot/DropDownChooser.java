@@ -1,5 +1,6 @@
 package ch.fhnw.cuie.project.boxplot;
 
+import javafx.collections.FXCollections;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
@@ -37,7 +38,7 @@ public class DropDownChooser extends VBox {
     }
 
     private void layoutParts() {
-        getChildren().addAll(tobeReplacedLabel);
+        getChildren().addAll(new BoxPlotControl<String>(FXCollections.observableHashMap()));
     }
 
     private void setupBindings() {

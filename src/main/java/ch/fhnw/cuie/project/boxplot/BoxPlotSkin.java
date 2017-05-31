@@ -69,7 +69,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void drawOutlier(T element, double value) {
-        // do some magic to create the outlier and attach listener to setOnAction to change currently selected object
+        // TODO: Do some magic to create the outlier and attach listener to setOnAction to change currently selected object
         Circle outlier = new Circle();
         circles.put(element, outlier);
     }
@@ -114,6 +114,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private void initializeParts() {
         drawingPane = new StackPane();
+        drawingPane.setPrefWidth(300);
+        drawingPane.setPrefHeight(100);
         drawingPane.getStyleClass().add("drawingPane");
 
         //    line id="range" class="st1" x1="325.6" y1="455.7" x2="1798.4" y2="455.7"
