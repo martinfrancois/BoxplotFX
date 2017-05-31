@@ -1,21 +1,16 @@
-package ch.fhnw.cuie.project.template_businesscontrol;
+package ch.fhnw.cuie.project.boxplot;
 
-import java.util.regex.Pattern;
-
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.css.PseudoClass;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 
+import java.util.regex.Pattern;
+
 /**
  * @author Dieter Holz
  */
-public class BusinessControl extends Control {
+public class BoxPlotControl extends Control {
     static final String FORMATTED_INTEGER_PATTERN = "%,d";
 
     private static final String INTEGER_REGEX    = "[+-]?[\\d']{1,14}";
@@ -46,14 +41,14 @@ public class BusinessControl extends Control {
 
     private final StringProperty userFacingText = new SimpleStringProperty();
 
-    public BusinessControl() {
+    public BoxPlotControl() {
         initializeSelf();
         addValueChangeListener();
     }
 
     @Override
     protected Skin<?> createDefaultSkin() {
-        return new BusinessSkin(this);
+        return new BoxPlotSkin(this);
     }
 
     public void reset() {

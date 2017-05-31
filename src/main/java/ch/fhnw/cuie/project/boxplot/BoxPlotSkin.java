@@ -1,4 +1,4 @@
-package ch.fhnw.cuie.project.template_businesscontrol;
+package ch.fhnw.cuie.project.boxplot;
 
 import javafx.beans.property.*;
 import javafx.geometry.Pos;
