@@ -78,9 +78,7 @@ public class BoxPlotTest {
         assertEquals(23, boxPlot.getOutliers().size());
 
         System.out.println("Outliers:");
-        boxPlot.getOutliers().forEach((country, population) -> {
-            System.out.println(country + ", " + population);
-        });
+        boxPlot.getOutliers().forEach((country, population) -> System.out.println(country + ", " + population));
     }
 
 }
