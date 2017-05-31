@@ -1,6 +1,7 @@
 package ch.fhnw.cuie.project.boxplot;
 
 import javafx.beans.property.*;
+import javafx.collections.ObservableMap;
 import javafx.css.PseudoClass;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
@@ -10,7 +11,11 @@ import java.util.regex.Pattern;
 /**
  * @author Dieter Holz
  */
-public class BoxPlotControl extends Control {
+public class BoxPlotControl<T> extends Control {
+    private final ObjectProperty<T> currentElement = new SimpleObjectProperty<>();
+    private final ObservableMap<T, Double> outliers;
+    private final BoxPlot<T> boxPlot;
+
     static final String FORMATTED_INTEGER_PATTERN = "%,d";
 
     private static final String INTEGER_REGEX    = "[+-]?[\\d']{1,14}";
@@ -41,9 +46,16 @@ public class BoxPlotControl extends Control {
 
     private final StringProperty userFacingText = new SimpleStringProperty();
 
-    public BoxPlotControl() {
+    public BoxPlotControl(ObservableMap<T, Double> map) {
         initializeSelf();
         addValueChangeListener();
+        boxPlot = new BoxPlot<>(map);
+        outliers = boxPlot.getOutliers();
+
+    }
+
+    private void createOutlier(){
+
     }
 
     @Override
