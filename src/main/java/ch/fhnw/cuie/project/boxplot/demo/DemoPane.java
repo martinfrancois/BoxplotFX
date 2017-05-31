@@ -1,11 +1,13 @@
 package ch.fhnw.cuie.project.boxplot.demo;
 
+import ch.fhnw.cuie.project.boxplot.BoxPlotControl;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -20,7 +22,7 @@ import ch.fhnw.cuie.project.boxplot.BusinessControl;
  * @author Dieter Holz
  */
 public class DemoPane extends BorderPane {
-    private BusinessControl businessControl;
+    private BoxPlotControl boxPlotControl;
 
     private Slider ageSlider;
 
@@ -44,7 +46,7 @@ public class DemoPane extends BorderPane {
     private void initializeControls() {
         setPadding(new Insets(10));
 
-        businessControl = new BusinessControl();
+        boxPlotControl = new BoxPlotControl(FXCollections.observableHashMap());
 
         ageSlider = new Slider(0, 130, 0);
 
@@ -59,7 +61,7 @@ public class DemoPane extends BorderPane {
     }
 
     private void layoutControls() {
-        setCenter(businessControl);
+        setCenter(boxPlotControl);
         VBox box = new VBox(10, new Label("Business Control Properties"),
                             new Label("Age"), ageSlider,
                             new Label("readOnly"), readOnlyBox,
@@ -80,10 +82,10 @@ public class DemoPane extends BorderPane {
         readOnlyBox.selectedProperty().bindBidirectional(readOnly);
         mandatoryBox.selectedProperty().bindBidirectional(mandatory);
 
-        businessControl.valueProperty().bindBidirectional(age);
-        businessControl.labelProperty().bind(ageLabel);
-        businessControl.readOnlyProperty().bind(readOnly);
-        businessControl.mandatoryProperty().bind(mandatory);
+        boxPlotControl.valueProperty().bindBidirectional(age);
+        boxPlotControl.labelProperty().bind(ageLabel);
+        boxPlotControl.readOnlyProperty().bind(readOnly);
+        boxPlotControl.mandatoryProperty().bind(mandatory);
     }
 
 }

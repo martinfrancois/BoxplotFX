@@ -5,6 +5,7 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -19,22 +20,14 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final BoxPlot<T> boxPlot;
     private final HashMap<T, Circle> circles = new HashMap<>();
 
-    // always needed
-    private static final double ARTBOARD_WIDTH = 100;
-    private static final double ARTBOARD_HEIGHT = 100;
-    private static final double ASPECT_RATIO = ARTBOARD_WIDTH / ARTBOARD_HEIGHT;
-    private static final double MINIMUM_WIDTH = 25;
-    private static final double MINIMUM_HEIGHT = MINIMUM_WIDTH / ASPECT_RATIO;
-    private static final double MAXIMUM_WIDTH = 800;
-
     private StackPane drawingPane;
 
     // ----- Properties --------------------------------
     private static final DoubleProperty lowerWhisker = new SimpleDoubleProperty();
     private static final DoubleProperty upperWhisker = new SimpleDoubleProperty();
     private static final DoubleProperty median = new SimpleDoubleProperty();
-    private static final DoubleProperty lowerQuartil = new SimpleDoubleProperty();
-    private static final DoubleProperty upperQuartil = new SimpleDoubleProperty();
+    private static final DoubleProperty lowerQuartile = new SimpleDoubleProperty();
+    private static final DoubleProperty upperQuartile = new SimpleDoubleProperty();
     private static final DoubleProperty minElement = new SimpleDoubleProperty();
     private static final DoubleProperty maxElement = new SimpleDoubleProperty();
 
@@ -92,6 +85,13 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private void initializeSelf() {
         // ----- Initialize Properties ----------------------
+        drawingPane = new StackPane();
+        drawingPane.setPrefHeight(100);
+        drawingPane.setPrefWidth(200);
+
+        height=100;
+        width=200;
+
         minElement.set(-15);
         //    Computes the offset, from 0 to the minElement. This is needed for scaling
         offset = minElement.get() * -1;
@@ -99,10 +99,18 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         lowerWhisker.set(-13 + offset);
         upperWhisker.set(4 + offset);
         median.set(-2 + offset);
-        lowerQuartil.set(-7 + offset);
-        upperQuartil.set(1 + offset);
+        lowerQuartile.set(-7 + offset);
+        upperQuartile.set(1 + offset);
         maxElement.set(5 + offset);
         minElement.set(0);
+
+        System.out.println(lowerWhisker.get());
+        System.out.println(upperWhisker.get());
+        System.out.println(median.get());
+        System.out.println(lowerQuartile.get());
+        System.out.println(upperQuartile.get());
+        System.out.println(maxElement.get());
+        System.out.println(minElement.get());
 
         // ----- CSS ----------------------------------------
         String fonts = getClass().getResource(FONTS_CSS).toExternalForm();
@@ -113,21 +121,15 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void initializeParts() {
-        drawingPane = new StackPane();
-        drawingPane.setPrefWidth(300);
-        drawingPane.setPrefHeight(100);
         drawingPane.getStyleClass().add("drawingPane");
-
-        //    line id="range" class="st1" x1="325.6" y1="455.7" x2="1798.4" y2="455.7"
-//    rect id="quartiles" x="831.7" y="331.4" class="st2" width="673.7" height="247.7"
-//    line id="lowerWhisker" class="st1" x1="325.6" y1="366.1" x2="325.6" y2="539.8"
-//    line id="upperWhisker" class="st1" x1="1798.4" y1="366.1" x2="1798.4" y2="539.8"
-//    circle id="Ausreisser" class="st1" cx="199.3" cy="453" r="14"
-//    line id="Median" class="st3" x1="1257.8" y1="331.4" x2="1257.8" y2="579.1"
 
         double widthFactor = getWidthFactor();
         range = new Line(0, height / 2, width, height / 2);
-        quartiles = new Rectangle(lowerQuartil.get() * widthFactor, 0, (upperQuartil.get() - lowerQuartil.get()) * widthFactor, height);
+        System.out.println(widthFactor);
+        System.out.println(range);
+        quartiles = new Rectangle(lowerQuartile.get() * widthFactor, 0, (upperQuartile.get() - lowerQuartile.get()) * widthFactor, height);
+        quartiles.setFill(Color.TRANSPARENT);
+        quartiles.setStroke(Color.BLACK);
         lowerWhiskerLine = new Line(lowerWhisker.get() * widthFactor, 0, lowerWhisker.get() * widthFactor, height);
         upperWhiskerLine = new Line(upperWhisker.get() * widthFactor, 0, upperWhisker.get() * widthFactor, height);
 //        outliers = new Circle(5, -15, 5);
@@ -161,12 +163,11 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
             }
         });
 
-        drawingPane.widthProperty().addListener(e -> {
-            width = drawingPane.getWidth();
+        drawingPane.heightProperty().addListener((observable, oldValue, newValue) -> {
+            height = newValue.doubleValue();
         });
-
-        drawingPane.heightProperty().addListener(e -> {
-            height = drawingPane.getHeight();
+        drawingPane.widthProperty().addListener((observable, oldValue, newValue) -> {
+            width = newValue.doubleValue();
         });
     }
 
@@ -211,28 +212,28 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         BoxPlotSkin.median.set(median);
     }
 
-    public static double getLowerQuartil() {
-        return lowerQuartil.get();
+    public static double getLowerQuartile() {
+        return lowerQuartile.get();
     }
 
     public static DoubleProperty lowerQuartilProperty() {
-        return lowerQuartil;
+        return lowerQuartile;
     }
 
-    public static void setLowerQuartil(double lowerQuartil) {
-        BoxPlotSkin.lowerQuartil.set(lowerQuartil);
+    public static void setLowerQuartile(double lowerQuartile) {
+        BoxPlotSkin.lowerQuartile.set(lowerQuartile);
     }
 
-    public static double getUpperQuartil() {
-        return upperQuartil.get();
+    public static double getUpperQuartile() {
+        return upperQuartile.get();
     }
 
     public static DoubleProperty upperQuartilProperty() {
-        return upperQuartil;
+        return upperQuartile;
     }
 
-    public static void setUpperQuartil(double upperQuartil) {
-        BoxPlotSkin.upperQuartil.set(upperQuartil);
+    public static void setUpperQuartile(double upperQuartile) {
+        BoxPlotSkin.upperQuartile.set(upperQuartile);
     }
 
     public static double getMinElement() {
