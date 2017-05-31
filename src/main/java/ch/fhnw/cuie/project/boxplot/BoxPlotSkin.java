@@ -2,6 +2,7 @@ package ch.fhnw.cuie.project.boxplot;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.StackPane;
@@ -60,10 +61,15 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         boxPlot = getSkinnable().getBoxPlot();
         outliers = boxPlot.getOutliers();
         initOutliers();
+        setupValueChangeListeners();
     }
 
     private void drawOutlier(T element, double value){
         // do some magic to create the outlier and attach listener to setOnAction to change currently selected object
+    }
+
+    private void removeOutlier(T element){
+        // remove the outlier associated with this element
     }
 
     private void initOutliers(){
@@ -124,7 +130,13 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void setupValueChangeListeners() {
-
+        outliers.addListener((MapChangeListener<? super T, ? super Double>) change -> {
+            if(change.wasRemoved()) {
+                removeOutlier(change.getKey());
+            } else if (change.wasAdded()) {
+                drawOutlier(change.getKey(), change.getValueAdded());
+            }
+        });
     }
 
     private void setupBinding() {

@@ -150,5 +150,7 @@ public class BoxPlot<T> {
     private void setMax(double max) {
         this.max.set(max);
     }
+
+
 }
 
