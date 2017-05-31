@@ -53,7 +53,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         layoutParts();
         setupAnimations();
         setupEventHandlers();
-        //setupValueChangedListeners();
         setupBindings();
         boxPlot = getSkinnable().getBoxPlot();
         outliers = boxPlot.getOutliers();
@@ -80,17 +79,13 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void setupBindings() {
-
     }
 
     private void initializeSelf() {
         // ----- Initialize Properties ----------------------
         drawingPane = new StackPane();
-        drawingPane.setPrefHeight(100);
-        drawingPane.setPrefWidth(200);
-
-        height=100;
-        width=200;
+//        height=100;
+//        width=200;
 
         minElement.set(-15);
         //    Computes the offset, from 0 to the minElement. This is needed for scaling
@@ -103,14 +98,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         upperQuartile.set(1 + offset);
         maxElement.set(5 + offset);
         minElement.set(0);
-
         System.out.println(lowerWhisker.get());
         System.out.println(upperWhisker.get());
-        System.out.println(median.get());
-        System.out.println(lowerQuartile.get());
-        System.out.println(upperQuartile.get());
-        System.out.println(maxElement.get());
-        System.out.println(minElement.get());
 
         // ----- CSS ----------------------------------------
         String fonts = getClass().getResource(FONTS_CSS).toExternalForm();
@@ -123,17 +112,13 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private void initializeParts() {
         drawingPane.getStyleClass().add("drawingPane");
 
-        double widthFactor = getWidthFactor();
-        range = new Line(0, height / 2, width, height / 2);
-        System.out.println(widthFactor);
-        System.out.println(range);
-        quartiles = new Rectangle(lowerQuartile.get() * widthFactor, 0, (upperQuartile.get() - lowerQuartile.get()) * widthFactor, height);
-        quartiles.setFill(Color.TRANSPARENT);
+        adapt(width, height);
+
+        quartiles.setFill(Color.LIGHTBLUE);
         quartiles.setStroke(Color.BLACK);
-        lowerWhiskerLine = new Line(lowerWhisker.get() * widthFactor, 0, lowerWhisker.get() * widthFactor, height);
-        upperWhiskerLine = new Line(upperWhisker.get() * widthFactor, 0, upperWhisker.get() * widthFactor, height);
-//        outliers = new Circle(5, -15, 5);
-        medianLine = new Line(median.get() * widthFactor, 0, median.get() * widthFactor, height);
+        medianLine.setStrokeWidth(10);
+        lowerWhiskerLine.setStrokeWidth(5);
+        upperWhiskerLine.setStrokeWidth(5);
     }
 
     //    Returns the factor, which is needed to resize the data
@@ -164,11 +149,22 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         });
 
         drawingPane.heightProperty().addListener((observable, oldValue, newValue) -> {
-            height = newValue.doubleValue();
+            adapt(width, newValue.doubleValue());
         });
+
         drawingPane.widthProperty().addListener((observable, oldValue, newValue) -> {
-            width = newValue.doubleValue();
+            adapt(newValue.doubleValue(), height);
         });
+    }
+
+//    Draws the BoxPlot
+    private void adapt(double width, double height) {
+        double widthFactor = getWidthFactor();
+        range = new Line(lowerWhisker.get() * widthFactor, height / 2, upperWhisker.get() * widthFactor, height / 2);
+        quartiles = new Rectangle(lowerQuartile.get() * widthFactor, 0, (upperQuartile.get() - lowerQuartile.get()) * widthFactor, height);
+        lowerWhiskerLine = new Line(lowerWhisker.get() * widthFactor, 0, lowerWhisker.get() * widthFactor, height);
+        upperWhiskerLine = new Line(upperWhisker.get() * widthFactor, 0, upperWhisker.get() * widthFactor, height);
+        medianLine = new Line(median.get() * widthFactor, 0, median.get() * widthFactor, height);
     }
 
     private void setupBinding() {
