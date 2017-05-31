@@ -10,13 +10,15 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
+import java.util.HashMap;
+
 /**
  * @author Dieter Holz
  */
 public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final ObservableMap<T, Double> outliers;
     private final BoxPlot<T> boxPlot;
-
+    private final HashMap<T, Circle> circles = new HashMap<>();
 
     // always needed
     private static final double ARTBOARD_WIDTH = 100;
@@ -66,10 +68,13 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private void drawOutlier(T element, double value){
         // do some magic to create the outlier and attach listener to setOnAction to change currently selected object
+        Circle outlier = new Circle();
+        circles.put(element, outlier);
     }
 
     private void removeOutlier(T element){
         // remove the outlier associated with this element
+        drawingPane.getChildren().remove(circles.get(element));
     }
 
     private void initOutliers(){
