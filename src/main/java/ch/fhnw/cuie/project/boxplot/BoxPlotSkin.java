@@ -1,16 +1,32 @@
 package ch.fhnw.cuie.project.boxplot;
 
 import javafx.beans.property.*;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableMap;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
+import java.util.HashMap;
+
 /**
  * @author Dieter Holz
  */
-public class BoxPlotSkin extends SkinBase<BoxPlotControl> {
+public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
+    private final ObservableMap<T, Double> outliers;
+    private final BoxPlot<T> boxPlot;
+    private final HashMap<T, Circle> circles = new HashMap<>();
+
+    // always needed
+    private static final double ARTBOARD_WIDTH = 100;
+    private static final double ARTBOARD_HEIGHT = 100;
+    private static final double ASPECT_RATIO = ARTBOARD_WIDTH / ARTBOARD_HEIGHT;
+    private static final double MINIMUM_WIDTH = 25;
+    private static final double MINIMUM_HEIGHT = MINIMUM_WIDTH / ASPECT_RATIO;
+    private static final double MAXIMUM_WIDTH = 800;
+public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private StackPane drawingPane;
 
@@ -46,6 +62,30 @@ public class BoxPlotSkin extends SkinBase<BoxPlotControl> {
         layoutParts();
         setupAnimations();
         setupEventHandlers();
+        //setupValueChangedListeners();
+        //setupBindings();
+        boxPlot = getSkinnable().getBoxPlot();
+        outliers = boxPlot.getOutliers();
+        initOutliers();
+        setupValueChangeListeners();
+    }
+
+    private void drawOutlier(T element, double value){
+        // do some magic to create the outlier and attach listener to setOnAction to change currently selected object
+        Circle outlier = new Circle();
+        circles.put(element, outlier);
+    }
+
+    private void removeOutlier(T element){
+        // remove the outlier associated with this element
+        drawingPane.getChildren().remove(circles.get(element));
+    }
+
+    private void initOutliers(){
+        outliers.entrySet().stream()
+                .forEach(entry -> {
+                    drawOutlier(entry.getKey(), entry.getValue());
+                });
         setupBindings();
         setupListeners();
     }
@@ -114,11 +154,15 @@ public class BoxPlotSkin extends SkinBase<BoxPlotControl> {
 
     }
 
-    private void setupBinding() {
+    private void setupValueChangeListeners() {
+        outliers.addListener((MapChangeListener<? super T, ? super Double>) change -> {
+            if(change.wasRemoved()) {
+                removeOutlier(change.getKey());
+            } else if (change.wasAdded()) {
+                drawOutlier(change.getKey(), change.getValueAdded());
+            }
+        });
 
-    }
-
-    private void setupListeners() {
         drawingPane.widthProperty().addListener(e -> {
             width = drawingPane.getWidth();
         });
@@ -126,6 +170,9 @@ public class BoxPlotSkin extends SkinBase<BoxPlotControl> {
         drawingPane.heightProperty().addListener(e -> {
             height = drawingPane.getHeight();
         });
+    }
+
+    private void setupBinding() {
 
     }
 
