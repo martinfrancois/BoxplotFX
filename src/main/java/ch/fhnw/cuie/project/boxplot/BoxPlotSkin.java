@@ -4,6 +4,7 @@ import javafx.beans.property.*;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.SkinBase;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -20,7 +21,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final BoxPlot<T> boxPlot;
     private final HashMap<T, Circle> circles = new HashMap<>();
 
-    private StackPane drawingPane;
+    private Pane drawingPane;
 
     // ----- Properties --------------------------------
     private static final DoubleProperty lowerWhisker = new SimpleDoubleProperty();
@@ -45,8 +46,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final DoubleProperty width = new SimpleDoubleProperty();
     private final DoubleProperty height = new SimpleDoubleProperty();
     private final DoubleProperty widthFactor = new SimpleDoubleProperty();
-//    private double width;
-//    private double height;
 
     public BoxPlotSkin(BoxPlotControl control) {
         super(control);
@@ -65,7 +64,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private void initializeSelf() {
         // ----- Initialize Properties ----------------------
-        drawingPane = new StackPane();
+        drawingPane = new Pane();
 
         minElement.set(-15);
         //    Computes the offset, from 0 to the minElement. This is needed for scaling
@@ -89,6 +88,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private void initializeParts() {
         drawingPane.getStyleClass().add("drawingPane");
+        drawingPane.setPrefSize(600, 100);
 
         range = new Line();
         quartiles = new Rectangle();
@@ -145,8 +145,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
         quartiles.xProperty().set(lowerQuartile.get() * widthFactor.get());
         quartiles.yProperty().set(0);
-        quartiles.heightProperty().set((upperQuartile.get() - lowerQuartile.get()) * widthFactor.get());
-        quartiles.widthProperty().set(height);
+        quartiles.widthProperty().set((upperQuartile.get() - lowerQuartile.get()) * widthFactor.get());
+        quartiles.heightProperty().set(height);
 
         lowerWhiskerLine.startXProperty().set(lowerWhisker.get() * widthFactor.get());
         lowerWhiskerLine.startYProperty().set(0);
