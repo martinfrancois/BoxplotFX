@@ -55,8 +55,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         initializeSelf();
         initializeParts();
         layoutParts();
-//        setupAnimations();
-//        setupEventHandlers();
+        setupAnimations();
+        setupEventHandlers();
         setupBindings();
         initOutliers();
         setupValueChangeListeners();
