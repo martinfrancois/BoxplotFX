@@ -88,7 +88,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private void initializeParts() {
         drawingPane.getStyleClass().add("drawingPane");
-        drawingPane.setPrefSize(600, 100);
+        drawingPane.setPrefSize(600, 50);
 
         range = new Line();
         quartiles = new Rectangle();
@@ -126,11 +126,11 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         });
 
         drawingPane.heightProperty().addListener((observable, oldValue, newValue) -> {
-            adapt(newValue.doubleValue());
+            adapt(drawingPane.getHeight());
         });
 
         drawingPane.widthProperty().addListener((observable, oldValue, newValue) -> {
-            adapt(height.get());
+            adapt(drawingPane.getHeight());
         });
     }
 
