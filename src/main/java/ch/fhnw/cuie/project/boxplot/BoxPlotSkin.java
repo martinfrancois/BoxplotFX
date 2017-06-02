@@ -17,6 +17,7 @@ import java.util.HashMap;
  * @author Dieter Holz
  */
 public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
+    private static final double STROKE_WIDTH = 2;
     private final ObservableMap<T, Double> outliers;
     private final BoxPlot<T> boxPlot;
     private final HashMap<T, Circle> circles = new HashMap<>();
@@ -98,9 +99,12 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
         quartiles.setFill(Color.LIGHTBLUE);
         quartiles.setStroke(Color.BLACK);
-        medianLine.setStrokeWidth(10);
-        lowerWhiskerLine.setStrokeWidth(5);
-        upperWhiskerLine.setStrokeWidth(5);
+
+        range.setStrokeWidth(STROKE_WIDTH);
+        quartiles.setStrokeWidth(STROKE_WIDTH);
+        lowerWhiskerLine.setStrokeWidth(STROKE_WIDTH);
+        upperWhiskerLine.setStrokeWidth(STROKE_WIDTH);
+        medianLine.setStrokeWidth(STROKE_WIDTH);
     }
 
     private void layoutParts() {
