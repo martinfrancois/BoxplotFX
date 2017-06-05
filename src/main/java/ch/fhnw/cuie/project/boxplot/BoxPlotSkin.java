@@ -61,7 +61,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final DoubleProperty height = new SimpleDoubleProperty();
     private final DoubleProperty widthFactor = new SimpleDoubleProperty();
     private final DoubleProperty offset = new SimpleDoubleProperty();
-    public static final double TRANSLATE_Y = 20;
     public static final double FACTOR_BOXPLOT_START = 0d;
     public static final double FACTOR_BOXPLOT_END = 0.75d;
     public static final double FACTOR_DATA_POINTS_END = 0.85d;
