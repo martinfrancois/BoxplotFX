@@ -22,7 +22,7 @@ import java.util.HashMap;
  */
 public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private static final String DECIMALS = "0";
-    private static final double STROKE_WIDTH = 2;
+    private static final double STROKE_WIDTH = 3;
     private final ObservableMap<T, Double> outliers;
     private final BoxPlot<T> boxPlot;
     private final HashMap<T, Circle> circles = new HashMap<>();
@@ -59,6 +59,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final DoubleProperty widthFactor = new SimpleDoubleProperty();
     private final DoubleProperty offset = new SimpleDoubleProperty();
     public static final double TRANSLATE_Y = 20;
+    public static final double SEPARATOR_FACTOR = .75;
 
     public BoxPlotSkin(BoxPlotControl control) {
         super(control);
@@ -126,7 +127,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         currentObjectLabel = new Label();
 
         dataScale.setStroke(Color.rgb(255, 200, 0));
-        dataScale.setStrokeWidth(STROKE_WIDTH * 2);
+        dataScale.setStrokeWidth(STROKE_WIDTH);
     }
 
     private void layoutParts() {
@@ -135,8 +136,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                 quartiles,
                 lowerWhiskerLine,
                 upperWhiskerLine,
-                medianLine,
-                currentObjectLine
+                medianLine
+//                currentObjectLine
         );
         drawingPane.getChildren().addAll(
                 scaleLeft,
@@ -148,8 +149,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                 upperWhiskerLabel,
                 lowerQuartileLabel,
                 upperQuartileLabel,
-                medianLabel,
-                currentObjectLabel
+                medianLabel
+//                currentObjectLabel
         );
         getChildren().add(drawingPane);
     }
@@ -229,7 +230,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         line.startXProperty().set((element.get() - offset.get()) * widthFactor.get());
         line.startYProperty().set(0);
         line.endXProperty().set((element.get() - offset.get()) * widthFactor.get());
-        line.endYProperty().set(height - 20);
+        line.endYProperty().set(height - TRANSLATE_Y);
     }
 
     private void setupBindings() {
@@ -237,22 +238,20 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         height.bind(drawingPane.heightProperty());
 
         // ---- Scale below -----------------------------
-        double translateY = 15;
-
         dataScale.startXProperty().bind(boxPlot.minProperty().subtract(offset).multiply(widthFactor));
-        dataScale.startYProperty().bind(height.subtract(translateY));
+        dataScale.startYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
         dataScale.endXProperty().bind(boxPlot.maxProperty().subtract(offset).multiply(widthFactor));
-        dataScale.endYProperty().bind(height.subtract(translateY));
+        dataScale.endYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
 
         scaleLeft.startXProperty().set(0);
-        scaleLeft.startYProperty().bind(height.subtract(translateY));
+        scaleLeft.startYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
         scaleLeft.endXProperty().bind(dataScale.startXProperty());
-        scaleLeft.endYProperty().bind(height.subtract(translateY));
+        scaleLeft.endYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
 
         scaleRight.startXProperty().bind(dataScale.endXProperty());
-        scaleRight.startYProperty().bind(height.subtract(translateY));
+        scaleRight.startYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
         scaleRight.endXProperty().bind(width);
-        scaleRight.endYProperty().bind(height.subtract(translateY));
+        scaleRight.endYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
 
         drawLabel(minimum, boxPlot.minProperty());
         drawLabel(maximum, boxPlot.maxProperty());
