@@ -1,12 +1,10 @@
 package ch.fhnw.cuie.project.boxplot;
 
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableMap;
-import javafx.css.PseudoClass;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
-
-import java.util.regex.Pattern;
 
 /**
  * @author Dieter Holz
@@ -31,7 +29,17 @@ public class BoxPlotControl<T> extends Control {
     }
 
     private void addValueChangeListener() {
-
+        currentElement.addListener((observable, oldValue, newValue) -> {
+            String output = "";
+            if (oldValue != newValue) {
+                output = "currentElement ";
+                if(oldValue != null){
+                    output += "from: " + oldValue.toString() + " ";
+                }
+                output += "to: " + newValue.toString();
+            }
+            System.out.println(output);
+        });
     }
 
     // all the getters and setters

@@ -57,4 +57,9 @@ public class Country {
     public int hashCode() {
         return Objects.hash(name, population);
     }
+
+    @Override
+    public String toString(){
+        return name.get();
+    }
 }

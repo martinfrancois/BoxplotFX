@@ -1,6 +1,7 @@
 package ch.fhnw.cuie.project.boxplot;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -54,6 +55,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final DoubleProperty height = new SimpleDoubleProperty();
     private final DoubleProperty widthFactor = new SimpleDoubleProperty();
     private final DoubleProperty offset = new SimpleDoubleProperty();
+    public static final double TRANSLATE_Y = 20;
 
     public BoxPlotSkin(BoxPlotControl control) {
         super(control);
@@ -160,17 +162,16 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private void adapt() {
         setOffset();
         setWidthFactor();
-        double translateY = 20;
 
         range.startXProperty().set((boxPlot.getLowerWhisker() - offset.get()) * widthFactor.get());
-        range.startYProperty().set((height.get() - translateY) / 2);
+        range.startYProperty().set((height.get() - TRANSLATE_Y) / 2);
         range.endXProperty().set((boxPlot.getUpperWhisker() - offset.get()) * widthFactor.get());
-        range.endYProperty().set((height.get() - translateY) / 2);
+        range.endYProperty().set((height.get() - TRANSLATE_Y) / 2);
 
         quartiles.xProperty().set((boxPlot.getQ1() - offset.get()) * widthFactor.get());
         quartiles.yProperty().set(0);
         quartiles.widthProperty().set((boxPlot.getQ3() - boxPlot.getQ1()) * widthFactor.get());
-        quartiles.heightProperty().set(height.get() - translateY);
+        quartiles.heightProperty().set(height.get() - TRANSLATE_Y);
 
         drawLine(lowerWhiskerLine, boxPlot.lowerWhiskerProperty(), height.get());
         drawLine(upperWhiskerLine, boxPlot.upperWhiskerProperty(), height.get());
@@ -229,10 +230,18 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private void drawOutlier(T element, double value) {
         // TODO: Do some magic to create the outlier
+        System.out.println("Create Outlier: " + element.toString() + " with: " + value);
         Circle outlier = new Circle();
+        outlier.centerYProperty().bind(height.subtract(TRANSLATE_Y).divide(2));
+        outlier.centerXProperty().bind(Bindings.createDoubleBinding(() -> {
+            System.out.println("Offset: " + offset.get() + " WidthFactor: " + widthFactor.get());
+            return (value-offset.get()) * widthFactor.get();
+        },offset, widthFactor));
+        outlier.setRadius(10);
         outlier.getStyleClass().add("outliers");
         outlier.setOnMouseClicked(event -> getSkinnable().setCurrentElement(element));
         circles.put(element, outlier);
+        drawingPane.getChildren().add(outlier);
     }
 
     private void removeOutlier(T element) {
