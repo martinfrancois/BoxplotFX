@@ -64,9 +64,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     public static final double TRANSLATE_Y = 20;
     public static final double FACTOR_BOXPLOT_START = 0d;
     public static final double FACTOR_BOXPLOT_END = 0.75d;
-    public static final double FACTOR_SCALE_END = 0.9d;
     public static final double FACTOR_DATA_SCALE_END = 1d;
-
 
     private final UnaryOperator<Double> scaleWidth = value -> (value - getOffset()) * getWidthFactor();
     private final Function<ReadOnlyDoubleProperty, DoubleBinding> scaleWidthBinding = value -> Bindings.createDoubleBinding(
