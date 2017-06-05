@@ -66,7 +66,7 @@ public class DemoPane extends BorderPane {
         parserSettings.setProcessor(rowProcessor);
         parserSettings.setHeaderExtractionEnabled(true);
         CsvParser parser = new CsvParser(parserSettings);
-        File csv = new File(Thread.currentThread().getContextClassLoader().getResource("countries_population.csv").getFile());
+        File csv = new File(Thread.currentThread().getContextClassLoader().getResource("countries_population_simple.csv").getFile());
         parser.parse(csv);
 
         // initialize test data
