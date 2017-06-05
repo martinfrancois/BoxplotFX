@@ -193,8 +193,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     //    Draws the BoxPlot
     private void adapt() {
-        setOffset();
-        setWidthFactor();
 
         range.startXProperty().set(scaleWidth.apply(boxPlot.getLowerWhisker()));
         range.startYProperty().set((height.get() - TRANSLATE_Y) / 2);
@@ -210,24 +208,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         setupVerticalLineBindings(upperWhiskerLine, boxPlot.upperWhiskerProperty());
         setupVerticalLineBindings(medianLine, boxPlot.medianProperty());
 //        setupVerticalLineBindings(currentObjectLine, currentObject, height);
-    }
-
-    private void setOffset() {
-        if (boxPlot.getMin() < boxPlot.getLowerWhisker()) {
-            offset.set(boxPlot.getMin());
-        } else {
-            offset.set(boxPlot.getLowerWhisker());
-        }
-    }
-
-    private void setWidthFactor() {
-        if (boxPlot.getMax() > boxPlot.getUpperWhisker()) {
-            widthFactor.set(width.get() / (boxPlot.getMax() - offset.get()));
-            scaleRight.setVisible(false);
-        } else {
-            widthFactor.set(width.get() / (boxPlot.getUpperWhisker() - offset.get()));
-            scaleRight.setVisible(true);
-        }
     }
 
     private void setupVerticalLineBindings(Line line, ReadOnlyDoubleProperty value) {
@@ -256,6 +236,30 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private void setupBindings() {
         width.bind(drawingPane.widthProperty());
         height.bind(drawingPane.heightProperty());
+
+        offset.bind(
+                Bindings.createDoubleBinding(
+                        () -> {
+                            if (boxPlot.getMin() < boxPlot.getLowerWhisker()){
+                                return boxPlot.getMin();
+                            }
+                            return boxPlot.getLowerWhisker();
+                        }, boxPlot.minProperty(), boxPlot.lowerWhiskerProperty()
+                )
+        );
+
+        widthFactor.bind(
+                Bindings.createDoubleBinding(
+                        () -> {
+                            if (boxPlot.getMax() > boxPlot.getUpperWhisker()) {
+                                scaleRight.setVisible(false);
+                                return width.get() / (boxPlot.getMax() - offset.get());
+                            }
+                            scaleRight.setVisible(true);
+                            return width.get() / (boxPlot.getUpperWhisker() - offset.get());
+                        }, boxPlot.maxProperty(), boxPlot.upperWhiskerProperty(), width
+                )
+        );
 
         // ---- Scale below -----------------------------
         double translateY = 15;
