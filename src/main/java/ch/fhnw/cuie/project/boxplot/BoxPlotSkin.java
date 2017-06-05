@@ -21,6 +21,7 @@ import java.util.HashMap;
  * @author Dieter Holz
  */
 public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
+    private static final String DECIMALS = "0";
     private static final double STROKE_WIDTH = 2;
     private final ObservableMap<T, Double> outliers;
     private final BoxPlot<T> boxPlot;
@@ -180,7 +181,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void setOffset() {
-        if(boxPlot.getMin() < boxPlot.getLowerWhisker()) {
+        if (boxPlot.getMin() < boxPlot.getLowerWhisker()) {
             offset.set(boxPlot.getMin());
         } else {
             offset.set(boxPlot.getLowerWhisker());
@@ -188,7 +189,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void setWidthFactor() {
-        if(boxPlot.getMax() > boxPlot.getUpperWhisker()) {
+        if (boxPlot.getMax() > boxPlot.getUpperWhisker()) {
             widthFactor.set(width.get() / (boxPlot.getMax() - offset.get()));
         } else {
             widthFactor.set(width.get() / (boxPlot.getUpperWhisker() - offset.get()));
@@ -222,8 +223,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         drawLabel(medianLabel, boxPlot.medianProperty());
     }
 
-    private void drawLabel(Label label, ReadOnlyDoubleProperty element){
-        label.textProperty().bind(element.asString());
+    private void drawLabel(Label label, ReadOnlyDoubleProperty element) {
+        label.textProperty().bind(element.asString("%." + DECIMALS + "f"));
         label.translateXProperty().bind(element.subtract(offset).multiply(widthFactor).subtract(label.widthProperty().divide(2)));
         label.translateYProperty().bind(height.subtract(15));
     }
