@@ -17,6 +17,7 @@ import java.util.HashMap;
  * @author Dieter Holz
  */
 public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
+    private static final double STROKE_WIDTH = 2;
     private final ObservableMap<T, Double> outliers;
     private final BoxPlot<T> boxPlot;
     private final HashMap<T, Circle> circles = new HashMap<>();
@@ -55,8 +56,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         initializeSelf();
         initializeParts();
         layoutParts();
-//        setupAnimations();
-//        setupEventHandlers();
+        setupAnimations();
+        setupEventHandlers();
         setupBindings();
         initOutliers();
         setupValueChangeListeners();
@@ -88,7 +89,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private void initializeParts() {
         drawingPane.getStyleClass().add("drawingPane");
-        drawingPane.setPrefSize(600, 100);
+        drawingPane.setPrefSize(600, 50);
 
         range = new Line();
         quartiles = new Rectangle();
@@ -99,11 +100,14 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         range.setStroke(Color.rgb(138,0,138));
         quartiles.setFill(Color.rgb(227,227,227));
         quartiles.setStroke(Color.rgb(0,0,138));
-        medianLine.setStrokeWidth(10);
+
+        range.setStrokeWidth(STROKE_WIDTH);
+        quartiles.setStrokeWidth(STROKE_WIDTH);
         medianLine.setStroke(Color.rgb(0,99,0));
-        lowerWhiskerLine.setStrokeWidth(5);
+        lowerWhiskerLine.setStrokeWidth(STROKE_WIDTH);
         lowerWhiskerLine.setStroke(Color.rgb(138,0,138));
-        upperWhiskerLine.setStrokeWidth(5);
+        upperWhiskerLine.setStrokeWidth(STROKE_WIDTH);
+        medianLine.setStrokeWidth(STROKE_WIDTH);
         upperWhiskerLine.setStroke(Color.rgb(138,0,138));
     }
 
@@ -130,11 +134,11 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         });
 
         drawingPane.heightProperty().addListener((observable, oldValue, newValue) -> {
-            adapt(newValue.doubleValue());
+            adapt(drawingPane.getHeight());
         });
 
         drawingPane.widthProperty().addListener((observable, oldValue, newValue) -> {
-            adapt(height.get());
+            adapt(drawingPane.getHeight());
         });
     }
 
