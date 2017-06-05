@@ -1,21 +1,17 @@
 package ch.fhnw.cuie.project.boxplot;
 
-import java.util.regex.Pattern;
-
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.collections.ObservableMap;
 import javafx.css.PseudoClass;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 
+import java.util.regex.Pattern;
+
 /**
  * @author Dieter Holz
  */
-public class BusinessControl extends Control {
+public class BusinessControl<T> extends Control {
     static final String FORMATTED_INTEGER_PATTERN = "%,d";
 
     private static final String INTEGER_REGEX    = "[+-]?[\\d']{1,14}";
@@ -45,8 +41,10 @@ public class BusinessControl extends Control {
     private final StringProperty  errorMessage = new SimpleStringProperty();
 
     private final StringProperty userFacingText = new SimpleStringProperty();
+    private ObservableMap<T, Double> map;
 
-    public BusinessControl() {
+    public BusinessControl(ObservableMap<T, Double> map) {
+        this.map = map;
         initializeSelf();
         addValueChangeListener();
     }
@@ -199,5 +197,7 @@ public class BusinessControl extends Control {
         return invalid.get();
     }
 
-
+    public ObservableMap<T, Double> getMap() {
+        return map;
+    }
 }

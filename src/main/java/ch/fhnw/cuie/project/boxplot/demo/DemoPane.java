@@ -21,7 +21,7 @@ import java.util.List;
  * @author Dieter Holz
  */
 public class DemoPane extends BorderPane {
-    private BusinessControl boxPlotControl;
+    private BusinessControl<Country> businessControl;
 
     private ObservableList<Country> countries = FXCollections.observableArrayList();
 
@@ -32,6 +32,7 @@ public class DemoPane extends BorderPane {
     public DemoPane() {
         setupValueChangeListeners();
         initCountries();
+
         initializeControls();
         layoutControls();
         setupBindings();
@@ -40,7 +41,7 @@ public class DemoPane extends BorderPane {
     private void initializeControls() {
         setPadding(new Insets(10));
 
-        boxPlotControl = new BusinessControl();
+        businessControl = new BusinessControl(map);
 
         TableColumn countryCol = new TableColumn("Country");
         TableColumn populationCol = new TableColumn("Population");
@@ -79,7 +80,7 @@ public class DemoPane extends BorderPane {
     }
 
     private void layoutControls() {
-        setCenter(boxPlotControl);
+        setCenter(businessControl);
         setRight(table);
     }
 
