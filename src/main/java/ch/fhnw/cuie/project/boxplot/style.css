@@ -75,5 +75,5 @@
 .boxPlotControl {
     -fx-pref-width: 600;
     -fx-pref-height: 200;
-
+    -fx-padding: 20 40;
 }
