@@ -68,4 +68,6 @@
     -fx-background-insets: 4;
 }
 
-
+.outliers {
+    -fx-cursor: hand;
+}

@@ -1,12 +1,12 @@
 package ch.fhnw.cuie.project.boxplot;
 
-import javafx.beans.property.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -25,16 +25,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final HashMap<T, Circle> circles = new HashMap<>();
 
     private Pane drawingPane;
-
-    // ----- Properties --------------------------------
-    private static final DoubleProperty lowerWhisker = new SimpleDoubleProperty();
-    private static final DoubleProperty upperWhisker = new SimpleDoubleProperty();
-    private static final DoubleProperty median = new SimpleDoubleProperty();
-    private static final DoubleProperty lowerQuartile = new SimpleDoubleProperty();
-    private static final DoubleProperty upperQuartile = new SimpleDoubleProperty();
-    private static final DoubleProperty minElement = new SimpleDoubleProperty();
-    private static final DoubleProperty maxElement = new SimpleDoubleProperty();
-    private static final DoubleProperty currentObject = new SimpleDoubleProperty();
 
     private static final String FONTS_CSS = "fonts.css";
     private static final String STYLE_CSS = "style.css";
@@ -81,19 +71,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private void initializeSelf() {
         // ----- Initialize Properties ----------------------
         drawingPane = new Pane();
-
-        minElement.set(-15);
-        //    Computes the offset, from 0 to the minElement. This is needed for scaling
-        offset = minElement.get() * -1;
-
-        lowerWhisker.set(-13 + offset);
-        upperWhisker.set(4 + offset);
-        median.set(-2 + offset);
-        lowerQuartile.set(-7 + offset);
-        upperQuartile.set(1 + offset);
-        maxElement.set(5 + offset);
-        currentObject.set(-4 + offset);
-        minElement.set(0);
 
         // ----- CSS ----------------------------------------
         String fonts = getClass().getResource(FONTS_CSS).toExternalForm();
@@ -176,16 +153,16 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     //    Draws the BoxPlot
     private void adapt(double height) {
         double translateY = 20;
-        widthFactor.set(width.get() / (maxElement.get() - minElement.get()));
+        widthFactor.set(width.get() / (boxPlot.getMax() - boxPlot.getMin()));
 
-        range.startXProperty().set(lowerWhisker.get() * widthFactor.get());
+        range.startXProperty().set(boxPlot.getLowerWhisker() * widthFactor.get());
         range.startYProperty().set((height - translateY) / 2);
-        range.endXProperty().set(upperWhisker.get() * widthFactor.get());
+        range.endXProperty().set(boxPlot.getUpperWhisker() * widthFactor.get());
         range.endYProperty().set((height - translateY) / 2);
 
-        quartiles.xProperty().set(lowerQuartile.get() * widthFactor.get());
+        quartiles.xProperty().set(boxPlot.getQ1() * widthFactor.get());
         quartiles.yProperty().set(0);
-        quartiles.widthProperty().set((upperQuartile.get() - lowerQuartile.get()) * widthFactor.get());
+        quartiles.widthProperty().set((boxPlot.getQ3() - boxPlot.getQ1()) * widthFactor.get());
         quartiles.heightProperty().set(height - translateY);
 
         drawLine(lowerWhiskerLine, lowerWhisker, height);
@@ -228,8 +205,10 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void drawOutlier(T element, double value) {
-        // TODO: Do some magic to create the outlier and attach listener to setOnAction to change currently selected object
+        // TODO: Do some magic to create the outlier
         Circle outlier = new Circle();
+        outlier.getStyleClass().add("outliers");
+        outlier.setOnMouseClicked(event -> getSkinnable().setCurrentElement(element));
         circles.put(element, outlier);
     }
 
@@ -243,91 +222,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                 .forEach(entry -> {
                     drawOutlier(entry.getKey(), entry.getValue());
                 });
-    }
-
-    // ------- Properties -------------------------------------------
-    public static double getLowerWhisker() {
-        return lowerWhisker.get();
-    }
-
-    public static DoubleProperty lowerWhiskerProperty() {
-        return lowerWhisker;
-    }
-
-    public static void setLowerWhisker(double lowerWhisker) {
-        BoxPlotSkin.lowerWhisker.set(lowerWhisker);
-    }
-
-    public static double getUpperWhisker() {
-        return upperWhisker.get();
-    }
-
-    public static DoubleProperty upperWhiskerProperty() {
-        return upperWhisker;
-    }
-
-    public static void setUpperWhisker(double upperWhisker) {
-        BoxPlotSkin.upperWhisker.set(upperWhisker);
-    }
-
-    public static double getMedian() {
-        return median.get();
-    }
-
-    public static DoubleProperty medianProperty() {
-        return median;
-    }
-
-    public static void setMedian(double median) {
-        BoxPlotSkin.median.set(median);
-    }
-
-    public static double getLowerQuartile() {
-        return lowerQuartile.get();
-    }
-
-    public static DoubleProperty lowerQuartilProperty() {
-        return lowerQuartile;
-    }
-
-    public static void setLowerQuartile(double lowerQuartile) {
-        BoxPlotSkin.lowerQuartile.set(lowerQuartile);
-    }
-
-    public static double getUpperQuartile() {
-        return upperQuartile.get();
-    }
-
-    public static DoubleProperty upperQuartilProperty() {
-        return upperQuartile;
-    }
-
-    public static void setUpperQuartile(double upperQuartile) {
-        BoxPlotSkin.upperQuartile.set(upperQuartile);
-    }
-
-    public static double getMinElement() {
-        return minElement.get();
-    }
-
-    public static DoubleProperty minElementProperty() {
-        return minElement;
-    }
-
-    public static void setMinElement(double minElement) {
-        BoxPlotSkin.minElement.set(minElement);
-    }
-
-    public static double getMaxElement() {
-        return maxElement.get();
-    }
-
-    public static DoubleProperty maxElementProperty() {
-        return maxElement;
-    }
-
-    public static void setMaxElement(double maxElement) {
-        BoxPlotSkin.maxElement.set(maxElement);
     }
 
 }

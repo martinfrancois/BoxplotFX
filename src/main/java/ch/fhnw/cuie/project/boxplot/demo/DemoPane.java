@@ -1,91 +1,103 @@
 package ch.fhnw.cuie.project.boxplot.demo;
 
-import ch.fhnw.cuie.project.boxplot.BoxPlotControl;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-
 import ch.fhnw.cuie.project.boxplot.BusinessControl;
+import com.univocity.parsers.common.processor.RowListProcessor;
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+import javafx.geometry.Insets;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * @author Dieter Holz
  */
 public class DemoPane extends BorderPane {
-    private BusinessControl boxPlotControl;
+    private BusinessControl<Country> businessControl;
 
-    private Slider ageSlider;
+    private ObservableList<Country> countries = FXCollections.observableArrayList();
 
-    private CheckBox  readOnlyBox;
-    private CheckBox  mandatoryBox;
-    private TextField labelField;
+    private ObservableMap<Country, Double> map = FXCollections.observableHashMap();
 
-    // the value Property that needs to be set by the BusinessControl
-    private final IntegerProperty age      = new SimpleIntegerProperty(42);
-    private final StringProperty  ageLabel = new SimpleStringProperty("Age");
-    private final BooleanProperty readOnly = new SimpleBooleanProperty(false);
-    private final BooleanProperty mandatory = new SimpleBooleanProperty(true);
+    private TableView<Country> table = new TableView<>(countries);
 
     public DemoPane() {
+        setupValueChangeListeners();
+        initCountries();
+
         initializeControls();
         layoutControls();
-        setupValueChangeListeners();
         setupBindings();
     }
 
     private void initializeControls() {
         setPadding(new Insets(10));
 
-        boxPlotControl = new BusinessControl();
+        businessControl = new BusinessControl(map);
 
-        ageSlider = new Slider(0, 130, 0);
+        TableColumn countryCol = new TableColumn("Country");
+        TableColumn populationCol = new TableColumn("Population");
 
-        readOnlyBox = new CheckBox();
-        readOnlyBox.setSelected(false);
+        countryCol.setCellValueFactory(
+                new PropertyValueFactory<Country, String>("name")
+        );
 
-        mandatoryBox = new CheckBox();
-        mandatoryBox.setSelected(true);
+        populationCol.setCellValueFactory(
+                new PropertyValueFactory<Country, String>("population")
+        );
 
-        labelField = new TextField();
+        table.getColumns().addAll(countryCol, populationCol);
 
+    }
+
+    private void initCountries() {
+        // setup csvparser
+        RowListProcessor rowProcessor = new RowListProcessor();
+        CsvParserSettings parserSettings = new CsvParserSettings();
+        parserSettings.setLineSeparatorDetectionEnabled(true);
+        parserSettings.setProcessor(rowProcessor);
+        parserSettings.setHeaderExtractionEnabled(true);
+        CsvParser parser = new CsvParser(parserSettings);
+        File csv = new File(Thread.currentThread().getContextClassLoader().getResource("countries_population.csv").getFile());
+        parser.parse(csv);
+
+        // initialize test data
+        List<String[]> rows = rowProcessor.getRows();
+        countries.clear();
+        rows.forEach(strings ->
+                countries.add(
+                        new Country(strings[0], Double.valueOf(strings[1]))
+                )
+        );
     }
 
     private void layoutControls() {
-        setCenter(boxPlotControl);
-        VBox box = new VBox(10, new Label("Business Control Properties"),
-                            new Label("Age"), ageSlider,
-                            new Label("readOnly"), readOnlyBox,
-                            new Label("mandatory"), mandatoryBox,
-                            new Label("Label"), labelField);
-
-        box.setPadding(new Insets(10));
-        box.setSpacing(10);
-        setRight(box);
+        setCenter(businessControl);
+        setRight(table);
     }
 
     private void setupValueChangeListeners() {
+        // setup listener to keep the map in sync with the observablelist
+        countries.addListener((ListChangeListener<? super Country>) change -> {
+            while (change.next()) {
+                if (!(change.wasPermutated() || change.wasUpdated())) {
+                    change.getRemoved().forEach(country -> map.remove(country, country.getPopulation()));
+                }
+                change.getAddedSubList().forEach(country -> map.put(country, country.getPopulation()));
+            }
+        });
     }
 
     private void setupBindings() {
-        ageSlider.valueProperty().bindBidirectional(age);
-        labelField.textProperty().bindBidirectional(ageLabel);
-        readOnlyBox.selectedProperty().bindBidirectional(readOnly);
-        mandatoryBox.selectedProperty().bindBidirectional(mandatory);
 
-        boxPlotControl.valueProperty().bindBidirectional(age);
-        boxPlotControl.labelProperty().bind(ageLabel);
-        boxPlotControl.readOnlyProperty().bind(readOnly);
-        boxPlotControl.mandatoryProperty().bind(mandatory);
     }
 
 }

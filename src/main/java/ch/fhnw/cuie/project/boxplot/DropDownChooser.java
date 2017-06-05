@@ -1,19 +1,15 @@
 package ch.fhnw.cuie.project.boxplot;
 
-import javafx.collections.FXCollections;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 /**
  * @author Dieter Holz
  */
-public class DropDownChooser extends VBox {
+public class DropDownChooser<T> extends VBox {
     private static final String FONTS_CSS = "fonts.css";
     private static final String STYLE_CSS = "dropDownChooser.css";
 
-    private final BusinessControl businessControl;
-
-    private Label tobeReplacedLabel;
+    private final BusinessControl<T> businessControl;
 
     public DropDownChooser(BusinessControl businessControl) {
         this.businessControl = businessControl;
@@ -34,11 +30,11 @@ public class DropDownChooser extends VBox {
     }
 
     private void initializeParts() {
-        tobeReplacedLabel = new Label("to be replaced");
+
     }
 
     private void layoutParts() {
-        getChildren().addAll(new BoxPlotControl<String>(FXCollections.observableHashMap()));
+        getChildren().addAll(new BoxPlotControl<>(businessControl.getMap()));
     }
 
     private void setupBindings() {
