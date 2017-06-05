@@ -71,3 +71,9 @@
 .outliers {
     -fx-cursor: hand;
 }
+
+.boxPlotControl {
+    -fx-pref-width: 600;
+    -fx-pref-height: 200;
+
+}
