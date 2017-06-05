@@ -64,7 +64,9 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     public static final double TRANSLATE_Y = 20;
     public static final double FACTOR_BOXPLOT_START = 0d;
     public static final double FACTOR_BOXPLOT_END = 0.75d;
-    public static final double FACTOR_DATA_SCALE_END = 1d;
+    public static final double FACTOR_DATA_POINTS_END = 0.85d;
+    public static final double FACTOR_DATA_SCALE_END = 0.98d;
+    public static final double FACTOR_DATA_SCALE_LABELS_END = 1d;
 
     private final UnaryOperator<Double> scaleWidth = value -> (value - getOffset()) * getWidthFactor();
     private final Function<ReadOnlyDoubleProperty, DoubleBinding> scaleWidthBinding = value -> Bindings.createDoubleBinding(
@@ -165,7 +167,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         lowerWhiskerLine.setStrokeWidth(STROKE_WIDTH);
         lowerWhiskerLine.setStroke(Color.rgb(138, 0, 138));
         upperWhiskerLine.setStrokeWidth(STROKE_WIDTH);
-        medianLine.setStrokeWidth(STROKE_WIDTH * 2);
+        medianLine.setStrokeWidth(STROKE_WIDTH);
         upperWhiskerLine.setStroke(Color.rgb(138, 0, 138));
         currentObjectLine.setStrokeWidth(STROKE_WIDTH);
 
@@ -266,16 +268,16 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         scaleRight.startYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_END));
         scaleRight.endYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_END));
 
-        drawLabel(minimum, boxPlot.minProperty());
-        drawLabel(maximum, boxPlot.maxProperty());
-        drawLabel(lowerWhiskerLabel, boxPlot.lowerWhiskerProperty());
-        drawLabel(upperWhiskerLabel, boxPlot.upperWhiskerProperty());
-        drawLabel(lowerQuartileLabel, boxPlot.q1Property());
-        drawLabel(upperQuartileLabel, boxPlot.q3Property());
-        drawLabel(medianLabel, boxPlot.medianProperty());
+        drawLabel(minimum, boxPlot.minProperty(), false);
+        drawLabel(maximum, boxPlot.maxProperty(), false);
+        drawLabel(lowerWhiskerLabel, boxPlot.lowerWhiskerProperty(), true);
+        drawLabel(upperWhiskerLabel, boxPlot.upperWhiskerProperty(), true);
+        drawLabel(lowerQuartileLabel, boxPlot.q1Property(), true);
+        drawLabel(upperQuartileLabel, boxPlot.q3Property(), true);
+        drawLabel(medianLabel, boxPlot.medianProperty(), true);
     }
 
-    private void drawLabel(Label label, ReadOnlyDoubleProperty value) {
+    private void drawLabel(Label label, ReadOnlyDoubleProperty value, boolean isDataPoint) {
         label.textProperty().bind(value.asString(LABEL_FORMATTING));
         label.translateXProperty().bind(
                 Bindings.createDoubleBinding(
@@ -283,18 +285,18 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                         offset, widthFactor, value, label.widthProperty()
                 )
         );
-        label.translateYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_END));
+        if (isDataPoint) {
+            label.translateYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_POINTS_END));
+        }else{
+            label.translateYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_LABELS_END));
+        }
     }
 
     private void drawOutlier(T element, double value) {
-        // TODO: Do some magic to create the outlier
         System.out.println("Create Outlier: " + element.toString() + " with: " + value);
         Circle outlier = new Circle();
-        outlier.centerYProperty().bind(height.subtract(TRANSLATE_Y).divide(2));
-        outlier.centerXProperty().bind(Bindings.createDoubleBinding(() -> {
-            System.out.println("Offset: " + offset.get() + " WidthFactor: " + widthFactor.get());
-            return (value-offset.get()) * widthFactor.get();
-        },offset, widthFactor));
+        outlier.centerYProperty().bind(scaleHeightBinding.apply(FACTOR_BOXPLOT_END/2));
+        outlier.centerXProperty().bind(Bindings.createDoubleBinding(() -> (value-offset.get()) * widthFactor.get(),offset, widthFactor));
         outlier.setRadius(10);
         outlier.getStyleClass().add("outliers");
         outlier.setOnMouseClicked(event -> getSkinnable().setCurrentElement(element));
