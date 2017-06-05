@@ -20,7 +20,6 @@ import java.util.HashMap;
  * @author Dieter Holz
  */
 public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
-    private double offset;
     private static final double STROKE_WIDTH = 2;
     private final ObservableMap<T, Double> outliers;
     private final BoxPlot<T> boxPlot;
@@ -54,6 +53,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final DoubleProperty width = new SimpleDoubleProperty();
     private final DoubleProperty height = new SimpleDoubleProperty();
     private final DoubleProperty widthFactor = new SimpleDoubleProperty();
+    private final DoubleProperty offset = new SimpleDoubleProperty();
 
     public BoxPlotSkin(BoxPlotControl control) {
         super(control);
@@ -144,43 +144,60 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         });
 
         boxPlot.getData().addListener((InvalidationListener) observable -> {
-            adapt(drawingPane.getHeight());
+            adapt();
         });
 
-        drawingPane.heightProperty().addListener((observable, oldValue, newValue) -> {
-            adapt(drawingPane.getHeight());
+        drawingPane.heightProperty().addListener(observable -> {
+            adapt();
         });
 
-        drawingPane.widthProperty().addListener((observable, oldValue, newValue) -> {
-            adapt(drawingPane.getHeight());
+        drawingPane.widthProperty().addListener(observable -> {
+            adapt();
         });
     }
 
     //    Draws the BoxPlot
-    private void adapt(double height) {
+    private void adapt() {
+        setOffset();
+        setWidthFactor();
         double translateY = 20;
-        widthFactor.set(width.get() / (boxPlot.getMax() - boxPlot.getMin()));
 
-        range.startXProperty().set(boxPlot.getLowerWhisker() * widthFactor.get());
-        range.startYProperty().set((height - translateY) / 2);
-        range.endXProperty().set(boxPlot.getUpperWhisker() * widthFactor.get());
-        range.endYProperty().set((height - translateY) / 2);
+        range.startXProperty().set((boxPlot.getLowerWhisker() - offset.get()) * widthFactor.get());
+        range.startYProperty().set((height.get() - translateY) / 2);
+        range.endXProperty().set((boxPlot.getUpperWhisker() - offset.get()) * widthFactor.get());
+        range.endYProperty().set((height.get() - translateY) / 2);
 
-        quartiles.xProperty().set(boxPlot.getQ1() * widthFactor.get());
+        quartiles.xProperty().set((boxPlot.getQ1() - offset.get()) * widthFactor.get());
         quartiles.yProperty().set(0);
         quartiles.widthProperty().set((boxPlot.getQ3() - boxPlot.getQ1()) * widthFactor.get());
-        quartiles.heightProperty().set(height - translateY);
+        quartiles.heightProperty().set(height.get() - translateY);
 
-        drawLine(lowerWhiskerLine, boxPlot.lowerWhiskerProperty(), height);
-        drawLine(upperWhiskerLine, boxPlot.upperWhiskerProperty(), height);
-        drawLine(medianLine, boxPlot.medianProperty(), height);
+        drawLine(lowerWhiskerLine, boxPlot.lowerWhiskerProperty(), height.get());
+        drawLine(upperWhiskerLine, boxPlot.upperWhiskerProperty(), height.get());
+        drawLine(medianLine, boxPlot.medianProperty(), height.get());
 //        drawLine(currentObjectLine, currentObject, height);
     }
 
+    private void setOffset() {
+        if(boxPlot.getMin() < boxPlot.getLowerWhisker()) {
+            offset.set(boxPlot.getMin());
+        } else {
+            offset.set(boxPlot.getLowerWhisker());
+        }
+    }
+
+    private void setWidthFactor() {
+        if(boxPlot.getMax() > boxPlot.getUpperWhisker()) {
+            widthFactor.set(width.get() / (boxPlot.getMax() - offset.get()));
+        } else {
+            widthFactor.set(width.get() / (boxPlot.getUpperWhisker() - offset.get()));
+        }
+    }
+
     private void drawLine(Line line, ReadOnlyDoubleProperty element, double height) {
-        line.startXProperty().set(element.get() * widthFactor.get());
+        line.startXProperty().set((element.get() - offset.get()) * widthFactor.get());
         line.startYProperty().set(0);
-        line.endXProperty().set(element.get() * widthFactor.get());
+        line.endXProperty().set((element.get() - offset.get()) * widthFactor.get());
         line.endYProperty().set(height - 20);
     }
 
@@ -190,9 +207,9 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
         // ---- Scale below -----------------------------
         double translateY = 15;
-        scale.startXProperty().bind(boxPlot.minProperty().multiply(widthFactor));
+        scale.startXProperty().bind(boxPlot.minProperty().subtract(offset).multiply(widthFactor));
         scale.startYProperty().bind(height.subtract(translateY));
-        scale.endXProperty().bind(boxPlot.maxProperty().multiply(widthFactor));
+        scale.endXProperty().bind(boxPlot.maxProperty().subtract(offset).multiply(widthFactor));
         scale.endYProperty().bind(height.subtract(translateY));
 
         drawLabel(minimum, boxPlot.minProperty());
@@ -205,8 +222,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void drawLabel(Label label, ReadOnlyDoubleProperty element){
-        label.textProperty().bind(element.subtract(offset).asString());
-        label.translateXProperty().bind(element.multiply(widthFactor).subtract(label.widthProperty().divide(2)));
+        label.textProperty().bind(element.asString());
+        label.translateXProperty().bind(element.subtract(offset).multiply(widthFactor).subtract(label.widthProperty().divide(2)));
         label.translateYProperty().bind(height.subtract(15));
     }
 
