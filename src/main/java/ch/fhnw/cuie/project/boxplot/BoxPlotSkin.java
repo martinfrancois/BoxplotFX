@@ -63,8 +63,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final DoubleProperty offset = new SimpleDoubleProperty();
     public static final double FACTOR_BOXPLOT_START = 0d;
     public static final double FACTOR_BOXPLOT_END = 0.75d;
-    public static final double FACTOR_DATA_POINTS_END = 0.85d;
-    public static final double FACTOR_DATA_SCALE_END = 0.98d;
+    public static final double FACTOR_DATA_POINTS_END = 0.82d;
+    public static final double FACTOR_DATA_SCALE_END = 0.97d;
     public static final double FACTOR_DATA_SCALE_LABELS_END = 1d;
 
     private final UnaryOperator<Double> scaleWidth = value -> (value - getOffset()) * getWidthFactor();
