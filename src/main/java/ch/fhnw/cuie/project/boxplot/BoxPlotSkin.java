@@ -296,7 +296,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         Circle outlier = new Circle();
         outlier.centerYProperty().bind(scaleHeightBinding.apply(FACTOR_BOXPLOT_END/2));
         outlier.centerXProperty().bind(Bindings.createDoubleBinding(() -> (value-offset.get()) * widthFactor.get(),offset, widthFactor));
-        outlier.setRadius(10);
+        outlier.setRadius(5);
         outlier.getStyleClass().add("outliers");
         outlier.setOnMouseClicked(event -> getSkinnable().setCurrentElement(element));
         circles.put(element, outlier);
