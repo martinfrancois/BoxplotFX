@@ -12,7 +12,9 @@ import javafx.geometry.Insets;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
+import javafx.util.converter.NumberStringConverter;
 
 import java.io.File;
 import java.util.List;
@@ -49,12 +51,15 @@ public class DemoPane extends BorderPane {
         countryCol.setCellValueFactory(
                 new PropertyValueFactory<Country, String>("name")
         );
+        countryCol.setCellFactory(TextFieldTableCell.forTableColumn());
 
         populationCol.setCellValueFactory(
                 new PropertyValueFactory<Country, String>("population")
         );
+        populationCol.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
 
         table.getColumns().addAll(countryCol, populationCol);
+        table.setEditable(true);
 
     }
 
