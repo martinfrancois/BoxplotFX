@@ -68,7 +68,10 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private final UnaryOperator<Double> scaleWidth = value -> (value - getOffset()) * getWidthFactor();
     private final Function<ReadOnlyDoubleProperty, DoubleBinding> scaleWidthBinding = value -> Bindings.createDoubleBinding(
-            () -> scaleWidth.apply(value.get()), offset, widthFactor, value
+            () -> {
+                System.out.println("scaleWidthBinding: " + value.get());
+                return scaleWidth.apply(value.get());
+            }, offset, widthFactor, value
     );
 
     private final UnaryOperator<Double> scaleHeight = factor -> (height.get() * factor);
@@ -88,6 +91,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         setupBindings();
         initOutliers();
         setupValueChangeListeners();
+
     }
 
     private void initializeSelf() {
@@ -128,6 +132,14 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void layoutParts() {
+        drawingPane.getChildren().addAll(
+                range,
+                quartiles,
+                lowerWhiskerLine,
+                upperWhiskerLine,
+                medianLine
+//                currentObjectLine
+        );
         drawingPane.getChildren().addAll(
                 scaleLeft,
                 dataScale,
