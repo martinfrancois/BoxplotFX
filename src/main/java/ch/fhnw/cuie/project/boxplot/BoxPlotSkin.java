@@ -42,12 +42,11 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private Line upperWhiskerLine;
     private Line medianLine;
     private Line currentObjectLine;
+
+    // ----- Scale below -------------------------------
     private Line scaleLeft;
     private Line dataScale;
     private Line scaleRight;
-
-    // ----- Scale below -------------------------------
-    private Line scale;
     private Label minimum;
     private Label maximum;
     private Label lowerWhiskerLabel;
@@ -83,7 +82,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         super(control);
         boxPlot = getSkinnable().getBoxPlot();
         outliers = boxPlot.getOutliers();
-
         initializeSelf();
         initializeParts();
         layoutParts();
@@ -117,22 +115,10 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         medianLine = new Line();
         currentObjectLine = new Line();
 
-        range.setStroke(Color.rgb(138, 0, 138));
-        quartiles.setFill(Color.rgb(227, 227, 227));
-        quartiles.setStroke(Color.rgb(0, 0, 138));
-
-        range.setStrokeWidth(STROKE_WIDTH);
-        quartiles.setStrokeWidth(STROKE_WIDTH);
-        medianLine.setStroke(Color.rgb(0, 99, 0));
-        lowerWhiskerLine.setStrokeWidth(STROKE_WIDTH);
-        lowerWhiskerLine.setStroke(Color.rgb(138, 0, 138));
-        upperWhiskerLine.setStrokeWidth(STROKE_WIDTH);
-        medianLine.setStrokeWidth(STROKE_WIDTH * 2);
-        upperWhiskerLine.setStroke(Color.rgb(138, 0, 138));
-        currentObjectLine.setStrokeWidth(STROKE_WIDTH);
-
         // ---- Scale below -----------------------------
-        scale = new Line();
+        scaleLeft = new Line();
+        dataScale = new Line();
+        scaleRight = new Line();
         minimum = new Label();
         maximum = new Label();
         lowerWhiskerLabel = new Label();
@@ -141,22 +127,9 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         upperQuartileLabel = new Label();
         medianLabel = new Label();
         currentObjectLabel = new Label();
-
-        dataScale.setStroke(Color.rgb(255, 200, 0));
-        dataScale.setStrokeWidth(STROKE_WIDTH);
     }
 
     private void layoutParts() {
-        drawingPane.getChildren().addAll(range, quartiles, lowerWhiskerLine, upperWhiskerLine, medianLine, currentObjectLine);
-        drawingPane.getChildren().addAll(scale, minimum, maximum, lowerWhiskerLabel, upperWhiskerLabel, lowerQuartileLabel, upperQuartileLabel, medianLabel, currentObjectLabel);
-        drawingPane.getChildren().addAll(
-                range,
-                quartiles,
-                lowerWhiskerLine,
-                upperWhiskerLine,
-                medianLine
-//                currentObjectLine
-        );
         drawingPane.getChildren().addAll(
                 scaleLeft,
                 dataScale,
@@ -171,6 +144,24 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 //                currentObjectLabel
         );
         getChildren().add(drawingPane);
+
+        range.setStroke(Color.rgb(138, 0, 138));
+        quartiles.setFill(Color.rgb(227, 227, 227));
+        quartiles.setStroke(Color.rgb(0, 0, 138));
+
+        range.setStrokeWidth(STROKE_WIDTH);
+        quartiles.setStrokeWidth(STROKE_WIDTH);
+        medianLine.setStroke(Color.rgb(0, 99, 0));
+        lowerWhiskerLine.setStrokeWidth(STROKE_WIDTH);
+        lowerWhiskerLine.setStroke(Color.rgb(138, 0, 138));
+        upperWhiskerLine.setStrokeWidth(STROKE_WIDTH);
+        medianLine.setStrokeWidth(STROKE_WIDTH * 2);
+        upperWhiskerLine.setStroke(Color.rgb(138, 0, 138));
+        currentObjectLine.setStrokeWidth(STROKE_WIDTH);
+
+        dataScale.setStroke(Color.rgb(255, 200, 0));
+        dataScale.setStrokeWidth(STROKE_WIDTH);
+
     }
 
     private void setupAnimations() {
@@ -250,11 +241,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 //        setupVerticalLineBindings(currentObjectLine, currentObject, height);
 
         // ---- Scale below -----------------------------
-        scale.startXProperty().bind(scaleWidthBinding.apply(boxPlot.minProperty()));
-        scale.endXProperty().bind(scaleWidthBinding.apply(boxPlot.maxProperty()));
-        scale.startYProperty().bind(scaleHeightBinding.apply(FACTOR_SCALE_END));
-        scale.endYProperty().bind(scaleHeightBinding.apply(FACTOR_SCALE_END));
-
         dataScale.startXProperty().bind(scaleWidthBinding.apply(boxPlot.minProperty()));
         dataScale.endXProperty().bind(scaleWidthBinding.apply(boxPlot.maxProperty()));
         dataScale.startYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_END));
