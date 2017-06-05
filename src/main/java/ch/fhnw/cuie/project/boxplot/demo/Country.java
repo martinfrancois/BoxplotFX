@@ -1,5 +1,10 @@
 package ch.fhnw.cuie.project.boxplot.demo;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.util.Objects;
 
 /**
@@ -7,20 +12,36 @@ import java.util.Objects;
  */
 public class Country {
 
-    private final String name;
-    private final double population;
+    private final StringProperty name = new SimpleStringProperty();
+    private final DoubleProperty population = new SimpleDoubleProperty();
 
     public Country(String name, double population){
-        this.name = name;
-        this.population = population;
+        setName(name);
+        setPopulation(population);
     }
 
     public String getName() {
+        return name.get();
+    }
+
+    public StringProperty nameProperty() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name.set(name);
+    }
+
     public double getPopulation() {
+        return population.get();
+    }
+
+    public DoubleProperty populationProperty() {
         return population;
+    }
+
+    public void setPopulation(double population) {
+        this.population.set(population);
     }
 
     @Override
@@ -28,8 +49,8 @@ public class Country {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Country country = (Country) o;
-        return Double.compare(country.population, population) == 0 &&
-                Objects.equals(name, country.name);
+        return Objects.equals(name, country.name) &&
+                Objects.equals(population, country.population);
     }
 
     @Override

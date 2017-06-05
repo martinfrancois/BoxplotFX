@@ -52,11 +52,32 @@ public class DemoPane extends BorderPane {
                 new PropertyValueFactory<Country, String>("name")
         );
         countryCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        countryCol.setOnEditCommit(
+                t -> {
+                    TableColumn.CellEditEvent<Country, String> cellEvent = (TableColumn.CellEditEvent<Country, String>) t;
+                    Country changedCountry = cellEvent.getTableView().getItems().get(
+                            cellEvent.getTablePosition().getRow());
+                    String changedName = cellEvent.getNewValue();
+                    changedCountry.setName(changedName);
+                    map.put(changedCountry, changedCountry.getPopulation());
+                }
+        );
 
         populationCol.setCellValueFactory(
                 new PropertyValueFactory<Country, String>("population")
         );
         populationCol.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+        populationCol.setOnEditCommit(
+                t -> {
+                    TableColumn.CellEditEvent<Country, Number> cellEvent = (TableColumn.CellEditEvent<Country, Number>) t;
+                    Country changedCountry = cellEvent.getTableView().getItems().get(
+                            cellEvent.getTablePosition().getRow());
+                    double changedPopulation = cellEvent.getNewValue().doubleValue();
+                    changedCountry.setPopulation(changedPopulation);
+                    map.put(changedCountry, changedPopulation);
+
+                }
+        );
 
         table.getColumns().addAll(countryCol, populationCol);
         table.setEditable(true);
@@ -94,9 +115,15 @@ public class DemoPane extends BorderPane {
         countries.addListener((ListChangeListener<? super Country>) change -> {
             while (change.next()) {
                 if (!(change.wasPermutated() || change.wasUpdated())) {
-                    change.getRemoved().forEach(country -> map.remove(country, country.getPopulation()));
+                    change.getRemoved().forEach(country -> {
+                        map.remove(country, country.getPopulation());
+                        System.out.println("Removed: " + country.getName() + " " + country.getPopulation());
+                    });
                 }
-                change.getAddedSubList().forEach(country -> map.put(country, country.getPopulation()));
+                change.getAddedSubList().forEach(country -> {
+                    map.put(country, country.getPopulation());
+                    System.out.println("Added: " + country.getName() + " " + country.getPopulation());
+                });
             }
         });
     }
