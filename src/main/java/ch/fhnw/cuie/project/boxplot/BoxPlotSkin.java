@@ -16,6 +16,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 import java.util.HashMap;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
 
 /**
  * @author Dieter Holz
@@ -57,6 +59,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final DoubleProperty widthFactor = new SimpleDoubleProperty();
     private final DoubleProperty offset = new SimpleDoubleProperty();
     public static final double TRANSLATE_Y = 20;
+    private final UnaryOperator<Double> scaleWidth = value -> (value - getOffset()) * getWidthFactor();
+    private final UnaryOperator<Double> scaleHeight = factor -> (height.get() * factor);
 
     public BoxPlotSkin(BoxPlotControl control) {
         super(control);
@@ -164,7 +168,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         setOffset();
         setWidthFactor();
 
-        range.startXProperty().set((boxPlot.getLowerWhisker() - offset.get()) * widthFactor.get());
+        range.startXProperty().set(scaleWidth.apply(boxPlot.getLowerWhisker()));
         range.startYProperty().set((height.get() - TRANSLATE_Y) / 2);
         range.endXProperty().set((boxPlot.getUpperWhisker() - offset.get()) * widthFactor.get());
         range.endYProperty().set((height.get() - TRANSLATE_Y) / 2);
@@ -174,10 +178,10 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         quartiles.widthProperty().set((boxPlot.getQ3() - boxPlot.getQ1()) * widthFactor.get());
         quartiles.heightProperty().set(height.get() - TRANSLATE_Y);
 
-        drawLine(lowerWhiskerLine, boxPlot.lowerWhiskerProperty(), height.get());
-        drawLine(upperWhiskerLine, boxPlot.upperWhiskerProperty(), height.get());
-        drawLine(medianLine, boxPlot.medianProperty(), height.get());
-//        drawLine(currentObjectLine, currentObject, height);
+        setupLineBindings(lowerWhiskerLine, boxPlot.lowerWhiskerProperty(), height.get());
+        setupLineBindings(upperWhiskerLine, boxPlot.upperWhiskerProperty(), height.get());
+        setupLineBindings(medianLine, boxPlot.medianProperty(), height.get());
+//        setupLineBindings(currentObjectLine, currentObject, height);
     }
 
     private void setOffset() {
@@ -196,7 +200,10 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         }
     }
 
-    private void drawLine(Line line, ReadOnlyDoubleProperty element, double height) {
+    private void setupLineBindings(Line line, ReadOnlyDoubleProperty element, double height) {
+        Bindings.createDoubleBinding(() -> {
+            line.startXProperty().
+        });
         line.startXProperty().set((element.get() - offset.get()) * widthFactor.get());
         line.startYProperty().set(0);
         line.endXProperty().set((element.get() - offset.get()) * widthFactor.get());
@@ -257,4 +264,27 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                 });
     }
 
+    public double getOffset() {
+        return offset.get();
+    }
+
+    public DoubleProperty offsetProperty() {
+        return offset;
+    }
+
+    public void setOffset(double offset) {
+        this.offset.set(offset);
+    }
+
+    public double getWidthFactor() {
+        return widthFactor.get();
+    }
+
+    public DoubleProperty widthFactorProperty() {
+        return widthFactor;
+    }
+
+    public void setWidthFactor(double widthFactor) {
+        this.widthFactor.set(widthFactor);
+    }
 }
