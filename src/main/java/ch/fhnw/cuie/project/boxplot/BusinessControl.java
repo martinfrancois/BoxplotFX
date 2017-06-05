@@ -42,9 +42,11 @@ public class BusinessControl<T> extends Control {
 
     private final StringProperty userFacingText = new SimpleStringProperty();
     private ObservableMap<T, Double> map;
+    private final BoxPlotControl<T> boxPlotControl;
 
     public BusinessControl(ObservableMap<T, Double> map) {
         this.map = map;
+        boxPlotControl = new BoxPlotControl<>(map);
         initializeSelf();
         addValueChangeListener();
     }
@@ -199,5 +201,9 @@ public class BusinessControl<T> extends Control {
 
     public ObservableMap<T, Double> getMap() {
         return map;
+    }
+
+    public BoxPlotControl<T> getBoxPlotControl() {
+        return boxPlotControl;
     }
 }

@@ -9,10 +9,10 @@ public class DropDownChooser<T> extends VBox {
     private static final String FONTS_CSS = "fonts.css";
     private static final String STYLE_CSS = "dropDownChooser.css";
 
-    private final BusinessControl<T> businessControl;
+    private final BoxPlotControl<T> boxPlotControl;
 
-    public DropDownChooser(BusinessControl businessControl) {
-        this.businessControl = businessControl;
+    public DropDownChooser(BoxPlotControl<T> boxPlotControl) {
+        this.boxPlotControl = boxPlotControl;
         initializeSelf();
         initializeParts();
         layoutParts();
@@ -34,7 +34,7 @@ public class DropDownChooser<T> extends VBox {
     }
 
     private void layoutParts() {
-        getChildren().addAll(new BoxPlotControl<>(businessControl.getMap()));
+        getChildren().addAll(boxPlotControl);
     }
 
     private void setupBindings() {

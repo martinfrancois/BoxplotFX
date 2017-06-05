@@ -1,12 +1,6 @@
 package ch.fhnw.cuie.project.boxplot;
 
-import java.util.Arrays;
-
-import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.SequentialTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -19,6 +13,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+
+import java.util.Arrays;
 
 /**
  * @author Dieter Holz
@@ -92,7 +88,7 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
         chooserButton = new Button(ANGLE_DOWN);
         chooserButton.getStyleClass().add("chooserButton");
 
-        dropDownChooser = new DropDownChooser(getSkinnable());
+        dropDownChooser = new DropDownChooser(getSkinnable().getBoxPlotControl());
 
         popup = new Popup();
         popup.getContent().addAll(dropDownChooser);

@@ -4,6 +4,7 @@ import ch.fhnw.cuie.project.boxplot.BusinessControl;
 import com.univocity.parsers.common.processor.RowListProcessor;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -32,10 +33,10 @@ public class DemoPane extends BorderPane {
     private TableView<Country> table = new TableView<>(countries);
 
     public DemoPane() {
+        initializeControls();
         setupValueChangeListeners();
         initCountries();
 
-        initializeControls();
         layoutControls();
         setupBindings();
     }
@@ -125,6 +126,10 @@ public class DemoPane extends BorderPane {
                     System.out.println("Added: " + country.getName() + " " + country.getPopulation());
                 });
             }
+        });
+
+        businessControl.getBoxPlotControl().currentElementProperty().addListener((observable, oldValue, newValue) -> {
+            Platform.runLater(() -> table.getSelectionModel().select(newValue));
         });
     }
 
