@@ -1,6 +1,8 @@
 package ch.fhnw.cuie.project.boxplot;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
@@ -141,6 +143,10 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
             }
         });
 
+        boxPlot.getData().addListener((InvalidationListener) observable -> {
+            adapt(drawingPane.getHeight());
+        });
+
         drawingPane.heightProperty().addListener((observable, oldValue, newValue) -> {
             adapt(drawingPane.getHeight());
         });
@@ -165,13 +171,13 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         quartiles.widthProperty().set((boxPlot.getQ3() - boxPlot.getQ1()) * widthFactor.get());
         quartiles.heightProperty().set(height - translateY);
 
-        drawLine(lowerWhiskerLine, lowerWhisker, height);
-        drawLine(upperWhiskerLine, upperWhisker, height);
-        drawLine(medianLine, median, height);
-        drawLine(currentObjectLine, currentObject, height);
+        drawLine(lowerWhiskerLine, boxPlot.lowerWhiskerProperty(), height);
+        drawLine(upperWhiskerLine, boxPlot.upperWhiskerProperty(), height);
+        drawLine(medianLine, boxPlot.medianProperty(), height);
+//        drawLine(currentObjectLine, currentObject, height);
     }
 
-    private void drawLine(Line line, DoubleProperty element, double height) {
+    private void drawLine(Line line, ReadOnlyDoubleProperty element, double height) {
         line.startXProperty().set(element.get() * widthFactor.get());
         line.startYProperty().set(0);
         line.endXProperty().set(element.get() * widthFactor.get());
@@ -184,21 +190,21 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
         // ---- Scale below -----------------------------
         double translateY = 15;
-        scale.startXProperty().bind(minElement.multiply(widthFactor));
+        scale.startXProperty().bind(boxPlot.minProperty().multiply(widthFactor));
         scale.startYProperty().bind(height.subtract(translateY));
-        scale.endXProperty().bind(maxElement.multiply(widthFactor));
+        scale.endXProperty().bind(boxPlot.maxProperty().multiply(widthFactor));
         scale.endYProperty().bind(height.subtract(translateY));
 
-        drawLabel(minimum, minElement);
-        drawLabel(maximum, maxElement);
-        drawLabel(lowerWhiskerLabel, lowerWhisker);
-        drawLabel(upperWhiskerLabel, upperWhisker);
-        drawLabel(lowerQuartileLabel, lowerQuartile);
-        drawLabel(upperQuartileLabel, upperQuartile);
-        drawLabel(medianLabel, median);
+        drawLabel(minimum, boxPlot.minProperty());
+        drawLabel(maximum, boxPlot.maxProperty());
+        drawLabel(lowerWhiskerLabel, boxPlot.lowerWhiskerProperty());
+        drawLabel(upperWhiskerLabel, boxPlot.upperWhiskerProperty());
+        drawLabel(lowerQuartileLabel, boxPlot.q1Property());
+        drawLabel(upperQuartileLabel, boxPlot.q3Property());
+        drawLabel(medianLabel, boxPlot.medianProperty());
     }
 
-    private void drawLabel(Label label, DoubleProperty element){
+    private void drawLabel(Label label, ReadOnlyDoubleProperty element){
         label.textProperty().bind(element.subtract(offset).asString());
         label.translateXProperty().bind(element.multiply(widthFactor).subtract(label.widthProperty().divide(2)));
         label.translateYProperty().bind(height.subtract(15));

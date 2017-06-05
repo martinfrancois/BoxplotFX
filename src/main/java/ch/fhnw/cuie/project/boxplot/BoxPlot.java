@@ -151,6 +151,8 @@ public class BoxPlot<T> {
         this.max.set(max);
     }
 
-
+    public ObservableMap<T, Double> getData() {
+        return data;
+    }
 }
 
