@@ -40,7 +40,9 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private Line currentObjectLine;
 
     // ----- Scale below -------------------------------
-    private Line scale;
+    private Line scaleLeft;
+    private Line dataScale;
+    private Line scaleRight;
     private Label minimum;
     private Label maximum;
     private Label lowerWhiskerLabel;
@@ -109,7 +111,9 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         currentObjectLine.setStrokeWidth(STROKE_WIDTH);
 
         // ---- Scale below -----------------------------
-        scale = new Line();
+        scaleLeft = new Line();
+        dataScale = new Line();
+        scaleRight = new Line();
         minimum = new Label();
         maximum = new Label();
         lowerWhiskerLabel = new Label();
@@ -119,11 +123,32 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         medianLabel = new Label();
         currentObjectLabel = new Label();
 
+        dataScale.setStroke(Color.rgb(255, 200, 0));
+        dataScale.setStrokeWidth(STROKE_WIDTH * 2);
     }
 
     private void layoutParts() {
-        drawingPane.getChildren().addAll(range, quartiles, lowerWhiskerLine, upperWhiskerLine, medianLine, currentObjectLine);
-        drawingPane.getChildren().addAll(scale, minimum, maximum, lowerWhiskerLabel, upperWhiskerLabel, lowerQuartileLabel, upperQuartileLabel, medianLabel, currentObjectLabel);
+        drawingPane.getChildren().addAll(
+                range,
+                quartiles,
+                lowerWhiskerLine,
+                upperWhiskerLine,
+                medianLine,
+                currentObjectLine
+        );
+        drawingPane.getChildren().addAll(
+                scaleLeft,
+                dataScale,
+                scaleRight,
+                minimum,
+                maximum,
+                lowerWhiskerLabel,
+                upperWhiskerLabel,
+                lowerQuartileLabel,
+                upperQuartileLabel,
+                medianLabel,
+                currentObjectLabel
+        );
         getChildren().add(drawingPane);
     }
 
@@ -182,16 +207,20 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private void setOffset() {
         if (boxPlot.getMin() < boxPlot.getLowerWhisker()) {
             offset.set(boxPlot.getMin());
+            scaleLeft.setVisible(false);
         } else {
             offset.set(boxPlot.getLowerWhisker());
+            scaleLeft.setVisible(true);
         }
     }
 
     private void setWidthFactor() {
         if (boxPlot.getMax() > boxPlot.getUpperWhisker()) {
             widthFactor.set(width.get() / (boxPlot.getMax() - offset.get()));
+            scaleRight.setVisible(false);
         } else {
             widthFactor.set(width.get() / (boxPlot.getUpperWhisker() - offset.get()));
+            scaleRight.setVisible(true);
         }
     }
 
@@ -208,10 +237,21 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
         // ---- Scale below -----------------------------
         double translateY = 15;
-        scale.startXProperty().bind(boxPlot.minProperty().subtract(offset).multiply(widthFactor));
-        scale.startYProperty().bind(height.subtract(translateY));
-        scale.endXProperty().bind(boxPlot.maxProperty().subtract(offset).multiply(widthFactor));
-        scale.endYProperty().bind(height.subtract(translateY));
+
+        dataScale.startXProperty().bind(boxPlot.minProperty().subtract(offset).multiply(widthFactor));
+        dataScale.startYProperty().bind(height.subtract(translateY));
+        dataScale.endXProperty().bind(boxPlot.maxProperty().subtract(offset).multiply(widthFactor));
+        dataScale.endYProperty().bind(height.subtract(translateY));
+
+        scaleLeft.startXProperty().set(0);
+        scaleLeft.startYProperty().bind(height.subtract(translateY));
+        scaleLeft.endXProperty().bind(dataScale.startXProperty());
+        scaleLeft.endYProperty().bind(height.subtract(translateY));
+
+        scaleRight.startXProperty().bind(dataScale.endXProperty());
+        scaleRight.startYProperty().bind(height.subtract(translateY));
+        scaleRight.endXProperty().bind(width);
+        scaleRight.endYProperty().bind(height.subtract(translateY));
 
         drawLabel(minimum, boxPlot.minProperty());
         drawLabel(maximum, boxPlot.maxProperty());
