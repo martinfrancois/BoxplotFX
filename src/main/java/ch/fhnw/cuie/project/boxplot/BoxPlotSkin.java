@@ -24,7 +24,6 @@ import java.util.function.UnaryOperator;
 public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private static final String DECIMALS = "0";
     private static final double STROKE_WIDTH = 3;
-    public static final double FACTOR_BOXPLOT_START = 0d;
     private final ObservableMap<T, Double> outliers;
     private final BoxPlot<T> boxPlot;
     private final HashMap<T, Circle> circles = new HashMap<>();
@@ -62,7 +61,9 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final DoubleProperty widthFactor = new SimpleDoubleProperty();
     private final DoubleProperty offset = new SimpleDoubleProperty();
     public static final double TRANSLATE_Y = 20;
-    public static final double SEPARATOR_FACTOR = .75;
+    public static final double FACTOR_BOXPLOT_START = 0d;
+    public static final double FACTOR_BOXPLOT_END = 0.75d;
+    public static final double FACTOR_SCALE_END = 1d;
     private final UnaryOperator<Double> scaleWidth = value -> (value - getOffset()) * getWidthFactor();
     private final UnaryOperator<Double> scaleHeight = factor -> (height.get() * factor);
 
@@ -230,21 +231,26 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void setupVerticalLineBindings(Line line, ReadOnlyDoubleProperty value) {
-        Bindings.createDoubleBinding(() -> {
-            double x = scaleWidth.apply(value.get());
-            line.setStartX(x);
-            line.setEndX(x);
-            line.setStartY(scaleHeight.apply(FACTOR_BOXPLOT_START));
-            line.setEndY(scaleHeight.apply(0.75));
-
-        });
-
-        line.startXProperty().set((value.get() - offset.get()) * widthFactor.get());
-        line.endXProperty().set((value.get() - offset.get()) * widthFactor.get());
-        line.startYProperty().set(0);
-        line.endYProperty().set(height - 20);
-        line.endXProperty().set((value.get() - offset.get()) * widthFactor.get());
-        line.endYProperty().set(height - TRANSLATE_Y);
+        line.startXProperty().bind(
+                Bindings.createDoubleBinding(
+                        () -> scaleWidth.apply(value.get()), offset, widthFactor
+                )
+        );
+        line.endXProperty().bind(
+                Bindings.createDoubleBinding(
+                        () -> scaleWidth.apply(value.get()), offset, widthFactor
+                )
+        );
+        line.startYProperty().bind(
+                Bindings.createDoubleBinding(
+                        () -> scaleWidth.apply(scaleHeight.apply(FACTOR_BOXPLOT_START)), offset, widthFactor
+                )
+        );
+        line.endYProperty().bind(
+                Bindings.createDoubleBinding(
+                        () -> scaleWidth.apply(scaleHeight.apply(FACTOR_BOXPLOT_END)), offset, widthFactor
+                )
+        );
     }
 
     private void setupBindings() {
@@ -258,19 +264,19 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         scale.endXProperty().bind(boxPlot.maxProperty().subtract(offset).multiply(widthFactor));
         scale.endYProperty().bind(height.subtract(translateY));
         dataScale.startXProperty().bind(boxPlot.minProperty().subtract(offset).multiply(widthFactor));
-        dataScale.startYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
+        dataScale.startYProperty().bind(height.subtract(TRANSLATE_Y * FACTOR_BOXPLOT_END));
         dataScale.endXProperty().bind(boxPlot.maxProperty().subtract(offset).multiply(widthFactor));
-        dataScale.endYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
+        dataScale.endYProperty().bind(height.subtract(TRANSLATE_Y * FACTOR_BOXPLOT_END));
 
         scaleLeft.startXProperty().set(0);
-        scaleLeft.startYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
+        scaleLeft.startYProperty().bind(height.subtract(TRANSLATE_Y * FACTOR_BOXPLOT_END));
         scaleLeft.endXProperty().bind(dataScale.startXProperty());
-        scaleLeft.endYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
+        scaleLeft.endYProperty().bind(height.subtract(TRANSLATE_Y * FACTOR_BOXPLOT_END));
 
         scaleRight.startXProperty().bind(dataScale.endXProperty());
-        scaleRight.startYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
+        scaleRight.startYProperty().bind(height.subtract(TRANSLATE_Y * FACTOR_BOXPLOT_END));
         scaleRight.endXProperty().bind(width);
-        scaleRight.endYProperty().bind(height.subtract(TRANSLATE_Y * SEPARATOR_FACTOR));
+        scaleRight.endYProperty().bind(height.subtract(TRANSLATE_Y * FACTOR_BOXPLOT_END));
 
         drawLabel(minimum, boxPlot.minProperty());
         drawLabel(maximum, boxPlot.maxProperty());
