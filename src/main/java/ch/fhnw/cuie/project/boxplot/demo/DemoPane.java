@@ -5,7 +5,9 @@ import com.univocity.parsers.common.processor.RowListProcessor;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.geometry.Insets;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -23,13 +25,15 @@ public class DemoPane extends BorderPane {
 
     private ObservableList<Country> countries = FXCollections.observableArrayList();
 
+    private ObservableMap<Country, Double> map = FXCollections.observableHashMap();
+
     private TableView<Country> table = new TableView<>(countries);
 
     public DemoPane() {
+        setupValueChangeListeners();
         initCountries();
         initializeControls();
         layoutControls();
-        setupValueChangeListeners();
         setupBindings();
     }
 
@@ -42,18 +46,18 @@ public class DemoPane extends BorderPane {
         TableColumn populationCol = new TableColumn("Population");
 
         countryCol.setCellValueFactory(
-                new PropertyValueFactory<Country,String>("name")
+                new PropertyValueFactory<Country, String>("name")
         );
 
         populationCol.setCellValueFactory(
-                new PropertyValueFactory<Country,String>("population")
+                new PropertyValueFactory<Country, String>("population")
         );
 
         table.getColumns().addAll(countryCol, populationCol);
 
     }
 
-    private void initCountries(){
+    private void initCountries() {
         // setup csvparser
         RowListProcessor rowProcessor = new RowListProcessor();
         CsvParserSettings parserSettings = new CsvParserSettings();
@@ -69,7 +73,7 @@ public class DemoPane extends BorderPane {
         countries.clear();
         rows.forEach(strings ->
                 countries.add(
-                        new Country(strings[0], Double.valueOf(strings[1]) )
+                        new Country(strings[0], Double.valueOf(strings[1]))
                 )
         );
     }
@@ -80,6 +84,18 @@ public class DemoPane extends BorderPane {
     }
 
     private void setupValueChangeListeners() {
+        // setup listener to keep the map in sync with the observablelist
+        countries.addListener((ListChangeListener<? super Country>) change -> {
+            if (change.wasAdded()) {
+                change.getAddedSubList().forEach(
+                        country -> map.put(country, country.getPopulation())
+                );
+            } else if (change.wasRemoved()) {
+                change.getRemoved().forEach(
+                        country -> map.remove(country)
+                );
+            }
+        });
     }
 
     private void setupBindings() {
