@@ -1,9 +1,12 @@
 package ch.fhnw.cuie.project.boxplot;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
+import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -17,13 +20,14 @@ import java.util.HashMap;
  * @author Dieter Holz
  */
 public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
+    private double offset;
     private static final double STROKE_WIDTH = 2;
     private final ObservableMap<T, Double> outliers;
     private final BoxPlot<T> boxPlot;
     private final HashMap<T, Circle> circles = new HashMap<>();
 
     private Pane drawingPane;
-    
+
     private static final String FONTS_CSS = "fonts.css";
     private static final String STYLE_CSS = "style.css";
 
@@ -33,6 +37,18 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private Line lowerWhiskerLine;
     private Line upperWhiskerLine;
     private Line medianLine;
+    private Line currentObjectLine;
+
+    // ----- Scale below -------------------------------
+    private Line scale;
+    private Label minimum;
+    private Label maximum;
+    private Label lowerWhiskerLabel;
+    private Label upperWhiskerLabel;
+    private Label lowerQuartileLabel;
+    private Label upperQuartileLabel;
+    private Label medianLabel;
+    private Label currentObjectLabel;
 
     // ------ Variables ---------------------------------
     private final DoubleProperty width = new SimpleDoubleProperty();
@@ -75,23 +91,38 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         lowerWhiskerLine = new Line();
         upperWhiskerLine = new Line();
         medianLine = new Line();
+        currentObjectLine = new Line();
 
-        range.setStroke(Color.rgb(138,0,138));
-        quartiles.setFill(Color.rgb(227,227,227));
-        quartiles.setStroke(Color.rgb(0,0,138));
+        range.setStroke(Color.rgb(138, 0, 138));
+        quartiles.setFill(Color.rgb(227, 227, 227));
+        quartiles.setStroke(Color.rgb(0, 0, 138));
 
         range.setStrokeWidth(STROKE_WIDTH);
         quartiles.setStrokeWidth(STROKE_WIDTH);
-        medianLine.setStroke(Color.rgb(0,99,0));
+        medianLine.setStroke(Color.rgb(0, 99, 0));
         lowerWhiskerLine.setStrokeWidth(STROKE_WIDTH);
-        lowerWhiskerLine.setStroke(Color.rgb(138,0,138));
+        lowerWhiskerLine.setStroke(Color.rgb(138, 0, 138));
         upperWhiskerLine.setStrokeWidth(STROKE_WIDTH);
-        medianLine.setStrokeWidth(STROKE_WIDTH);
-        upperWhiskerLine.setStroke(Color.rgb(138,0,138));
+        medianLine.setStrokeWidth(STROKE_WIDTH * 2);
+        upperWhiskerLine.setStroke(Color.rgb(138, 0, 138));
+        currentObjectLine.setStrokeWidth(STROKE_WIDTH);
+
+        // ---- Scale below -----------------------------
+        scale = new Line();
+        minimum = new Label();
+        maximum = new Label();
+        lowerWhiskerLabel = new Label();
+        upperWhiskerLabel = new Label();
+        lowerQuartileLabel = new Label();
+        upperQuartileLabel = new Label();
+        medianLabel = new Label();
+        currentObjectLabel = new Label();
+
     }
 
     private void layoutParts() {
-        drawingPane.getChildren().addAll(range, quartiles, lowerWhiskerLine, upperWhiskerLine, medianLine);
+        drawingPane.getChildren().addAll(range, quartiles, lowerWhiskerLine, upperWhiskerLine, medianLine, currentObjectLine);
+        drawingPane.getChildren().addAll(scale, minimum, maximum, lowerWhiskerLabel, upperWhiskerLabel, lowerQuartileLabel, upperQuartileLabel, medianLabel, currentObjectLabel);
         getChildren().add(drawingPane);
     }
 
@@ -112,6 +143,10 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
             }
         });
 
+        boxPlot.getData().addListener((InvalidationListener) observable -> {
+            adapt(drawingPane.getHeight());
+        });
+
         drawingPane.heightProperty().addListener((observable, oldValue, newValue) -> {
             adapt(drawingPane.getHeight());
         });
@@ -123,37 +158,56 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     //    Draws the BoxPlot
     private void adapt(double height) {
+        double translateY = 20;
         widthFactor.set(width.get() / (boxPlot.getMax() - boxPlot.getMin()));
-        
+
         range.startXProperty().set(boxPlot.getLowerWhisker() * widthFactor.get());
-        range.startYProperty().set(height / 2);
+        range.startYProperty().set((height - translateY) / 2);
         range.endXProperty().set(boxPlot.getUpperWhisker() * widthFactor.get());
-        range.endYProperty().set(height / 2);
-        
+        range.endYProperty().set((height - translateY) / 2);
+
         quartiles.xProperty().set(boxPlot.getQ1() * widthFactor.get());
         quartiles.yProperty().set(0);
         quartiles.widthProperty().set((boxPlot.getQ3() - boxPlot.getQ1()) * widthFactor.get());
-        quartiles.heightProperty().set(height);
+        quartiles.heightProperty().set(height - translateY);
 
-        lowerWhiskerLine.startXProperty().set(boxPlot.getLowerWhisker() * widthFactor.get());
-        lowerWhiskerLine.startYProperty().set(0);
-        lowerWhiskerLine.endXProperty().set(boxPlot.getLowerWhisker() * widthFactor.get());
-        lowerWhiskerLine.endYProperty().set(height);
+        drawLine(lowerWhiskerLine, boxPlot.lowerWhiskerProperty(), height);
+        drawLine(upperWhiskerLine, boxPlot.upperWhiskerProperty(), height);
+        drawLine(medianLine, boxPlot.medianProperty(), height);
+//        drawLine(currentObjectLine, currentObject, height);
+    }
 
-        upperWhiskerLine.startXProperty().set(boxPlot.getUpperWhisker() * widthFactor.get());
-        upperWhiskerLine.startYProperty().set(0);
-        upperWhiskerLine.endXProperty().set(boxPlot.getUpperWhisker() * widthFactor.get());
-        upperWhiskerLine.endYProperty().set(height);
-
-        medianLine.startXProperty().set(boxPlot.getMedian() * widthFactor.get());
-        medianLine.startYProperty().set(0);
-        medianLine.endXProperty().set(boxPlot.getMedian() * widthFactor.get());
-        medianLine.endYProperty().set(height);
+    private void drawLine(Line line, ReadOnlyDoubleProperty element, double height) {
+        line.startXProperty().set(element.get() * widthFactor.get());
+        line.startYProperty().set(0);
+        line.endXProperty().set(element.get() * widthFactor.get());
+        line.endYProperty().set(height - 20);
     }
 
     private void setupBindings() {
         width.bind(drawingPane.widthProperty());
         height.bind(drawingPane.heightProperty());
+
+        // ---- Scale below -----------------------------
+        double translateY = 15;
+        scale.startXProperty().bind(boxPlot.minProperty().multiply(widthFactor));
+        scale.startYProperty().bind(height.subtract(translateY));
+        scale.endXProperty().bind(boxPlot.maxProperty().multiply(widthFactor));
+        scale.endYProperty().bind(height.subtract(translateY));
+
+        drawLabel(minimum, boxPlot.minProperty());
+        drawLabel(maximum, boxPlot.maxProperty());
+        drawLabel(lowerWhiskerLabel, boxPlot.lowerWhiskerProperty());
+        drawLabel(upperWhiskerLabel, boxPlot.upperWhiskerProperty());
+        drawLabel(lowerQuartileLabel, boxPlot.q1Property());
+        drawLabel(upperQuartileLabel, boxPlot.q3Property());
+        drawLabel(medianLabel, boxPlot.medianProperty());
+    }
+
+    private void drawLabel(Label label, ReadOnlyDoubleProperty element){
+        label.textProperty().bind(element.subtract(offset).asString());
+        label.translateXProperty().bind(element.multiply(widthFactor).subtract(label.widthProperty().divide(2)));
+        label.translateYProperty().bind(height.subtract(15));
     }
 
     private void drawOutlier(T element, double value) {
