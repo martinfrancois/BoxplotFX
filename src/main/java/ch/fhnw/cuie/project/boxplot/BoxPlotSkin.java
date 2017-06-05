@@ -1,11 +1,11 @@
 package ch.fhnw.cuie.project.boxplot;
 
-import javafx.beans.property.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -178,8 +178,10 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void drawOutlier(T element, double value) {
-        // TODO: Do some magic to create the outlier and attach listener to setOnAction to change currently selected object
+        // TODO: Do some magic to create the outlier
         Circle outlier = new Circle();
+        outlier.getStyleClass().add("outliers");
+        outlier.setOnMouseClicked(event -> getSkinnable().setCurrentElement(element););
         circles.put(element, outlier);
     }
 
