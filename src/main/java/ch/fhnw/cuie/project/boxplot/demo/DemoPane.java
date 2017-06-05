@@ -86,14 +86,11 @@ public class DemoPane extends BorderPane {
     private void setupValueChangeListeners() {
         // setup listener to keep the map in sync with the observablelist
         countries.addListener((ListChangeListener<? super Country>) change -> {
-            if (change.wasAdded()) {
-                change.getAddedSubList().forEach(
-                        country -> map.put(country, country.getPopulation())
-                );
-            } else if (change.wasRemoved()) {
-                change.getRemoved().forEach(
-                        country -> map.remove(country)
-                );
+            while (change.next()) {
+                if (!(change.wasPermutated() || change.wasUpdated())) {
+                    change.getRemoved().forEach(country -> map.remove(country, country.getPopulation()));
+                }
+                change.getAddedSubList().forEach(country -> map.put(country, country.getPopulation()));
             }
         });
     }
