@@ -181,7 +181,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         // TODO: Do some magic to create the outlier
         Circle outlier = new Circle();
         outlier.getStyleClass().add("outliers");
-        outlier.setOnMouseClicked(event -> getSkinnable().setCurrentElement(element););
+        outlier.setOnMouseClicked(event -> getSkinnable().setCurrentElement(element));
         circles.put(element, outlier);
     }
 
