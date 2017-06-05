@@ -96,11 +96,15 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         upperWhiskerLine = new Line();
         medianLine = new Line();
 
-        quartiles.setFill(Color.LIGHTBLUE);
-        quartiles.setStroke(Color.BLACK);
+        range.setStroke(Color.rgb(138,0,138));
+        quartiles.setFill(Color.rgb(227,227,227));
+        quartiles.setStroke(Color.rgb(0,0,138));
         medianLine.setStrokeWidth(10);
+        medianLine.setStroke(Color.rgb(0,99,0));
         lowerWhiskerLine.setStrokeWidth(5);
+        lowerWhiskerLine.setStroke(Color.rgb(138,0,138));
         upperWhiskerLine.setStrokeWidth(5);
+        upperWhiskerLine.setStroke(Color.rgb(138,0,138));
     }
 
     private void layoutParts() {
@@ -134,9 +138,9 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         });
     }
 
-//    Draws the BoxPlot
+    //    Draws the BoxPlot
     private void adapt(double height) {
-        widthFactor.set(width.get()/(maxElement.get()-minElement.get()));
+        widthFactor.set(width.get() / (maxElement.get() - minElement.get()));
 
         range.startXProperty().set(lowerWhisker.get() * widthFactor.get());
         range.startYProperty().set(height / 2);
