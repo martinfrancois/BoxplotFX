@@ -41,6 +41,9 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private Line upperWhiskerLine;
     private Line medianLine;
     private Line currentObjectLine;
+    private Line scaleLeft;
+    private Line dataScale;
+    private Line scaleRight;
 
     // ----- Scale below -------------------------------
     private Line scale;
@@ -202,9 +205,9 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         quartiles.widthProperty().set((boxPlot.getQ3() - boxPlot.getQ1()) * widthFactor.get());
         quartiles.heightProperty().set(height.get() - TRANSLATE_Y);
 
-        setupVerticalLineBindings(lowerWhiskerLine, boxPlot.lowerWhiskerProperty(), height.get());
-        setupVerticalLineBindings(upperWhiskerLine, boxPlot.upperWhiskerProperty(), height.get());
-        setupVerticalLineBindings(medianLine, boxPlot.medianProperty(), height.get());
+        setupVerticalLineBindings(lowerWhiskerLine, boxPlot.lowerWhiskerProperty());
+        setupVerticalLineBindings(upperWhiskerLine, boxPlot.upperWhiskerProperty());
+        setupVerticalLineBindings(medianLine, boxPlot.medianProperty());
 //        setupVerticalLineBindings(currentObjectLine, currentObject, height);
     }
 
@@ -240,7 +243,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         line.endXProperty().set((value.get() - offset.get()) * widthFactor.get());
         line.startYProperty().set(0);
         line.endYProperty().set(height - 20);
-        line.endXProperty().set((element.get() - offset.get()) * widthFactor.get());
+        line.endXProperty().set((value.get() - offset.get()) * widthFactor.get());
         line.endYProperty().set(height - TRANSLATE_Y);
     }
 
