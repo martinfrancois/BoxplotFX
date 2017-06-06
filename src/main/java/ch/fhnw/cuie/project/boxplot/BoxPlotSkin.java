@@ -229,7 +229,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                     }
                     scaleRight.setVisible(true);
                     return width.get() / (boxPlot.getUpperWhisker() - offset.get());
-                }, boxPlot.maxProperty(), boxPlot.upperWhiskerProperty(), width
+                }, boxPlot.maxProperty(), boxPlot.upperWhiskerProperty(), width, offset
             )
         );
     }
