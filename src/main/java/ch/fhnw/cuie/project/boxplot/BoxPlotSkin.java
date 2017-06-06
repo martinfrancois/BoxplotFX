@@ -5,7 +5,9 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
@@ -14,10 +16,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import org.reactfx.value.Val;
+import org.reactfx.value.Var;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+
+import static org.reactfx.util.Interpolator.EASE_BOTH_DOUBLE;
 
 /**
  * @author Dieter Holz
@@ -107,6 +114,13 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         getSkinnable().getStylesheets().add(stylesheet);
     }
 
+    private void setupAnimatedProperties() {
+        // https://tomasmikula.github.io/blog/2015/02/13/animated-transitions-made-easy.html
+        Var<Double> center = Var.doubleVar(scaleLeft.endXProperty());
+        Val<Double> animated = Val.animate(center, Duration.ofMillis(500), EASE_BOTH_DOUBLE);
+        scaleLeft.endXProperty().bind(animated);
+    }
+
     private void initializeParts() {
         drawingPane.getStyleClass().add("drawingPane");
         drawingPane.setPrefSize(600, 50);
@@ -155,6 +169,14 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 //                currentObjectLabel
         );
         getChildren().add(drawingPane);
+
+        // Make Animations work
+        LayoutAnimator animator = new LayoutAnimator();
+        ObservableList<Line> lineList = FXCollections.observableArrayList();
+        lineList.addAll(range, lowerWhiskerLine, upperWhiskerLine, medianLine, scaleLeft, dataScale, scaleRight);
+        animator.observe(lineList);
+
+
 
         range.setStroke(Color.rgb(138, 0, 138));
         quartiles.setFill(Color.rgb(227, 227, 227));
