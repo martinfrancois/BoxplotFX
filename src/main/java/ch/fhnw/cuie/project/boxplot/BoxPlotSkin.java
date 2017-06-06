@@ -1,6 +1,7 @@
 package ch.fhnw.cuie.project.boxplot;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -14,6 +15,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import org.reactfx.util.Interpolator;
+import org.reactfx.util.TetraFunction;
 import org.reactfx.util.TriFunction;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
@@ -290,13 +292,13 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         scaleRight.startYProperty().bind(convertedHeightDataScaleEnd);
         scaleRight.endYProperty().bind(convertedHeightDataScaleEnd);
 
-        drawLabel(minimum, boxPlot.minProperty(), convertedMin, false);
-        drawLabel(maximum, boxPlot.maxProperty(), convertedMax, false);
-        drawLabel(lowerWhiskerLabel, boxPlot.lowerWhiskerProperty(), convertedLowerWhisker, true);
-        drawLabel(upperWhiskerLabel, boxPlot.upperWhiskerProperty(), convertedUpperWhisker, true);
-        drawLabel(lowerQuartileLabel, boxPlot.q1Property(), convertedQ1, true);
-        drawLabel(upperQuartileLabel, boxPlot.q3Property(), convertedQ3, true);
-        drawLabel(medianLabel, boxPlot.medianProperty(), convertedMedian, true);
+        drawLabel(minimum, boxPlot.minProperty(), false);
+        drawLabel(maximum, boxPlot.maxProperty(), false);
+        drawLabel(lowerWhiskerLabel, boxPlot.lowerWhiskerProperty(), true);
+        drawLabel(upperWhiskerLabel, boxPlot.upperWhiskerProperty(), true);
+        drawLabel(lowerQuartileLabel, boxPlot.q1Property(), true);
+        drawLabel(upperQuartileLabel, boxPlot.q3Property(), true);
+        drawLabel(medianLabel, boxPlot.medianProperty(), true);
     }
 
     private void setupVerticalLineBindings(Line line, Val<Double> convertedValue) {
@@ -306,8 +308,12 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         line.endYProperty().bind(convertedHeightBoxPlotEnd);
     }
 
-    private void drawLabel(Label label, DoubleProperty value, Val<Double> convertedValue, boolean isDataPoint) {
+    private void drawLabel(Label label, DoubleProperty value, boolean isDataPoint) {
         label.textProperty().bind(value.asString(LABEL_FORMATTING));
+        Var<Double> valueVar = Var.doubleVar(value);
+        Val<Double> labelWidth = Val.wrap(label.widthProperty().asObject());
+        TetraFunction<Double, Double, Double, Double, Double> widthConverterExtended = (doubleValue, offset, widthFactor, labelWidthVal) -> ((doubleValue - offset) * widthFactor) - (labelWidthVal / 2);
+        Val<Double> convertedValue = Val.combine(valueVar, offsetVar, widthFactorVar, labelWidth, widthConverterExtended).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
         label.translateXProperty().bind(convertedValue);
         if (isDataPoint) {
             label.translateYProperty().bind(convertedHeightDataPointsEnd);
