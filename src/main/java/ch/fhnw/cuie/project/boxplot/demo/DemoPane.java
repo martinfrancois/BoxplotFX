@@ -131,6 +131,11 @@ public class DemoPane extends BorderPane {
         businessControl.getBoxPlotControl().currentElementProperty().addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> table.getSelectionModel().select(newValue));
         });
+
+        table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            Country selectedCountry = (Country)newValue;
+            businessControl.setValue((int)selectedCountry.getPopulation());
+        });
     }
 
     private void setupBindings() {
