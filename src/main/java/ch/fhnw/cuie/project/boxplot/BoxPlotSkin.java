@@ -1,13 +1,10 @@
 package ch.fhnw.cuie.project.boxplot;
 
+import java.util.function.BiFunction;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
@@ -16,13 +13,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import org.reactfx.util.Interpolator;
+import org.reactfx.util.TriFunction;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
 import static org.reactfx.util.Interpolator.EASE_BOTH_DOUBLE;
 
@@ -64,28 +61,33 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private Label currentObjectLabel;
 
     // ------ Variables ---------------------------------
+    private static final Duration ANIMATION_DURATION = Duration.ofMillis(500);
+    private static final Interpolator<Double> ANIMATION_INTERPOLATOR = EASE_BOTH_DOUBLE;
+    private static final TriFunction<Double, Double, Double, Double> WIDTH_CONVERTER = (value, offset, widthFactor) -> (value - offset) * widthFactor;
+    private static final BiFunction<Double, Double, Double> HEIGHT_CONVERTER = (factor, height) -> factor * height;
+
     private final DoubleProperty width = new SimpleDoubleProperty();
     private final DoubleProperty height = new SimpleDoubleProperty();
     private final DoubleProperty widthFactor = new SimpleDoubleProperty();
     private final DoubleProperty offset = new SimpleDoubleProperty();
-    public static final double FACTOR_BOXPLOT_START = 0d;
-    public static final double FACTOR_BOXPLOT_END = 0.75d;
-    public static final double FACTOR_DATA_POINTS_END = 0.82d;
-    public static final double FACTOR_DATA_SCALE_END = 0.97d;
-    public static final double FACTOR_DATA_SCALE_LABELS_END = 1d;
+    Var<Double> widthVar = Var.doubleVar(width);
+    Var<Double> heightVar = Var.doubleVar(height);
+    Var<Double> widthFactorVar = Var.doubleVar(widthFactor);
+    Var<Double> offsetVar = Var.doubleVar(offset);
 
-    private final UnaryOperator<Double> scaleWidth = value -> (value - getOffset()) * getWidthFactor();
-    private final Function<ReadOnlyDoubleProperty, DoubleBinding> scaleWidthBinding = value -> Bindings.createDoubleBinding(
-            () -> {
-                System.out.println("scaleWidthBinding: " + value.get());
-                return scaleWidth.apply(value.get());
-            }, offset, widthFactor, value
-    );
-
-    private final UnaryOperator<Double> scaleHeight = factor -> (height.get() * factor);
-    private final Function<Double, DoubleBinding> scaleHeightBinding = factor -> Bindings.createDoubleBinding(
-            () -> scaleHeight.apply(factor), height
-    );
+    // Height Conversions
+    private static final Val<Double> FACTOR_BOXPLOT_START = Val.constant(0d);
+    private static final Val<Double> FACTOR_BOXPLOT_END = Val.constant(0.75d);
+    private static final Val<Double> FACTOR_DATA_POINTS_END = Val.constant(0.82d);
+    private static final Val<Double> FACTOR_DATA_SCALE_END = Val.constant(0.97d);
+    private static final Val<Double> FACTOR_DATA_SCALE_LABELS_END = Val.constant(1d);
+    private static final Val<Double> FACTOR_BOXPLOT_CENTER = Val.constant(FACTOR_BOXPLOT_END.getValue() / 2);
+    Val<Double> convertedHeightBoxPlotStart = Val.combine(FACTOR_BOXPLOT_START, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+    Val<Double> convertedHeightBoxPlotEnd = Val.combine(FACTOR_BOXPLOT_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+    Val<Double> convertedHeightDataPointsEnd = Val.combine(FACTOR_DATA_POINTS_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+    Val<Double> convertedHeightDataScaleEnd = Val.combine(FACTOR_DATA_SCALE_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+    Val<Double> convertedHeightDataScaleLabelsEnd = Val.combine(FACTOR_DATA_SCALE_LABELS_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+    Val<Double> convertedHeightBoxPlotCenter = Val.combine(FACTOR_BOXPLOT_CENTER, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
 
     public BoxPlotSkin(BoxPlotControl control) {
         super(control);
@@ -96,6 +98,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         layoutParts();
         setupAnimations();
         setupEventHandlers();
+        setupAnimatedBindings();
         setupBindings();
         initOutliers();
         setupValueChangeListeners();
@@ -112,13 +115,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
         String stylesheet = getClass().getResource(STYLE_CSS).toExternalForm();
         getSkinnable().getStylesheets().add(stylesheet);
-    }
-
-    private void setupAnimatedProperties() {
-        // https://tomasmikula.github.io/blog/2015/02/13/animated-transitions-made-easy.html
-        Var<Double> center = Var.doubleVar(scaleLeft.endXProperty());
-        Val<Double> animated = Val.animate(center, Duration.ofMillis(500), EASE_BOTH_DOUBLE);
-        scaleLeft.endXProperty().bind(animated);
     }
 
     private void initializeParts() {
@@ -170,14 +166,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         );
         getChildren().add(drawingPane);
 
-        // Make Animations work
-        LayoutAnimator animator = new LayoutAnimator();
-        ObservableList<Line> lineList = FXCollections.observableArrayList();
-        lineList.addAll(range, lowerWhiskerLine, upperWhiskerLine, medianLine, scaleLeft, dataScale, scaleRight);
-        animator.observe(lineList);
-
-
-
         range.setStroke(Color.rgb(138, 0, 138));
         quartiles.setFill(Color.rgb(227, 227, 227));
         quartiles.setStroke(Color.rgb(0, 0, 138));
@@ -215,109 +203,126 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         });
     }
 
-    private void setupVerticalLineBindings(Line line, ReadOnlyDoubleProperty value) {
-        line.startXProperty().bind(scaleWidthBinding.apply(value));
-        line.endXProperty().bind(scaleWidthBinding.apply(value));
-        line.startYProperty().bind(scaleHeightBinding.apply(FACTOR_BOXPLOT_START));
-        line.endYProperty().bind(scaleHeightBinding.apply(FACTOR_BOXPLOT_END));
-    }
-
     private void setupBindings() {
         width.bind(drawingPane.widthProperty());
         height.bind(drawingPane.heightProperty());
 
         offset.bind(
-                Bindings.createDoubleBinding(
-                        () -> {
-                            if (boxPlot.getMin() < boxPlot.getLowerWhisker()){
-                                return boxPlot.getMin();
-                            }
-                            return boxPlot.getLowerWhisker();
-                        }, boxPlot.minProperty(), boxPlot.lowerWhiskerProperty()
-                )
+            Bindings.createDoubleBinding(
+                () -> {
+                    if (boxPlot.getMin() < boxPlot.getLowerWhisker()){
+                        return boxPlot.getMin();
+                    }
+                    return boxPlot.getLowerWhisker();
+                }, boxPlot.minProperty(), boxPlot.lowerWhiskerProperty()
+            )
         );
 
         widthFactor.bind(
-                Bindings.createDoubleBinding(
-                        () -> {
-                            if (boxPlot.getMax() > boxPlot.getUpperWhisker()) {
-                                scaleRight.setVisible(false);
-                                return width.get() / (boxPlot.getMax() - offset.get());
-                            }
-                            scaleRight.setVisible(true);
-                            return width.get() / (boxPlot.getUpperWhisker() - offset.get());
-                        }, boxPlot.maxProperty(), boxPlot.upperWhiskerProperty(), width
-                )
+            Bindings.createDoubleBinding(
+                () -> {
+                    if (boxPlot.getMax() > boxPlot.getUpperWhisker()) {
+                        scaleRight.setVisible(false);
+                        return width.get() / (boxPlot.getMax() - offset.get());
+                    }
+                    scaleRight.setVisible(true);
+                    return width.get() / (boxPlot.getUpperWhisker() - offset.get());
+                }, boxPlot.maxProperty(), boxPlot.upperWhiskerProperty(), width
+            )
         );
+    }
+
+    private void setupAnimatedBindings() {
+        // https://tomasmikula.github.io/blog/2015/02/13/animated-transitions-made-easy.html
+        // https://github.com/TomasMikula/ReactFX/blob/master/reactfx-demos/src/main/java/org/reactfx/demo/AnimatedValDemo.java
+        // https://github.com/TomasMikula/ReactFX/wiki/Creating-a-Val-or-Var-Instance
+        // https://tomasmikula.github.io/blog/2015/02/10/val-a-better-observablevalue.html
+
+        Var<Double> lowerWhiskerVar = Var.doubleVar(boxPlot.lowerWhiskerProperty());
+        Var<Double> upperWhiskerVar = Var.doubleVar(boxPlot.upperWhiskerProperty());
+        Var<Double> q1Var = Var.doubleVar(boxPlot.q1Property());
+        Var<Double> q3Var = Var.doubleVar(boxPlot.q3Property());
+        Var<Double> medianVar = Var.doubleVar(boxPlot.medianProperty());
+        Var<Double> minVar = Var.doubleVar(boxPlot.minProperty());
+        Var<Double> maxVar = Var.doubleVar(boxPlot.maxProperty());
+
+        // Width Conversions
+        Val<Double> convertedLowerWhisker = Val.combine(lowerWhiskerVar, offsetVar, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+        Val<Double> convertedUpperWhisker = Val.combine(upperWhiskerVar, offsetVar, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+        Val<Double> convertedQ1 = Val.combine(q1Var, offsetVar, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+        Val<Double> convertedQ3 = Val.combine(q3Var, offsetVar, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+        Val<Double> convertedMedian = Val.combine(medianVar, offsetVar, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+        Val<Double> convertedMin = Val.combine(minVar, offsetVar, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+        Val<Double> convertedMax = Val.combine(maxVar, offsetVar, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+        Val<Double> convertedQuartileWidth = Val.combine(q3Var, q1Var, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
 
         // Range
-        range.startXProperty().bind(scaleWidthBinding.apply(boxPlot.lowerWhiskerProperty()));
-        range.endXProperty().bind(scaleWidthBinding.apply(boxPlot.upperWhiskerProperty()));
-        range.startYProperty().bind(scaleHeightBinding.apply(FACTOR_BOXPLOT_END/2));
-        range.endYProperty().bind(scaleHeightBinding.apply(FACTOR_BOXPLOT_END/2));
+        range.startXProperty().bind(convertedLowerWhisker);
+        range.endXProperty().bind(convertedUpperWhisker);
+        range.startYProperty().bind(convertedHeightBoxPlotCenter);
+        range.endYProperty().bind(convertedHeightBoxPlotCenter);
 
         // Quartiles
-        quartiles.xProperty().bind(scaleWidthBinding.apply(boxPlot.q1Property()));
-        quartiles.yProperty().bind(scaleHeightBinding.apply(FACTOR_BOXPLOT_START));
-        quartiles.widthProperty().bind(
-                Bindings.createDoubleBinding(
-                        () -> (boxPlot.getQ3() - boxPlot.getQ1()) * widthFactor.get(),
-                        widthFactor, boxPlot.q3Property(), boxPlot.q1Property()
-                )
-        );
-        quartiles.heightProperty().bind(scaleHeightBinding.apply(FACTOR_BOXPLOT_END));
+        quartiles.xProperty().bind(convertedQ1);
+        quartiles.yProperty().bind(convertedHeightBoxPlotStart);
+        quartiles.widthProperty().bind(convertedQuartileWidth);
+        quartiles.heightProperty().bind(convertedHeightBoxPlotEnd);
 
         // all vertical lines
-        setupVerticalLineBindings(lowerWhiskerLine, boxPlot.lowerWhiskerProperty());
-        setupVerticalLineBindings(upperWhiskerLine, boxPlot.upperWhiskerProperty());
-        setupVerticalLineBindings(medianLine, boxPlot.medianProperty());
-//        setupVerticalLineBindings(currentObjectLine, currentObject, height);
+        setupVerticalLineBindings(lowerWhiskerLine, convertedLowerWhisker);
+        setupVerticalLineBindings(upperWhiskerLine, convertedUpperWhisker);
+        setupVerticalLineBindings(medianLine, convertedMedian);
+        //setupVerticalLineBindings(currentObjectLine, currentObject, height);
 
         // ---- Scale below -----------------------------
-        dataScale.startXProperty().bind(scaleWidthBinding.apply(boxPlot.minProperty()));
-        dataScale.endXProperty().bind(scaleWidthBinding.apply(boxPlot.maxProperty()));
-        dataScale.startYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_END));
-        dataScale.endYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_END));
+        dataScale.startXProperty().bind(convertedMin);
+        dataScale.endXProperty().bind(convertedMax);
+        dataScale.startYProperty().bind(convertedHeightDataScaleEnd);
+        dataScale.endYProperty().bind(convertedHeightDataScaleEnd);
 
         scaleLeft.startXProperty().set(0);
         scaleLeft.endXProperty().bind(dataScale.startXProperty());
-        scaleLeft.startYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_END));
-        scaleLeft.endYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_END));
+        scaleLeft.startYProperty().bind(convertedHeightDataScaleEnd);
+        scaleLeft.endYProperty().bind(convertedHeightDataScaleEnd);
 
         scaleRight.startXProperty().bind(dataScale.endXProperty());
         scaleRight.endXProperty().bind(width);
-        scaleRight.startYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_END));
-        scaleRight.endYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_END));
+        scaleRight.startYProperty().bind(convertedHeightDataScaleEnd);
+        scaleRight.endYProperty().bind(convertedHeightDataScaleEnd);
 
-        drawLabel(minimum, boxPlot.minProperty(), false);
-        drawLabel(maximum, boxPlot.maxProperty(), false);
-        drawLabel(lowerWhiskerLabel, boxPlot.lowerWhiskerProperty(), true);
-        drawLabel(upperWhiskerLabel, boxPlot.upperWhiskerProperty(), true);
-        drawLabel(lowerQuartileLabel, boxPlot.q1Property(), true);
-        drawLabel(upperQuartileLabel, boxPlot.q3Property(), true);
-        drawLabel(medianLabel, boxPlot.medianProperty(), true);
+        drawLabel(minimum, boxPlot.minProperty(), convertedMin, false);
+        drawLabel(maximum, boxPlot.maxProperty(), convertedMax, false);
+        drawLabel(lowerWhiskerLabel, boxPlot.lowerWhiskerProperty(), convertedLowerWhisker, true);
+        drawLabel(upperWhiskerLabel, boxPlot.upperWhiskerProperty(), convertedUpperWhisker, true);
+        drawLabel(lowerQuartileLabel, boxPlot.q1Property(), convertedQ1, true);
+        drawLabel(upperQuartileLabel, boxPlot.q3Property(), convertedQ3, true);
+        drawLabel(medianLabel, boxPlot.medianProperty(), convertedMedian, true);
     }
 
-    private void drawLabel(Label label, ReadOnlyDoubleProperty value, boolean isDataPoint) {
+    private void setupVerticalLineBindings(Line line, Val<Double> convertedValue) {
+        line.startXProperty().bind(convertedValue);
+        line.endXProperty().bind(convertedValue);
+        line.startYProperty().bind(convertedHeightBoxPlotStart);
+        line.endYProperty().bind(convertedHeightBoxPlotEnd);
+    }
+
+    private void drawLabel(Label label, DoubleProperty value, Val<Double> convertedValue, boolean isDataPoint) {
         label.textProperty().bind(value.asString(LABEL_FORMATTING));
-        label.translateXProperty().bind(
-                Bindings.createDoubleBinding(
-                        () -> scaleWidth.apply(value.get()) - (label.widthProperty().get() / 2),
-                        offset, widthFactor, value, label.widthProperty()
-                )
-        );
+        label.translateXProperty().bind(convertedValue);
         if (isDataPoint) {
-            label.translateYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_POINTS_END));
+            label.translateYProperty().bind(convertedHeightDataPointsEnd);
         }else{
-            label.translateYProperty().bind(scaleHeightBinding.apply(FACTOR_DATA_SCALE_LABELS_END));
+            label.translateYProperty().bind(convertedHeightDataScaleLabelsEnd);
         }
     }
 
     private void drawOutlier(T element, double value) {
         System.out.println("Create Outlier: " + element.toString() + " with: " + value);
         Circle outlier = new Circle();
-        outlier.centerYProperty().bind(scaleHeightBinding.apply(FACTOR_BOXPLOT_END/2));
-        outlier.centerXProperty().bind(Bindings.createDoubleBinding(() -> (value-offset.get()) * widthFactor.get(),offset, widthFactor));
+        outlier.centerYProperty().bind(convertedHeightBoxPlotCenter);
+        Val<Double> valueVal = Val.constant(value);
+        Val<Double> convertedValue = Val.combine(valueVal, offsetVar, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+        outlier.centerXProperty().bind(convertedValue);
         outlier.setRadius(5);
         outlier.getStyleClass().add("outliers");
         outlier.setOnMouseClicked(event -> getSkinnable().setCurrentElement(element));
