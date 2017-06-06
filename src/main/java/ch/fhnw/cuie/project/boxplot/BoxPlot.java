@@ -71,7 +71,7 @@ public class BoxPlot<T> {
         return min.get();
     }
 
-    public ReadOnlyDoubleProperty minProperty() {
+    public DoubleProperty minProperty() {
         return min;
     }
 
@@ -79,7 +79,7 @@ public class BoxPlot<T> {
         return lowerWhisker.get();
     }
 
-    public ReadOnlyDoubleProperty lowerWhiskerProperty() {
+    public DoubleProperty lowerWhiskerProperty() {
         return lowerWhisker;
     }
 
@@ -87,7 +87,7 @@ public class BoxPlot<T> {
         return q1.get();
     }
 
-    public ReadOnlyDoubleProperty q1Property() {
+    public DoubleProperty q1Property() {
         return q1;
     }
 
@@ -95,7 +95,7 @@ public class BoxPlot<T> {
         return median.get();
     }
 
-    public ReadOnlyDoubleProperty medianProperty() {
+    public DoubleProperty medianProperty() {
         return median;
     }
 
@@ -103,7 +103,7 @@ public class BoxPlot<T> {
         return q3.get();
     }
 
-    public ReadOnlyDoubleProperty q3Property() {
+    public DoubleProperty q3Property() {
         return q3;
     }
 
@@ -111,7 +111,7 @@ public class BoxPlot<T> {
         return upperWhisker.get();
     }
 
-    public ReadOnlyDoubleProperty upperWhiskerProperty() {
+    public DoubleProperty upperWhiskerProperty() {
         return upperWhisker;
     }
 
@@ -119,7 +119,7 @@ public class BoxPlot<T> {
         return max.get();
     }
 
-    public ReadOnlyDoubleProperty maxProperty() {
+    public DoubleProperty maxProperty() {
         return max;
     }
 
