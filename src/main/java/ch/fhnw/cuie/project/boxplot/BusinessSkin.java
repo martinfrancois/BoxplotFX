@@ -160,23 +160,6 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
             popup.setX(location.getX());
             popup.setY(location.getY());
         });
-
-        editableNode.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case ESCAPE:
-                    getSkinnable().reset();
-                    event.consume();
-                    break;
-                case UP:
-                    getSkinnable().increase();
-                    event.consume();
-                    break;
-                case DOWN:
-                    getSkinnable().decrease();
-                    event.consume();
-                    break;
-            }
-        });
     }
 
     private void setupValueChangedListeners() {
@@ -191,7 +174,7 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
     }
 
     private void setupBindings() {
-        readOnlyNode.textProperty().bind(getSkinnable().valueProperty().asString(BusinessControl.FORMATTED_INTEGER_PATTERN));
+        readOnlyNode.textProperty().bind(getSkinnable().valueProperty().asString());
         editableNode.textProperty().bindBidirectional(getSkinnable().userFacingTextProperty());
 
         editableNode.promptTextProperty().bind(getSkinnable().labelProperty());

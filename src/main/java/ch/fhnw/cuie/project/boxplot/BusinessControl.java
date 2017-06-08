@@ -6,18 +6,11 @@ import javafx.css.PseudoClass;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 
-import java.util.regex.Pattern;
-
 /**
  * @author Dieter Holz
  */
 public class BusinessControl<T> extends Control {
-    static final String FORMATTED_INTEGER_PATTERN = "%,d";
-
-    private static final String INTEGER_REGEX    = "[+-]?[\\d']{1,14}";
-    private static final Pattern INTEGER_PATTERN = Pattern.compile(INTEGER_REGEX);
-
-    private final IntegerProperty value = new SimpleIntegerProperty();
+    private final DoubleProperty value = new SimpleDoubleProperty();
 
     private static final PseudoClass MANDATORY_CLASS = PseudoClass.getPseudoClass("mandatory");
     private static final PseudoClass INVALID_CLASS   = PseudoClass.getPseudoClass("invalid");
@@ -56,21 +49,8 @@ public class BusinessControl<T> extends Control {
         return new BusinessSkin(this);
     }
 
-    public void reset() {
-        setUserFacingText(convertToString(getValue()));
-    }
-
-    public void increase() {
-        setValue(getValue() + 1);
-    }
-
-    public void decrease() {
-        setValue(getValue() - 1);
-    }
-
     private void initializeSelf() {
          getStyleClass().add("businessControl");
-
          setUserFacingText(convertToString(getValue()));
     }
 
@@ -81,41 +61,24 @@ public class BusinessControl<T> extends Control {
                 setErrorMessage("Mandatory Field");
                 return;
             }
-
-            if (isInteger(userInput)) {
-                setInvalid(false);
-                setErrorMessage(null);
-                setValue(convertToInt(userInput));
-            } else {
-                setInvalid(true);
-                setErrorMessage("Not an Integer");
-            }
         });
 
         valueProperty().addListener((observable, oldValue, newValue) -> {
-            setUserFacingText(convertToString(newValue.intValue()));
+            setUserFacingText(convertToString(newValue.doubleValue()));
         });
     }
 
-    private boolean isInteger(String userInput) {
-        return INTEGER_PATTERN.matcher(userInput).matches();
-    }
-
-    private int convertToInt(String userInput) {
-        return Integer.parseInt(userInput);
-    }
-
-    private String convertToString(int newValue) {
-        return String.format(FORMATTED_INTEGER_PATTERN, newValue);
+    private String convertToString(double newValue) {
+        return String.valueOf(newValue);
     }
 
     // all the getters and setters
 
-    public int getValue() {
+    public double getValue() {
         return value.get();
     }
 
-    public IntegerProperty valueProperty() {
+    public DoubleProperty valueProperty() {
         return value;
     }
 
