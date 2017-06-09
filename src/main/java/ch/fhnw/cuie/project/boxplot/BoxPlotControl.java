@@ -1,6 +1,7 @@
 package ch.fhnw.cuie.project.boxplot;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.Control;
@@ -10,7 +11,18 @@ import javafx.scene.control.Skin;
  * @author Dieter Holz
  */
 public class BoxPlotControl<T> extends Control {
+    /**
+     * Used to switch between different outliers when clicking on them.
+     * Changes to the most recently clicked on outlier.
+     */
     private final ObjectProperty<T> currentElement = new SimpleObjectProperty<>();
+
+    /**
+     * Can be used to bind the currently selected item, for example in a TableView,
+     * to be shown in the BoxPlot as well.
+     */
+    private final ObjectProperty<T> selectedElement = new SimpleObjectProperty<>();
+
     private final BoxPlot<T> boxPlot;
 
     public BoxPlotControl(ObservableMap<T, Double> map) {
@@ -48,7 +60,7 @@ public class BoxPlotControl<T> extends Control {
         return currentElement.get();
     }
 
-    public ObjectProperty<T> currentElementProperty() {
+    public ReadOnlyObjectProperty<T> currentElementProperty() {
         return currentElement;
     }
 
@@ -58,5 +70,17 @@ public class BoxPlotControl<T> extends Control {
 
     BoxPlot<T> getBoxPlot() {
         return boxPlot;
+    }
+
+    public T getSelectedElement() {
+        return selectedElement.get();
+    }
+
+    public ObjectProperty<T> selectedElementProperty() {
+        return selectedElement;
+    }
+
+    public void setSelectedElement(T selectedElement) {
+        this.selectedElement.set(selectedElement);
     }
 }
