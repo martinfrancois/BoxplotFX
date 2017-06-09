@@ -74,7 +74,7 @@
 
 .selectedElement {
     -fx-cursor: hand;
-    -fx-fill: blue;
+    -fx-fill: rgba(0,150,201,1);
 }
 
 .boxPlotControl {

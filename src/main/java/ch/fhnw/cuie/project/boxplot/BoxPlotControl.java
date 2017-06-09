@@ -1,8 +1,10 @@
 package ch.fhnw.cuie.project.boxplot;
 
 import java.util.logging.Logger;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.Control;
@@ -25,6 +27,11 @@ public class BoxPlotControl<T> extends Control {
      * to be shown in the BoxPlot as well.
      */
     private final ObjectProperty<T> selectedElement = new SimpleObjectProperty<>();
+
+    /**
+     * Determines whether or not the labels below the BoxPlot (values of the whiskers etc.) should be shown.
+     */
+    private final BooleanProperty showValueLabels = new SimpleBooleanProperty(true);
 
     private final BoxPlot<T> boxPlot;
 
@@ -85,5 +92,17 @@ public class BoxPlotControl<T> extends Control {
 
     public void setSelectedElement(T selectedElement) {
         this.selectedElement.set(selectedElement);
+    }
+
+    public boolean isShowValueLabels() {
+        return showValueLabels.get();
+    }
+
+    public BooleanProperty showValueLabelsProperty() {
+        return showValueLabels;
+    }
+
+    public void setShowValueLabels(boolean showValueLabels) {
+        this.showValueLabels.set(showValueLabels);
     }
 }

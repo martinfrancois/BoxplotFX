@@ -326,7 +326,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         TetraFunction<Double, Double, Double, Double, Double> widthConverterExtended = (doubleValue, offset, widthFactor, labelWidthVal) -> ((doubleValue - offset) * widthFactor) - (labelWidthVal / 2);
         Val<Double> convertedValue = Val.combine(valueVar, offsetVar, widthFactorVar, labelWidth, widthConverterExtended).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
         label.translateXProperty().bind(convertedValue);
-        if (isDataPoint) {
+        if (isDataPoint && getSkinnable().isShowValueLabels()) {
             label.translateYProperty().bind(convertedHeightDataPointsEnd);
         }else{
             label.translateYProperty().bind(convertedHeightDataScaleLabelsEnd);
