@@ -54,7 +54,7 @@ public class BusinessControl<T> extends Control {
     private void setupLogger() {
         Logger log = LogManager.getLogManager().getLogger("");
         for (Handler h : log.getHandlers()) {
-            h.setLevel(Level.SEVERE);
+            h.setLevel(Level.INFO);
         }
     }
 

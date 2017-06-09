@@ -56,6 +56,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private Line upperWhiskerLine;
     private Line medianLine;
     private Line currentObjectLine;
+    private Circle selectedElement;
 
     // ----- Scale below -------------------------------
     private Line scaleLeft;
@@ -68,7 +69,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private Label lowerQuartileLabel;
     private Label upperQuartileLabel;
     private Label medianLabel;
-    private Label currentObjectLabel;
 
     // ------ Variables ---------------------------------
     private static final Duration ANIMATION_DURATION = Duration.ofMillis(500);
@@ -109,9 +109,9 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         layoutParts();
         setupAnimations();
         setupEventHandlers();
-        setupAnimatedBindings();
-        setupBindings();
         initCircles();
+        setupBindings();
+        setupAnimatedBindings();
         setupValueChangeListeners();
     }
 
@@ -149,7 +149,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         lowerQuartileLabel = new Label();
         upperQuartileLabel = new Label();
         medianLabel = new Label();
-        currentObjectLabel = new Label();
     }
 
     private void layoutParts() {
@@ -214,10 +213,20 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
         getSkinnable().selectedElementProperty().addListener((observable, oldObject, newObject) -> {
             if (oldObject != newObject) {
-                removeCircle((T)oldObject);
-                drawSelectedElement((T)newObject);
+                LOGGER.info("SelectedElement changed from: " + oldObject + " to: " + newObject);
+                drawSelectedElement((T) getSkinnable().getSelectedElement());
             }
         });
+
+        data.addListener(
+            (MapChangeListener<? super T, ? super Double>) change -> {
+                T currentlySelectedElement = (T)getSkinnable().getSelectedElement();
+                LOGGER.info("Changed Data for selectedElement: " + currentlySelectedElement);
+                if (change.getKey() == currentlySelectedElement) {
+                    drawSelectedElement(currentlySelectedElement);
+                }
+            }
+        );
     }
 
     private void setupBindings() {
@@ -247,6 +256,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                 }, boxPlot.maxProperty(), boxPlot.upperWhiskerProperty(), width, offset
             )
         );
+
+        selectedElement.visibleProperty().bind(getSkinnable().selectedElementProperty().isNotNull());
     }
 
     private void setupAnimatedBindings() {
@@ -348,11 +359,20 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void drawSelectedElement(T element) {
+        double value = 0;
+        if (data.containsKey(element)) {
+            value = data.get(element);
+        }
+        if(selectedElement == null){
+            LOGGER.info("Create circle for selectedElement");
+            selectedElement = makeCircle(element, value);
+            selectedElement.getStyleClass().add("selectedElement");
+        }
         if(element != null){
-            double value = data.get(element);
-            LOGGER.info("Create SelectedElement: " + element.toString() + " with: " + value);
-            Circle outlier = makeCircle(element, value);
-            outlier.getStyleClass().add("selectedElement");
+            LOGGER.info("Update SelectedElement: " + element.toString() + " with: " + value);
+            setupCircleLayout(selectedElement, value);
+            setupCircleTooltip(selectedElement, element, value);
+            selectedElement.toFront();
         }
     }
 
@@ -360,21 +380,32 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         Circle circle = new Circle();
         circles.put(element, circle);
 
+        setupCircleLayout(circle, value);
+        setupCircleTooltip(circle, element, value);
+
+        drawingPane.getChildren().add(circle);
+        return circle;
+    }
+
+    private void setupCircleTooltip(Circle circle, T element, double value) {
+        if(element != null){
+            // set tooltip
+            Tooltip tooltip = new Tooltip(element.toString() + "\n" + value);
+            Tooltip.install(
+                circle,
+                tooltip
+            );
+            removeTooltipDelay(tooltip);
+        }
+    }
+
+    private void setupCircleLayout(Circle circle, double value) {
+        // set size and layout
         circle.centerYProperty().bind(convertedHeightBoxPlotCenter);
         Val<Double> valueVal = Val.constant(value);
         Val<Double> convertedValue = Val.combine(valueVal, offsetVar, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
         circle.centerXProperty().bind(convertedValue);
         circle.setRadius(5);
-
-        Tooltip tooltip = new Tooltip(element.toString() + "\n" + value);
-        Tooltip.install(
-            circle,
-            tooltip
-        );
-        removeTooltipDelay(tooltip);
-
-        drawingPane.getChildren().add(circle);
-        return circle;
     }
 
     public static void removeTooltipDelay(Tooltip tooltip) {
@@ -408,7 +439,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                     drawOutlier(entry.getKey(), entry.getValue());
                 });
         // currently selected element
-        drawSelectedElement((T) getSkinnable().getSelectedElement());
+        drawSelectedElement((T)getSkinnable().getSelectedElement());
     }
 
     public double getOffset() {
