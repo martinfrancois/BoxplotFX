@@ -72,10 +72,10 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private final DoubleProperty height = new SimpleDoubleProperty();
     private final DoubleProperty widthFactor = new SimpleDoubleProperty();
     private final DoubleProperty offset = new SimpleDoubleProperty();
-    Var<Double> widthVar = Var.doubleVar(width);
-    Var<Double> heightVar = Var.doubleVar(height);
-    Var<Double> widthFactorVar = Var.doubleVar(widthFactor);
-    Var<Double> offsetVar = Var.doubleVar(offset);
+    private Var<Double> widthVar = Var.doubleVar(width);
+    private Var<Double> heightVar = Var.doubleVar(height);
+    private Var<Double> widthFactorVar = Var.doubleVar(widthFactor);
+    private Var<Double> offsetVar = Var.doubleVar(offset);
 
     // Height Conversions
     private static final Val<Double> FACTOR_BOXPLOT_START = Val.constant(0d);
@@ -84,12 +84,12 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private static final Val<Double> FACTOR_DATA_SCALE_END = Val.constant(0.97d);
     private static final Val<Double> FACTOR_DATA_SCALE_LABELS_END = Val.constant(1d);
     private static final Val<Double> FACTOR_BOXPLOT_CENTER = Val.constant(FACTOR_BOXPLOT_END.getValue() / 2);
-    Val<Double> convertedHeightBoxPlotStart = Val.combine(FACTOR_BOXPLOT_START, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
-    Val<Double> convertedHeightBoxPlotEnd = Val.combine(FACTOR_BOXPLOT_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
-    Val<Double> convertedHeightDataPointsEnd = Val.combine(FACTOR_DATA_POINTS_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
-    Val<Double> convertedHeightDataScaleEnd = Val.combine(FACTOR_DATA_SCALE_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
-    Val<Double> convertedHeightDataScaleLabelsEnd = Val.combine(FACTOR_DATA_SCALE_LABELS_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
-    Val<Double> convertedHeightBoxPlotCenter = Val.combine(FACTOR_BOXPLOT_CENTER, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+    private Val<Double> convertedHeightBoxPlotStart = Val.combine(FACTOR_BOXPLOT_START, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+    private Val<Double> convertedHeightBoxPlotEnd = Val.combine(FACTOR_BOXPLOT_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+    private Val<Double> convertedHeightDataPointsEnd = Val.combine(FACTOR_DATA_POINTS_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+    private Val<Double> convertedHeightDataScaleEnd = Val.combine(FACTOR_DATA_SCALE_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+    private Val<Double> convertedHeightDataScaleLabelsEnd = Val.combine(FACTOR_DATA_SCALE_LABELS_END, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
+    private Val<Double> convertedHeightBoxPlotCenter = Val.combine(FACTOR_BOXPLOT_CENTER, heightVar, HEIGHT_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
 
     public BoxPlotSkin(BoxPlotControl control) {
         super(control);
