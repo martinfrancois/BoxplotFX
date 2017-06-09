@@ -43,11 +43,11 @@ public class BoxPlotControl<T> extends Control {
     private void addValueChangeListener() {
         currentElement.addListener((observable, oldValue, newValue) -> {
             String output = "";
-            if (oldValue != newValue) {
-                output = "currentElement ";
-                if(oldValue != null){
-                    output += "from: " + oldValue.toString() + " ";
-                }
+            output = "currentElement ";
+            if(oldValue != null){
+                output += "from: " + oldValue.toString() + " ";
+            }
+            if(newValue != null){
                 output += "to: " + newValue.toString();
             }
             System.out.println(output);
@@ -64,7 +64,7 @@ public class BoxPlotControl<T> extends Control {
         return currentElement;
     }
 
-    private void setCurrentElement(T currentElement) {
+    protected void setCurrentElement(T currentElement) {
         this.currentElement.set(currentElement);
     }
 

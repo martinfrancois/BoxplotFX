@@ -128,18 +128,23 @@ public class DemoPane extends BorderPane {
             }
         });
 
+        // change selection in table when clicking on an outlier
         businessControl.getBoxPlotControl().currentElementProperty().addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> table.getSelectionModel().select(newValue));
         });
 
+        // change value inside business control upon selection in tableView
         table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            Country selectedCountry = (Country)newValue;
-            businessControl.setValue((int)selectedCountry.getPopulation());
+            if(newValue != null){
+                Country selectedCountry = (Country)newValue;
+                businessControl.setValue((int)selectedCountry.getPopulation());
+            }
         });
     }
 
     private void setupBindings() {
-
+        // show currently selected item in table in in the boxplot
+        businessControl.getBoxPlotControl().selectedElementProperty().bind(table.getSelectionModel().selectedItemProperty());
     }
 
 }

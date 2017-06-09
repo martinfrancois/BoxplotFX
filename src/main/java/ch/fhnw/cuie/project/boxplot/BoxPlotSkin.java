@@ -1,7 +1,6 @@
 package ch.fhnw.cuie.project.boxplot;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -34,6 +33,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private static final double STROKE_WIDTH = 3;
     private final ObservableMap<T, Double> outliers;
     private final BoxPlot<T> boxPlot;
+    private final ObservableMap<T, Double> data;
     private final HashMap<T, Circle> circles = new HashMap<>();
 
     private Pane drawingPane;
@@ -95,6 +95,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         super(control);
         boxPlot = getSkinnable().getBoxPlot();
         outliers = boxPlot.getOutliers();
+        data = boxPlot.getData();
         initializeSelf();
         initializeParts();
         layoutParts();
@@ -102,7 +103,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         setupEventHandlers();
         setupAnimatedBindings();
         setupBindings();
-        initOutliers();
+        initCircles();
         setupValueChangeListeners();
 
     }
@@ -198,9 +199,16 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private void setupValueChangeListeners() {
         outliers.addListener((MapChangeListener<? super T, ? super Double>) change -> {
             if (change.wasRemoved()) {
-                removeOutlier(change.getKey());
+                removeCircle(change.getKey());
             } else if (change.wasAdded()) {
                 drawOutlier(change.getKey(), change.getValueAdded());
+            }
+        });
+
+        getSkinnable().selectedElementProperty().addListener((observable, oldObject, newObject) -> {
+            if (oldObject != newObject) {
+                removeCircle((T)oldObject);
+                drawSelectedElement((T)newObject);
             }
         });
     }
@@ -324,28 +332,49 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private void drawOutlier(T element, double value) {
         System.out.println("Create Outlier: " + element.toString() + " with: " + value);
-        Circle outlier = new Circle();
-        outlier.centerYProperty().bind(convertedHeightBoxPlotCenter);
+        Circle outlier = makeCircle(element, value);
+        outlier.setOnMouseClicked(event -> {
+            getSkinnable().setCurrentElement(null);
+            getSkinnable().setCurrentElement(element);
+        });
+        outlier.getStyleClass().add("outliers");
+    }
+
+    private void drawSelectedElement(T element) {
+        if(element != null){
+            double value = data.get(element);
+            System.out.println("Create SelectedElement: " + element.toString() + " with: " + value);
+            Circle outlier = makeCircle(element, value);
+            outlier.getStyleClass().add("selectedElement");
+        }
+    }
+
+    private Circle makeCircle(T element, double value){
+        Circle circle = new Circle();
+        circle.centerYProperty().bind(convertedHeightBoxPlotCenter);
         Val<Double> valueVal = Val.constant(value);
         Val<Double> convertedValue = Val.combine(valueVal, offsetVar, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
-        outlier.centerXProperty().bind(convertedValue);
-        outlier.setRadius(5);
-        outlier.getStyleClass().add("outliers");
-        outlier.setOnMouseClicked(event -> getSkinnable().setCurrentElement(element));
-        circles.put(element, outlier);
-        drawingPane.getChildren().add(outlier);
+        circle.centerXProperty().bind(convertedValue);
+        circle.setRadius(5);
+        circles.put(element, circle);
+        drawingPane.getChildren().add(circle);
+        return circle;
     }
 
-    private void removeOutlier(T element) {
-        // remove the outlier associated with this element
+    private void removeCircle(T element) {
+        // remove the circle associated with this element
         drawingPane.getChildren().remove(circles.get(element));
+        circles.remove(element);
     }
 
-    private void initOutliers() {
+    private void initCircles() {
+        // outliers
         outliers.entrySet().stream()
                 .forEach(entry -> {
                     drawOutlier(entry.getKey(), entry.getValue());
                 });
+        // currently selected element
+        drawSelectedElement((T) getSkinnable().getSelectedElement());
     }
 
     public double getOffset() {

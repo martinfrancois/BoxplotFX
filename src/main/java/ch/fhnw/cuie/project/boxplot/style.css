@@ -72,6 +72,11 @@
     -fx-cursor: hand;
 }
 
+.selectedElement {
+    -fx-cursor: hand;
+    -fx-fill: blue;
+}
+
 .boxPlotControl {
     -fx-pref-width: 600;
     -fx-pref-height: 200;
