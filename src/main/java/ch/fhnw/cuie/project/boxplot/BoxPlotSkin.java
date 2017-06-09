@@ -1,7 +1,11 @@
 package ch.fhnw.cuie.project.boxplot;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -9,6 +13,7 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -108,7 +113,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         setupBindings();
         initCircles();
         setupValueChangeListeners();
-
     }
 
     private void initializeSelf() {
@@ -354,14 +358,41 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private Circle makeCircle(T element, double value){
         Circle circle = new Circle();
+        circles.put(element, circle);
+
         circle.centerYProperty().bind(convertedHeightBoxPlotCenter);
         Val<Double> valueVal = Val.constant(value);
         Val<Double> convertedValue = Val.combine(valueVal, offsetVar, widthFactorVar, WIDTH_CONVERTER).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
         circle.centerXProperty().bind(convertedValue);
         circle.setRadius(5);
-        circles.put(element, circle);
+
+        Tooltip tooltip = new Tooltip(element.toString() + "\n" + value);
+        Tooltip.install(
+            circle,
+            tooltip
+        );
+        removeTooltipDelay(tooltip);
+
         drawingPane.getChildren().add(circle);
         return circle;
+    }
+
+    public static void removeTooltipDelay(Tooltip tooltip) {
+        // from: https://stackoverflow.com/questions/26854301/control-javafx-tooltip-delay
+        try {
+            Field fieldBehavior = tooltip.getClass().getDeclaredField("BEHAVIOR");
+            fieldBehavior.setAccessible(true);
+            Object objBehavior = fieldBehavior.get(tooltip);
+
+            Field fieldTimer = objBehavior.getClass().getDeclaredField("activationTimer");
+            fieldTimer.setAccessible(true);
+            Timeline objTimer = (Timeline) fieldTimer.get(objBehavior);
+
+            objTimer.getKeyFrames().clear();
+            objTimer.getKeyFrames().add(new KeyFrame(new javafx.util.Duration(0)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void removeCircle(T element) {
