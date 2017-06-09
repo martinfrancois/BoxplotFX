@@ -64,7 +64,7 @@ public class BoxPlotControl<T> extends Control {
         return currentElement;
     }
 
-    public void setCurrentElement(T currentElement) {
+    private void setCurrentElement(T currentElement) {
         this.currentElement.set(currentElement);
     }
 
