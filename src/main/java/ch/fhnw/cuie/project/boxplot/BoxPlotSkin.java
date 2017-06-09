@@ -1,6 +1,7 @@
 package ch.fhnw.cuie.project.boxplot;
 
 import java.util.function.BiFunction;
+import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -28,6 +29,8 @@ import static org.reactfx.util.Interpolator.EASE_BOTH_DOUBLE;
  * @author Dieter Holz
  */
 public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
+    private final static Logger LOGGER = Logger.getLogger(BoxPlotSkin.class.getName());
+
     private static final String DECIMALS = "0";
     public static final String LABEL_FORMATTING = "%." + DECIMALS + "f";
     private static final double STROKE_WIDTH = 3;
@@ -331,7 +334,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void drawOutlier(T element, double value) {
-        System.out.println("Create Outlier: " + element.toString() + " with: " + value);
+        LOGGER.info("Create Outlier: " + element.toString() + " with: " + value);
         Circle outlier = makeCircle(element, value);
         outlier.setOnMouseClicked(event -> {
             getSkinnable().setCurrentElement(null);
@@ -343,7 +346,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private void drawSelectedElement(T element) {
         if(element != null){
             double value = data.get(element);
-            System.out.println("Create SelectedElement: " + element.toString() + " with: " + value);
+            LOGGER.info("Create SelectedElement: " + element.toString() + " with: " + value);
             Circle outlier = makeCircle(element, value);
             outlier.getStyleClass().add("selectedElement");
         }

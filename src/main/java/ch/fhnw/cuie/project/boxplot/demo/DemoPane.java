@@ -4,6 +4,9 @@ import ch.fhnw.cuie.project.boxplot.BusinessControl;
 import com.univocity.parsers.common.processor.RowListProcessor;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -24,6 +27,8 @@ import java.util.List;
  * @author Dieter Holz
  */
 public class DemoPane extends BorderPane {
+    private final static Logger LOGGER = Logger.getLogger(DemoPane.class.getName());
+
     private BusinessControl<Country> businessControl;
 
     private ObservableList<Country> countries = FXCollections.observableArrayList();
@@ -118,12 +123,12 @@ public class DemoPane extends BorderPane {
                 if (!(change.wasPermutated() || change.wasUpdated())) {
                     change.getRemoved().forEach(country -> {
                         map.remove(country, country.getPopulation());
-                        System.out.println("Removed: " + country.getName() + " " + country.getPopulation());
+                        LOGGER.info("Removed: " + country.getName() + " " + country.getPopulation());
                     });
                 }
                 change.getAddedSubList().forEach(country -> {
                     map.put(country, country.getPopulation());
-                    System.out.println("Added: " + country.getName() + " " + country.getPopulation());
+                    LOGGER.info("Added: " + country.getName() + " " + country.getPopulation());
                 });
             }
         });

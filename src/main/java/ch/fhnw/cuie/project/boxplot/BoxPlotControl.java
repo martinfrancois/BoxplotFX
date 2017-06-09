@@ -1,5 +1,6 @@
 package ch.fhnw.cuie.project.boxplot;
 
+import java.util.logging.Logger;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -11,6 +12,8 @@ import javafx.scene.control.Skin;
  * @author Dieter Holz
  */
 public class BoxPlotControl<T> extends Control {
+    private final static Logger LOGGER = Logger.getLogger(BoxPlotControl.class.getName());
+
     /**
      * Used to switch between different outliers when clicking on them.
      * Changes to the most recently clicked on outlier.
@@ -50,7 +53,7 @@ public class BoxPlotControl<T> extends Control {
             if(newValue != null){
                 output += "to: " + newValue.toString();
             }
-            System.out.println(output);
+            LOGGER.info(output);
         });
     }
 

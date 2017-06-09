@@ -1,5 +1,6 @@
 package ch.fhnw.cuie.project.boxplot;
 
+import java.util.logging.Logger;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -16,6 +17,8 @@ import static com.google.common.math.Quantiles.quartiles;
  * Created by François Martin on 29.05.17.
  */
 public class BoxPlot<T> {
+    private final static Logger LOGGER = Logger.getLogger(BoxPlot.class.getName());
+
     private ObservableMap<T, Double> data;
     private ObservableMap<T, Double> outliers = FXCollections.observableHashMap();
 

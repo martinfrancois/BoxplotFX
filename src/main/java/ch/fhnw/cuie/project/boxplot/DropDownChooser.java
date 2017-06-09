@@ -1,11 +1,14 @@
 package ch.fhnw.cuie.project.boxplot;
 
+import java.util.logging.Logger;
 import javafx.scene.layout.VBox;
 
 /**
  * @author Dieter Holz
  */
 public class DropDownChooser<T> extends VBox {
+    private final static Logger LOGGER = Logger.getLogger(DropDownChooser.class.getName());
+
     private static final String FONTS_CSS = "fonts.css";
     private static final String STYLE_CSS = "dropDownChooser.css";
 
