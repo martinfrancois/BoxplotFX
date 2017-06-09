@@ -1,5 +1,6 @@
 package ch.fhnw.cuie.project.boxplot;
 
+import java.util.logging.Logger;
 import javafx.animation.*;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -20,6 +21,8 @@ import java.util.Arrays;
  * @author Dieter Holz
  */
 public class BusinessSkin extends SkinBase<BusinessControl> {
+    private final static Logger LOGGER = Logger.getLogger(BusinessSkin.class.getName());
+
     private static final int IMG_SIZE   = 12;
     private static final int IMG_OFFSET = 4;
 

@@ -1,5 +1,9 @@
 package ch.fhnw.cuie.project.boxplot;
 
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import javafx.beans.property.*;
 import javafx.collections.ObservableMap;
 import javafx.css.PseudoClass;
@@ -10,6 +14,8 @@ import javafx.scene.control.Skin;
  * @author Dieter Holz
  */
 public class BusinessControl<T> extends Control {
+    private final static Logger LOGGER = Logger.getLogger(BusinessControl.class.getName());
+
     private final DoubleProperty value = new SimpleDoubleProperty();
 
     private static final PseudoClass MANDATORY_CLASS = PseudoClass.getPseudoClass("mandatory");
@@ -38,10 +44,18 @@ public class BusinessControl<T> extends Control {
     private final BoxPlotControl<T> boxPlotControl;
 
     public BusinessControl(ObservableMap<T, Double> map) {
+        setupLogger();
         this.map = map;
         boxPlotControl = new BoxPlotControl<>(map);
         initializeSelf();
         addValueChangeListener();
+    }
+
+    private void setupLogger() {
+        Logger log = LogManager.getLogManager().getLogger("");
+        for (Handler h : log.getHandlers()) {
+            h.setLevel(Level.SEVERE);
+        }
     }
 
     @Override
