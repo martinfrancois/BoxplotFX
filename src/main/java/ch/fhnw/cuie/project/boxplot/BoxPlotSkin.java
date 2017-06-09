@@ -55,7 +55,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private Line lowerWhiskerLine;
     private Line upperWhiskerLine;
     private Line medianLine;
-    private Line currentObjectLine;
     private Circle selectedElement;
 
     // ----- Scale below -------------------------------
@@ -136,7 +135,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         lowerWhiskerLine = new Line();
         upperWhiskerLine = new Line();
         medianLine = new Line();
-        currentObjectLine = new Line();
 
         // ---- Scale below -----------------------------
         scaleLeft = new Line();
@@ -158,7 +156,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                 lowerWhiskerLine,
                 upperWhiskerLine,
                 medianLine
-//                currentObjectLine
         );
         drawingPane.getChildren().addAll(
                 scaleLeft,
@@ -171,7 +168,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                 lowerQuartileLabel,
                 upperQuartileLabel,
                 medianLabel
-//                currentObjectLabel
         );
         getChildren().add(drawingPane);
 
@@ -187,7 +183,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         upperWhiskerLine.setStrokeWidth(STROKE_WIDTH);
         medianLine.setStrokeWidth(STROKE_WIDTH);
         upperWhiskerLine.setStroke(Color.rgb(138, 0, 138));
-        currentObjectLine.setStrokeWidth(STROKE_WIDTH);
 
         dataScale.setStroke(Color.rgb(255, 200, 0));
         dataScale.setStrokeWidth(STROKE_WIDTH);
