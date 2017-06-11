@@ -1,7 +1,10 @@
 package ch.fhnw.cuie.project.boxplot;
 
-import java.lang.reflect.Constructor;
+import static org.reactfx.util.Interpolator.EASE_BOTH_DOUBLE;
+
 import java.lang.reflect.Field;
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
@@ -24,11 +27,6 @@ import org.reactfx.util.TetraFunction;
 import org.reactfx.util.TriFunction;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
-
-import java.time.Duration;
-import java.util.HashMap;
-
-import static org.reactfx.util.Interpolator.EASE_BOTH_DOUBLE;
 
 /**
  * @author Dieter Holz
@@ -330,15 +328,20 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private void drawLabel(Label label, DoubleProperty value, boolean isDataPoint) {
-        label.textProperty().bind(value.asString(LABEL_FORMATTING));
+        LOGGER.info("Drawing label: " + label.getText() + " with value: " + value.get() + " is a datapoint?: " + isDataPoint);
+        if (!isDataPoint || getSkinnable().isShowValueLabels()) {
+            label.textProperty().bind(value.asString(LABEL_FORMATTING));
+        } else {
+            label.setText("");
+        }
         Var<Double> valueVar = Var.doubleVar(value);
         Val<Double> labelWidth = Val.wrap(label.widthProperty().asObject());
         TetraFunction<Double, Double, Double, Double, Double> widthConverterExtended = (doubleValue, offset, widthFactor, labelWidthVal) -> ((doubleValue - offset) * widthFactor) - (labelWidthVal / 2);
         Val<Double> convertedValue = Val.combine(valueVar, offsetVar, widthFactorVar, labelWidth, widthConverterExtended).animate(ANIMATION_DURATION, ANIMATION_INTERPOLATOR);
         label.translateXProperty().bind(convertedValue);
-        if (isDataPoint && getSkinnable().isShowValueLabels()) {
+        if (isDataPoint) {
             label.translateYProperty().bind(convertedHeightDataPointsEnd);
-        }else{
+        } else {
             label.translateYProperty().bind(convertedHeightDataScaleLabelsEnd);
         }
     }
