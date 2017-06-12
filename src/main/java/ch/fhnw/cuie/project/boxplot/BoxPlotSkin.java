@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import org.reactfx.util.Interpolator;
 import org.reactfx.util.TetraFunction;
 import org.reactfx.util.TriFunction;
@@ -220,6 +221,24 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                 }
             }
         );
+
+        boxPlot.lowerWhiskerProperty().addListener((observable, oldValue, newValue) -> {
+            setupShapeTooltip(lowerWhiskerLine, (T) "Lower Whisker", newValue.doubleValue());
+        });
+
+        boxPlot.medianProperty().addListener((observable, oldValue, newValue) -> {
+            setupShapeTooltip(medianLine, (T) "Median", newValue.doubleValue());
+        });
+
+        boxPlot.upperWhiskerProperty().addListener((observable, oldValue, newValue) -> {
+            setupShapeTooltip(upperWhiskerLine, (T) "Upper Whisker", newValue.doubleValue());
+        });
+
+        boxPlot.q1Property().addListener((observable, oldValue, newValue) -> {
+//            if(getNode().getScene().mouse)
+
+//            setupShapeTooltip(quartiles,)
+        });
     }
 
     private void setupBindings() {
@@ -369,7 +388,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         if(element != null){
             LOGGER.info("Update SelectedElement: " + element.toString() + " with: " + value);
             setupCircleLayout(selectedElement, value);
-            setupCircleTooltip(selectedElement, element, value);
+            setupShapeTooltip(selectedElement, element, value);
             selectedElement.toFront();
         }
     }
@@ -379,18 +398,18 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         circles.put(element, circle);
 
         setupCircleLayout(circle, value);
-        setupCircleTooltip(circle, element, value);
+        setupShapeTooltip(circle, element, value);
 
         drawingPane.getChildren().add(circle);
         return circle;
     }
 
-    private void setupCircleTooltip(Circle circle, T element, double value) {
+    private void setupShapeTooltip(Shape shape, T element, double value) {
         if(element != null){
             // set tooltip
             Tooltip tooltip = new Tooltip(element.toString() + "\n" + value);
             Tooltip.install(
-                circle,
+                shape,
                 tooltip
             );
             removeTooltipDelay(tooltip);
