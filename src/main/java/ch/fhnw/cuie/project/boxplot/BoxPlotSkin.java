@@ -440,8 +440,8 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         Stream<Double> valueStream = Arrays.stream(value).boxed();
         return Streams.zip(
             labelStream, valueStream,
-            (label, val) -> label + "\n" + val
-        ).collect(Collectors.joining("\n"));
+            (label, val) -> label + "\n" + val             // add a "\n" between each label name and the value
+        ).collect(Collectors.joining("\n")); // add all label and value pairs together, separated by a "\n"
     }
 
     private void setupCircleLayout(Circle circle, double value) {
