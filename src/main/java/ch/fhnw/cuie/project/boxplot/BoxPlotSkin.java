@@ -2,12 +2,20 @@ package ch.fhnw.cuie.project.boxplot;
 
 import static org.reactfx.util.Interpolator.EASE_BOTH_DOUBLE;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Streams;
 import java.lang.reflect.Field;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.StringJoiner;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
@@ -428,22 +436,10 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     private String getTooltipText(T element, double[] value) {
         String text = "";
         String elem = element.toString();
-        for (int i = 0; i < value.length; ++i) {
-            int j = 0;
-            int k = elem.length();
-            boolean found = false;
-            while (j < elem.length() && !found) {
-                if (elem.charAt(j) == ',') {
-                    k = j;
-                    found = true;
-                }
-                j++;
-            }
-            text += elem.substring(0, k) + "\n" + value[i];
-            k++;
-            if (k < elem.length())
-                elem = "\n" + elem.substring(k, elem.length());
-        }
+        Iterable<String> labels = Splitter.on(',').split(elem);
+        Stream<String> stream1 = Streams.stream(labels);
+        Stream<Double> stream2 = Arrays.stream(value).boxed();
+        text = Streams.zip(stream1, stream2, (s, aDouble) -> s + "\n" + aDouble).collect(Collectors.joining("\n"));
         return text;
     }
 
