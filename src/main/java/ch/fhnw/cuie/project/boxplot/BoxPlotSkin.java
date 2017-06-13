@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
@@ -135,6 +136,11 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         upperWhiskerLine = new Line();
         medianLine = new Line();
 
+        setupShapeTooltip(quartiles, (T) "Lower Quartile,Upper Quartile", boxPlot.q1Property().get(), boxPlot.q3Property().get());
+        setupShapeTooltip(lowerWhiskerLine, (T) "Lower Whisker", boxPlot.lowerWhiskerProperty().get());
+        setupShapeTooltip(upperWhiskerLine, (T) "Upper Whisker", boxPlot.upperWhiskerProperty().get());
+        setupShapeTooltip(medianLine, (T) "Median", boxPlot.medianProperty().get());
+
         // ---- Scale below -----------------------------
         scaleLeft = new Line();
         dataScale = new Line();
@@ -213,14 +219,22 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         });
 
         data.addListener(
-            (MapChangeListener<? super T, ? super Double>) change -> {
-                T currentlySelectedElement = (T)getSkinnable().getSelectedElement();
-                LOGGER.info("Changed Data for selectedElement: " + currentlySelectedElement);
-                if (change.getKey() == currentlySelectedElement) {
-                    drawSelectedElement(currentlySelectedElement);
+                (MapChangeListener<? super T, ? super Double>) change -> {
+                    T currentlySelectedElement = (T) getSkinnable().getSelectedElement();
+                    LOGGER.info("Changed Data for selectedElement: " + currentlySelectedElement);
+                    if (change.getKey() == currentlySelectedElement) {
+                        drawSelectedElement(currentlySelectedElement);
+                    }
                 }
-            }
         );
+
+        boxPlot.q1Property().addListener((observable, oldValue, newValue) -> {
+            setupShapeTooltip(quartiles, (T) "Lower Quartile,Upper Quartile", newValue.doubleValue(), boxPlot.q3Property().get());
+        });
+
+        boxPlot.q3Property().addListener((observable, oldValue, newValue) -> {
+            setupShapeTooltip(quartiles, (T) "Lower Quartile,Upper Quartile", boxPlot.q1Property().get(), newValue.doubleValue());
+        });
 
         boxPlot.lowerWhiskerProperty().addListener((observable, oldValue, newValue) -> {
             setupShapeTooltip(lowerWhiskerLine, (T) "Lower Whisker", newValue.doubleValue());
@@ -234,11 +248,6 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
             setupShapeTooltip(upperWhiskerLine, (T) "Upper Whisker", newValue.doubleValue());
         });
 
-        boxPlot.q1Property().addListener((observable, oldValue, newValue) -> {
-//            if(getNode().getScene().mouse)
-
-//            setupShapeTooltip(quartiles,)
-        });
     }
 
     private void setupBindings() {
@@ -246,27 +255,27 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         height.bind(drawingPane.heightProperty());
 
         offset.bind(
-            Bindings.createDoubleBinding(
-                () -> {
-                    if (boxPlot.getMin() < boxPlot.getLowerWhisker()){
-                        return boxPlot.getMin();
-                    }
-                    return boxPlot.getLowerWhisker();
-                }, boxPlot.minProperty(), boxPlot.lowerWhiskerProperty()
-            )
+                Bindings.createDoubleBinding(
+                        () -> {
+                            if (boxPlot.getMin() < boxPlot.getLowerWhisker()) {
+                                return boxPlot.getMin();
+                            }
+                            return boxPlot.getLowerWhisker();
+                        }, boxPlot.minProperty(), boxPlot.lowerWhiskerProperty()
+                )
         );
 
         widthFactor.bind(
-            Bindings.createDoubleBinding(
-                () -> {
-                    if (boxPlot.getMax() > boxPlot.getUpperWhisker()) {
-                        scaleRight.setVisible(false);
-                        return width.get() / (boxPlot.getMax() - offset.get());
-                    }
-                    scaleRight.setVisible(true);
-                    return width.get() / (boxPlot.getUpperWhisker() - offset.get());
-                }, boxPlot.maxProperty(), boxPlot.upperWhiskerProperty(), width, offset
-            )
+                Bindings.createDoubleBinding(
+                        () -> {
+                            if (boxPlot.getMax() > boxPlot.getUpperWhisker()) {
+                                scaleRight.setVisible(false);
+                                return width.get() / (boxPlot.getMax() - offset.get());
+                            }
+                            scaleRight.setVisible(true);
+                            return width.get() / (boxPlot.getUpperWhisker() - offset.get());
+                        }, boxPlot.maxProperty(), boxPlot.upperWhiskerProperty(), width, offset
+                )
         );
 
         selectedElement.visibleProperty().bind(getSkinnable().selectedElementProperty().isNotNull());
@@ -380,12 +389,12 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         if (data.containsKey(element)) {
             value = data.get(element);
         }
-        if(selectedElement == null){
+        if (selectedElement == null) {
             LOGGER.info("Create circle for selectedElement");
             selectedElement = makeCircle(element, value);
             selectedElement.getStyleClass().add("selectedElement");
         }
-        if(element != null){
+        if (element != null) {
             LOGGER.info("Update SelectedElement: " + element.toString() + " with: " + value);
             setupCircleLayout(selectedElement, value);
             setupShapeTooltip(selectedElement, element, value);
@@ -393,7 +402,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         }
     }
 
-    private Circle makeCircle(T element, double value){
+    private Circle makeCircle(T element, double value) {
         Circle circle = new Circle();
         circles.put(element, circle);
 
@@ -404,16 +413,38 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         return circle;
     }
 
-    private void setupShapeTooltip(Shape shape, T element, double value) {
-        if(element != null){
+    private void setupShapeTooltip(Shape shape, T element, double... value) {
+        if (element != null) {
             // set tooltip
-            Tooltip tooltip = new Tooltip(element.toString() + "\n" + value);
+            Tooltip tooltip = new Tooltip(getTooltipText(element, value));
             Tooltip.install(
-                shape,
-                tooltip
+                    shape,
+                    tooltip
             );
             removeTooltipDelay(tooltip);
         }
+    }
+
+    private String getTooltipText(T element, double[] value) {
+        String text = "";
+        String elem = element.toString();
+        for (int i = 0; i < value.length; ++i) {
+            int j = 0;
+            int k = elem.length();
+            boolean found = false;
+            while (j < elem.length() && !found) {
+                if (elem.charAt(j) == ',') {
+                    k = j;
+                    found = true;
+                }
+                j++;
+            }
+            text += elem.substring(0, k) + "\n" + value[i];
+            k++;
+            if (k < elem.length())
+                elem = "\n" + elem.substring(k, elem.length());
+        }
+        return text;
     }
 
     private void setupCircleLayout(Circle circle, double value) {
@@ -456,7 +487,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                     drawOutlier(entry.getKey(), entry.getValue());
                 });
         // currently selected element
-        drawSelectedElement((T)getSkinnable().getSelectedElement());
+        drawSelectedElement((T) getSkinnable().getSelectedElement());
     }
 
     public double getOffset() {
