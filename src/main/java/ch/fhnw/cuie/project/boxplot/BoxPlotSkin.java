@@ -434,13 +434,14 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
     }
 
     private String getTooltipText(T element, double[] value) {
-        String text = "";
         String elem = element.toString();
         Iterable<String> labels = Splitter.on(',').split(elem);
-        Stream<String> stream1 = Streams.stream(labels);
-        Stream<Double> stream2 = Arrays.stream(value).boxed();
-        text = Streams.zip(stream1, stream2, (s, aDouble) -> s + "\n" + aDouble).collect(Collectors.joining("\n"));
-        return text;
+        Stream<String> labelStream = Streams.stream(labels);
+        Stream<Double> valueStream = Arrays.stream(value).boxed();
+        return Streams.zip(
+            labelStream, valueStream,
+            (label, val) -> label + "\n" + val
+        ).collect(Collectors.joining("\n"));
     }
 
     private void setupCircleLayout(Circle circle, double value) {
