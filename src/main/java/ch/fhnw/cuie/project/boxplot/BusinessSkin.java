@@ -1,6 +1,7 @@
 package ch.fhnw.cuie.project.boxplot;
 
 import java.util.logging.Logger;
+
 import javafx.animation.*;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -23,25 +24,25 @@ import java.util.Arrays;
 public class BusinessSkin extends SkinBase<BusinessControl> {
     private final static Logger LOGGER = Logger.getLogger(BusinessSkin.class.getName());
 
-    private static final int IMG_SIZE   = 12;
+    private static final int IMG_SIZE = 12;
     private static final int IMG_OFFSET = 4;
 
     private static final String ANGLE_DOWN = "\uf107";
-    private static final String ANGLE_UP   = "\uf106";
+    private static final String ANGLE_UP = "\uf106";
 
     private enum State {
-        VALID("Valid",      "valid.png"),
-        INVALID("Invalid",  "invalid.png");
+        VALID("Valid", "valid.png"),
+        INVALID("Invalid", "invalid.png");
 
-        public final String    text;
+        public final String text;
         public final ImageView imageView;
 
         State(final String text, final String file) {
             this.text = text;
             String url = BusinessSkin.class.getResource("icons/" + file).toExternalForm();
             this.imageView = new ImageView(new Image(url,
-                                                     IMG_SIZE, IMG_SIZE,
-                                                     true, false));
+                    IMG_SIZE, IMG_SIZE,
+                    true, false));
         }
     }
 
@@ -50,14 +51,14 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
 
     // all parts
     private TextField editableNode;
-    private Label     readOnlyNode;
-    private Popup     popup;
-    private Pane      dropDownChooser;
-    private Button    chooserButton;
+    private Label readOnlyNode;
+    private Popup popup;
+    private Pane dropDownChooser;
+    private Button chooserButton;
 
     private StackPane drawingPane;
 
-    private Animation      invalidInputAnimation;
+    private Animation invalidInputAnimation;
     private FadeTransition fadeOutValidIconAnimation;
 
     public BusinessSkin(BusinessControl control) {
@@ -105,11 +106,11 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
         drawingPane.getChildren().addAll(editableNode, chooserButton, readOnlyNode);
 
         Arrays.stream(State.values())
-              .map(state -> state.imageView)
-              .forEach(imageView -> {
-                  imageView.setManaged(false);
-                  drawingPane.getChildren().add(imageView);
-              });
+                .map(state -> state.imageView)
+                .forEach(imageView -> {
+                    imageView.setManaged(false);
+                    drawingPane.getChildren().add(imageView);
+                });
 
         StackPane.setAlignment(editableNode, Pos.CENTER_LEFT);
         StackPane.setAlignment(readOnlyNode, Pos.CENTER_LEFT);
@@ -118,7 +119,7 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
     }
 
     private void setupAnimations() {
-        int      delta    = 5;
+        int delta = 5;
         Duration duration = Duration.millis(30);
 
         TranslateTransition moveRight = new TranslateTransition(duration, editableNode);
@@ -158,7 +159,7 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
         popup.setOnShown(event -> {
             chooserButton.setText(ANGLE_UP);
             Point2D location = editableNode.localToScreen(editableNode.getWidth() - dropDownChooser.getPrefWidth() - 3,
-                                                          editableNode.getHeight() -3);
+                    editableNode.getHeight() - 3);
 
             popup.setX(location.getX());
             popup.setY(location.getY());
@@ -207,6 +208,4 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
         }
         invalidInputAnimation.play();
     }
-
-
 }

@@ -1,6 +1,7 @@
 package ch.fhnw.cuie.project.boxplot;
 
 import java.util.logging.Logger;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -47,17 +48,17 @@ public class BoxPlotControl<T> extends Control {
     }
 
     private void initializeSelf() {
-         getStyleClass().add("boxPlotControl");
+        getStyleClass().add("boxPlotControl");
     }
 
     private void addValueChangeListener() {
         currentElement.addListener((observable, oldValue, newValue) -> {
             String output = "";
             output = "currentElement ";
-            if(oldValue != null){
+            if (oldValue != null) {
                 output += "from: " + oldValue.toString() + " ";
             }
-            if(newValue != null){
+            if (newValue != null) {
                 output += "to: " + newValue.toString();
             }
             LOGGER.info(output);

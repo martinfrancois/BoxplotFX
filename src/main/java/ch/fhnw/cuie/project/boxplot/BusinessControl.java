@@ -4,6 +4,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+
 import javafx.beans.property.*;
 import javafx.collections.ObservableMap;
 import javafx.css.PseudoClass;
@@ -19,7 +20,7 @@ public class BusinessControl<T> extends Control {
     private final DoubleProperty value = new SimpleDoubleProperty();
 
     private static final PseudoClass MANDATORY_CLASS = PseudoClass.getPseudoClass("mandatory");
-    private static final PseudoClass INVALID_CLASS   = PseudoClass.getPseudoClass("invalid");
+    private static final PseudoClass INVALID_CLASS = PseudoClass.getPseudoClass("invalid");
 
     private final BooleanProperty mandatory = new SimpleBooleanProperty() {
         @Override
@@ -35,9 +36,9 @@ public class BusinessControl<T> extends Control {
         }
     };
 
-    private final BooleanProperty readOnly     = new SimpleBooleanProperty();
-    private final StringProperty  label        = new SimpleStringProperty();
-    private final StringProperty  errorMessage = new SimpleStringProperty();
+    private final BooleanProperty readOnly = new SimpleBooleanProperty();
+    private final StringProperty label = new SimpleStringProperty();
+    private final StringProperty errorMessage = new SimpleStringProperty();
 
     private final StringProperty userFacingText = new SimpleStringProperty();
     private ObservableMap<T, Double> map;
@@ -64,8 +65,8 @@ public class BusinessControl<T> extends Control {
     }
 
     private void initializeSelf() {
-         getStyleClass().add("businessControl");
-         setUserFacingText(convertToString(getValue()));
+        getStyleClass().add("businessControl");
+        setUserFacingText(convertToString(getValue()));
     }
 
     private void addValueChangeListener() {
@@ -174,10 +175,6 @@ public class BusinessControl<T> extends Control {
 
     public boolean isInvalid() {
         return invalid.get();
-    }
-
-    public ObservableMap<T, Double> getMap() {
-        return map;
     }
 
     public BoxPlotControl<T> getBoxPlotControl() {

@@ -1,21 +1,7 @@
 package ch.fhnw.cuie.project.boxplot;
 
-import static org.reactfx.util.Interpolator.EASE_BOTH_DOUBLE;
-
 import com.google.common.base.Splitter;
 import com.google.common.collect.Streams;
-import java.lang.reflect.Field;
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.StringJoiner;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.logging.Logger;
-
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-import java.util.stream.Stream;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
@@ -37,6 +23,17 @@ import org.reactfx.util.TetraFunction;
 import org.reactfx.util.TriFunction;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
+
+import java.lang.reflect.Field;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.function.BiFunction;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.reactfx.util.Interpolator.EASE_BOTH_DOUBLE;
 
 /**
  * @author Dieter Holz
@@ -144,7 +141,7 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         upperWhiskerLine = new Line();
         medianLine = new Line();
 
-        setupShapeTooltip(quartiles, (T) "Lower Quartile,Upper Quartile", boxPlot.q1Property().get(), boxPlot.q3Property().get());
+        setupShapeTooltip(quartiles, (T) "Lower Quartile;Upper Quartile", boxPlot.q1Property().get(), boxPlot.q3Property().get());
         setupShapeTooltip(lowerWhiskerLine, (T) "Lower Whisker", boxPlot.lowerWhiskerProperty().get());
         setupShapeTooltip(upperWhiskerLine, (T) "Upper Whisker", boxPlot.upperWhiskerProperty().get());
         setupShapeTooltip(medianLine, (T) "Median", boxPlot.medianProperty().get());
@@ -237,11 +234,11 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
         );
 
         boxPlot.q1Property().addListener((observable, oldValue, newValue) -> {
-            setupShapeTooltip(quartiles, (T) "Lower Quartile,Upper Quartile", newValue.doubleValue(), boxPlot.q3Property().get());
+            setupShapeTooltip(quartiles, (T) "Lower Quartile;Upper Quartile", newValue.doubleValue(), boxPlot.q3Property().get());
         });
 
         boxPlot.q3Property().addListener((observable, oldValue, newValue) -> {
-            setupShapeTooltip(quartiles, (T) "Lower Quartile,Upper Quartile", boxPlot.q1Property().get(), newValue.doubleValue());
+            setupShapeTooltip(quartiles, (T) "Lower Quartile;Upper Quartile", boxPlot.q1Property().get(), newValue.doubleValue());
         });
 
         boxPlot.lowerWhiskerProperty().addListener((observable, oldValue, newValue) -> {
@@ -435,12 +432,12 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
 
     private String getTooltipText(T element, double[] value) {
         String elem = element.toString();
-        Iterable<String> labels = Splitter.on(',').split(elem);
+        Iterable<String> labels = Splitter.on(';').split(elem);
         Stream<String> labelStream = Streams.stream(labels);
         Stream<Double> valueStream = Arrays.stream(value).boxed();
         return Streams.zip(
-            labelStream, valueStream,
-            (label, val) -> label + "\n" + val             // add a "\n" between each label name and the value
+                labelStream, valueStream,
+                (label, val) -> label + ": " + val             // add a "\n" between each label name and the value
         ).collect(Collectors.joining("\n")); // add all label and value pairs together, separated by a "\n"
     }
 
@@ -485,29 +482,5 @@ public class BoxPlotSkin<T> extends SkinBase<BoxPlotControl> {
                 });
         // currently selected element
         drawSelectedElement((T) getSkinnable().getSelectedElement());
-    }
-
-    public double getOffset() {
-        return offset.get();
-    }
-
-    public DoubleProperty offsetProperty() {
-        return offset;
-    }
-
-    public void setOffset(double offset) {
-        this.offset.set(offset);
-    }
-
-    public double getWidthFactor() {
-        return widthFactor.get();
-    }
-
-    public DoubleProperty widthFactorProperty() {
-        return widthFactor;
-    }
-
-    public void setWidthFactor(double widthFactor) {
-        this.widthFactor.set(widthFactor);
     }
 }

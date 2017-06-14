@@ -1,8 +1,6 @@
 package ch.fhnw.cuie.project.boxplot;
 
-import java.util.logging.Logger;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
@@ -10,6 +8,7 @@ import javafx.collections.ObservableMap;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static com.google.common.math.Quantiles.quartiles;
 
@@ -30,16 +29,16 @@ public class BoxPlot<T> {
     private final DoubleProperty upperWhisker = new SimpleDoubleProperty();
     private final DoubleProperty max = new SimpleDoubleProperty();
 
-    public BoxPlot(ObservableMap<T, Double> data){
+    public BoxPlot(ObservableMap<T, Double> data) {
         this.data = data;
         calculate(data);
         data.addListener(
-            (MapChangeListener<? super T, ? super Double>) change -> calculate(data)
+                (MapChangeListener<? super T, ? super Double>) change -> calculate(data)
         );
     }
 
     private void calculate(ObservableMap<T, Double> data) {
-        if(data.size() != 0) {
+        if (data.size() != 0) {
             // convert into collection of values
             Collection<Double> values = data.values();
 
@@ -60,9 +59,9 @@ public class BoxPlot<T> {
             // define outliers
             outliers.clear();
             data.entrySet().stream()
-                .distinct()
-                .filter(entry -> entry.getValue() > getUpperWhisker() || entry.getValue() < getLowerWhisker())
-                .forEach(entry -> outliers.put(entry.getKey(), entry.getValue()));
+                    .distinct()
+                    .filter(entry -> entry.getValue() > getUpperWhisker() || entry.getValue() < getLowerWhisker())
+                    .forEach(entry -> outliers.put(entry.getKey(), entry.getValue()));
         }
     }
 

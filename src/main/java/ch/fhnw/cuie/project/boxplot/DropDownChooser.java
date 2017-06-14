@@ -1,6 +1,7 @@
 package ch.fhnw.cuie.project.boxplot;
 
 import java.util.logging.Logger;
+
 import javafx.scene.layout.VBox;
 
 /**
