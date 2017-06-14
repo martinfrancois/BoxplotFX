@@ -34,7 +34,8 @@ in die jeweiligen OOP2-Projekte zu integrieren.
 
 
 ## Integriert in diese OOP2-Projekte
-- _**Ergänzen Sie hier welche OOP2-Teams Ihr Custom Control tatsächlich integriert haben.**_
+- Ramona Mäder
+- Chiara Carbone
 
 
 ## Bewertung
