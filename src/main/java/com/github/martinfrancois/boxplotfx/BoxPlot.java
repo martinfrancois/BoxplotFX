@@ -1,4 +1,4 @@
-package ch.fhnw.cuie.project.boxplot;
+package com.github.martinfrancois.boxplotfx;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

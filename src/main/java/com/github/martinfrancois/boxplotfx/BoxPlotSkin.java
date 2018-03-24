@@ -1,4 +1,4 @@
-package ch.fhnw.cuie.project.boxplot;
+package com.github.martinfrancois.boxplotfx;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Streams;

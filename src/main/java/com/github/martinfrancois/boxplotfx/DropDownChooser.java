@@ -1,4 +1,4 @@
-package ch.fhnw.cuie.project.boxplot;
+package com.github.martinfrancois.boxplotfx;
 
 import java.util.logging.Logger;
 

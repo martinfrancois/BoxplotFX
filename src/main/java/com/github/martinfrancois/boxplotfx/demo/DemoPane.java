@@ -1,11 +1,9 @@
-package ch.fhnw.cuie.project.boxplot.demo;
+package com.github.martinfrancois.boxplotfx.demo;
 
-import ch.fhnw.cuie.project.boxplot.BusinessControl;
+import com.github.martinfrancois.boxplotfx.BusinessControl;
 import com.univocity.parsers.common.processor.RowListProcessor;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

@@ -1,4 +1,4 @@
-package ch.fhnw.cuie.project.boxplot;
+package com.github.martinfrancois.boxplotfx;
 
 import com.univocity.parsers.common.processor.RowListProcessor;
 import com.univocity.parsers.csv.CsvParser;
