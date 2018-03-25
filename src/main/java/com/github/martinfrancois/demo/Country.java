@@ -1,11 +1,10 @@
-package com.github.martinfrancois.boxplotfx.demo;
+package com.github.martinfrancois.demo;
 
+import java.util.Objects;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-
-import java.util.Objects;
 
 /**
  * Created by François Martin on 05.06.17.

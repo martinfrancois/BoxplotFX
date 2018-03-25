@@ -1,7 +1,17 @@
-package com.github.martinfrancois.boxplotfx;
+package com.github.martinfrancois;
+
+import static org.reactfx.util.Interpolator.EASE_BOTH_DOUBLE;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Streams;
+import java.lang.reflect.Field;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.function.BiFunction;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
@@ -23,17 +33,6 @@ import org.reactfx.util.TetraFunction;
 import org.reactfx.util.TriFunction;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
-
-import java.lang.reflect.Field;
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.function.BiFunction;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.reactfx.util.Interpolator.EASE_BOTH_DOUBLE;
 
 /**
  * @author Dieter Holz

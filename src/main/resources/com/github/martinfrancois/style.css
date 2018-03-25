@@ -8,21 +8,9 @@
     -fx-background-color: transparent;
 }
 
-.businessControl .editableNode {
-    -fx-font-family: 'Lato Regular';
-    -fx-font-size: 14;
-    -fx-text-fill: derive(-base-color, -30%);
-    -fx-prompt-text-fill: derive(-base-color, 40%);
-}
-
 .businessControl .editableNode:focused {
     -fx-prompt-text-fill: derive(-base-color, 40%);
     -fx-highlight-fill: derive(-base-color, -30%);
-}
-
-.businessControl:invalid .editableNode {
-    -fx-font-family: 'Lato Light';
-    -fx-text-fill: red;
 }
 
 .businessControl:mandatory .editableNode {
@@ -39,26 +27,15 @@
     -fx-border-radius: 4;
 }
 
-.businessControl .readOnlyNode {
-    -fx-font-family: 'DS-Digital';
-    -fx-pref-width: 80;
-    -fx-max-width: 1024;
-    -fx-alignment: center;
-    -fx-content-display: text-only;
-    -fx-font-size: 22;
-    -fx-text-fill: rgb(139, 86, 70);
-}
-
 .businessControl .chooserButton {
-    -fx-font-family: 'FontAwesome';
+    -fx-font-family: "Font Awesome 5 Free Regular";
+    -fx-text-fill: black;
     -fx-border-color: transparent;
     -fx-background-color: transparent;
     -fx-min-width: 26;
     -fx-min-height: 26;
     -fx-font-size: 14;
-    -fx-text-fill: derive(-base-color, -30%);
     -fx-padding: 5;
-    -fx-content-display: text-only;
     -fx-cursor: hand;
 }
 

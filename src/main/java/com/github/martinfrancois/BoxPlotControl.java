@@ -1,7 +1,6 @@
-package com.github.martinfrancois.boxplotfx;
+package com.github.martinfrancois;
 
 import java.util.logging.Logger;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;

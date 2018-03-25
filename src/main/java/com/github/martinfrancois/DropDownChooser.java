@@ -1,7 +1,6 @@
-package com.github.martinfrancois.boxplotfx;
+package com.github.martinfrancois;
 
 import java.util.logging.Logger;
-
 import javafx.scene.layout.VBox;
 
 /**

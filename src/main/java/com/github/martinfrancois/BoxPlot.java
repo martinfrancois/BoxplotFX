@@ -1,16 +1,15 @@
-package com.github.martinfrancois.boxplotfx;
+package com.github.martinfrancois;
 
+import static com.google.common.math.Quantiles.quartiles;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.logging.Logger;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import static com.google.common.math.Quantiles.quartiles;
 
 /**
  * Created by François Martin on 29.05.17.

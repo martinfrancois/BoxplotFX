@@ -1,8 +1,12 @@
-package com.github.martinfrancois.boxplotfx;
+package com.github.martinfrancois;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
-
-import javafx.animation.*;
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.SequentialTransition;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -16,8 +20,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Popup;
 import javafx.util.Duration;
 
-import java.util.Arrays;
-
 /**
  * @author Dieter Holz
  */
@@ -27,8 +29,8 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
     private static final int IMG_SIZE = 12;
     private static final int IMG_OFFSET = 4;
 
-    private static final String ANGLE_DOWN = "\uf107";
-    private static final String ANGLE_UP = "\uf106";
+    private static final String ANGLE_DOWN = "v";
+    private static final String ANGLE_UP = "^";
 
     private enum State {
         VALID("Valid", "valid.png"),
@@ -73,10 +75,10 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
     }
 
     private void initializeSelf() {
-        String fonts = getClass().getResource(FONTS_CSS).toExternalForm();
+        String fonts = BusinessSkin.class.getResource(FONTS_CSS).toExternalForm();
         getSkinnable().getStylesheets().add(fonts);
 
-        String stylesheet = getClass().getResource(STYLE_CSS).toExternalForm();
+        String stylesheet = BusinessSkin.class.getResource(STYLE_CSS).toExternalForm();
         getSkinnable().getStylesheets().add(stylesheet);
     }
 
@@ -147,6 +149,7 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
 
     private void setupEventHandlers() {
         chooserButton.setOnAction(event -> {
+            System.out.println(chooserButton.getText());
             if (popup.isShowing()) {
                 popup.hide();
             } else {

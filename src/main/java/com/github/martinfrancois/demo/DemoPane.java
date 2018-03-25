@@ -1,9 +1,11 @@
-package com.github.martinfrancois.boxplotfx.demo;
+package com.github.martinfrancois.demo;
 
-import com.github.martinfrancois.boxplotfx.BusinessControl;
+import com.github.martinfrancois.BusinessControl;
 import com.univocity.parsers.common.processor.RowListProcessor;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import java.io.File;
+import java.util.List;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -17,9 +19,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.util.converter.NumberStringConverter;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * @author Dieter Holz
@@ -96,7 +95,7 @@ public class DemoPane extends BorderPane {
         parserSettings.setProcessor(rowProcessor);
         parserSettings.setHeaderExtractionEnabled(true);
         CsvParser parser = new CsvParser(parserSettings);
-        File csv = new File(Thread.currentThread().getContextClassLoader().getResource("countries_population_simple_outliers.csv").getFile());
+        File csv = new File(DemoPane.class.getResource("countries_population_simple_outliers.csv").getFile());
         parser.parse(csv);
 
         // initialize test data
