@@ -1,4 +1,4 @@
-package com.github.martinfrancois;
+package com.github.martinfrancois.boxplotfx;
 
 import static org.reactfx.util.Interpolator.EASE_BOTH_DOUBLE;
 

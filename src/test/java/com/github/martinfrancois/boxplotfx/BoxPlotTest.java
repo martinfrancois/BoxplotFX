@@ -1,5 +1,6 @@
-package com.github.martinfrancois;
+package com.github.martinfrancois.boxplotfx;
 
+import com.github.martinfrancois.boxplotfx.BoxPlot;
 import com.univocity.parsers.common.processor.RowListProcessor;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
@@ -55,7 +56,7 @@ public class BoxPlotTest {
         parserSettings.setProcessor(rowProcessor);
         parserSettings.setHeaderExtractionEnabled(true);
         CsvParser parser = new CsvParser(parserSettings);
-        File csv = new File(getClass().getClassLoader().getResource(
+        File csv = new File(BoxPlotTest.class.getResource(
             "countries_population.csv").getFile());
         parser.parse(csv);
 

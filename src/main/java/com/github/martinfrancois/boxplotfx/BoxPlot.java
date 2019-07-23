@@ -1,4 +1,4 @@
-package com.github.martinfrancois;
+package com.github.martinfrancois.boxplotfx;
 
 import static com.google.common.math.Quantiles.quartiles;
 

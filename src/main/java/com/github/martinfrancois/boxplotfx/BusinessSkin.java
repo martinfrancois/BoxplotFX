@@ -1,4 +1,4 @@
-package com.github.martinfrancois;
+package com.github.martinfrancois.boxplotfx;
 
 import java.util.Arrays;
 import java.util.logging.Logger;
@@ -31,22 +31,6 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
 
     private static final String ANGLE_DOWN = "v";
     private static final String ANGLE_UP = "^";
-
-    private enum State {
-        VALID("Valid", "valid.png"),
-        INVALID("Invalid", "invalid.png");
-
-        public final String text;
-        public final ImageView imageView;
-
-        State(final String text, final String file) {
-            this.text = text;
-            String url = BusinessSkin.class.getResource("icons/" + file).toExternalForm();
-            this.imageView = new ImageView(new Image(url,
-                    IMG_SIZE, IMG_SIZE,
-                    true, false));
-        }
-    }
 
     private static final String FONTS_CSS = "fonts.css";
     private static final String STYLE_CSS = "style.css";
@@ -89,8 +73,6 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
         readOnlyNode = new Label();
         readOnlyNode.getStyleClass().add("readOnlyNode");
 
-        State.VALID.imageView.setOpacity(0.0);
-
         chooserButton = new Button(ANGLE_DOWN);
         chooserButton.getStyleClass().add("chooserButton");
 
@@ -106,13 +88,6 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
     private void layoutParts() {
         StackPane.setAlignment(chooserButton, Pos.CENTER_RIGHT);
         drawingPane.getChildren().addAll(editableNode, chooserButton, readOnlyNode);
-
-        Arrays.stream(State.values())
-                .map(state -> state.imageView)
-                .forEach(imageView -> {
-                    imageView.setManaged(false);
-                    drawingPane.getChildren().add(imageView);
-                });
 
         StackPane.setAlignment(editableNode, Pos.CENTER_LEFT);
         StackPane.setAlignment(readOnlyNode, Pos.CENTER_LEFT);
@@ -140,11 +115,6 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
 
         invalidInputAnimation = new SequentialTransition(moveRight, moveLeft);
         invalidInputAnimation.setCycleCount(3);
-
-        fadeOutValidIconAnimation = new FadeTransition(Duration.millis(500), State.VALID.imageView);
-        fadeOutValidIconAnimation.setDelay(Duration.seconds(1));
-        fadeOutValidIconAnimation.setFromValue(1.0);
-        fadeOutValidIconAnimation.setToValue(0.0);
     }
 
     private void setupEventHandlers() {
@@ -174,7 +144,6 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
             if (newValue) {
                 startInvalidInputAnimation();
             } else {
-                State.VALID.imageView.setOpacity(1.0);
                 startFadeOutValidIconTransition();
             }
         });
@@ -189,13 +158,6 @@ public class BusinessSkin extends SkinBase<BusinessControl> {
         editableNode.visibleProperty().bind(getSkinnable().readOnlyProperty().not());
         chooserButton.visibleProperty().bind(getSkinnable().readOnlyProperty().not());
         readOnlyNode.visibleProperty().bind(getSkinnable().readOnlyProperty());
-
-        State.INVALID.imageView.visibleProperty().bind(getSkinnable().invalidProperty());
-
-        State.INVALID.imageView.xProperty().bind(editableNode.translateXProperty().add(editableNode.layoutXProperty()).subtract(IMG_OFFSET));
-        State.INVALID.imageView.yProperty().bind(editableNode.translateYProperty().add(editableNode.layoutYProperty()).subtract(IMG_OFFSET));
-        State.VALID.imageView.xProperty().bind(editableNode.layoutXProperty().subtract(IMG_OFFSET));
-        State.VALID.imageView.yProperty().bind(editableNode.layoutYProperty().subtract(IMG_OFFSET));
     }
 
     private void startFadeOutValidIconTransition() {

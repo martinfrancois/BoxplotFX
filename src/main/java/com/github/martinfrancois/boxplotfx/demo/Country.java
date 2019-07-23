@@ -1,4 +1,4 @@
-package com.github.martinfrancois.demo;
+package com.github.martinfrancois.boxplotfx.demo;
 
 import java.util.Objects;
 import javafx.beans.property.DoubleProperty;

@@ -1,4 +1,4 @@
-package com.github.martinfrancois.demo;
+package com.github.martinfrancois.boxplotfx.demo;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

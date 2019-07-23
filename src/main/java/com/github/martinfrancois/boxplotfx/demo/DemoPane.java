@@ -1,6 +1,6 @@
-package com.github.martinfrancois.demo;
+package com.github.martinfrancois.boxplotfx.demo;
 
-import com.github.martinfrancois.BusinessControl;
+import com.github.martinfrancois.boxplotfx.BusinessControl;
 import com.univocity.parsers.common.processor.RowListProcessor;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;

@@ -1,4 +1,4 @@
-package com.github.martinfrancois;
+package com.github.martinfrancois.boxplotfx;
 
 import java.util.logging.Handler;
 import java.util.logging.Level;
