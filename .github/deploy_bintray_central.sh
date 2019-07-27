@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+echo "Copy settings.xml for deployment"
+cp .github/.travis.settings.xml $HOME/.m2/settings.xml
 echo "Deploy to Bintray"
 mvn deploy -DskipTests
 echo "Sync to Maven Central"
