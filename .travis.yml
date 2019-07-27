@@ -23,7 +23,7 @@ before_install:
 install: true
 
 git:
-  - depth: false
+  depth: false
 
 before_script:
   - export TAG_BRANCH=$(git branch --contains $TRAVIS_TAG)
