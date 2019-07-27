@@ -19,6 +19,7 @@ addons:
 
 env:
   global:
+    - TAG_BRANCH=$(git branch --contains $TRAVIS_TAG --format='%(refname:short)')
     - #CODECOV_TOKEN=59192c3b-8f50-4632-ad63-ca3785dc8bbc
 
 before_install:
@@ -56,11 +57,11 @@ deploy:
       repo: martinfrancois/BoxplotFX
       tags: true
       all_branches: true
-      condition: $TRAVIS_BRANCH =~ ^(master|master-11)$
+      condition: $TAG_BRANCH =~ ^(master|master-11)$
   - provider: script
     script: .github/deploy_bintray_central.sh
     on:
       repo: martinfrancois/BoxplotFX
       tags: true
       all_branches: true
-      condition: $TRAVIS_BRANCH =~ ^(master|master-11)$
+      condition: $TAG_BRANCH =~ ^(master|master-11)$
