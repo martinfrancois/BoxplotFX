@@ -20,7 +20,7 @@ git remote add upstream "https://$GITHUB_TOKEN@github.com/martinfrancois/Boxplot
 git fetch upstream
 git checkout $TRAVIS_BRANCH
 
-github_changelog_generator
+github_changelog_generator -t $GITHUB_TOKEN
 
 git add -A CHANGELOG.md
 git commit -m "updated changelog at ${rev}"
