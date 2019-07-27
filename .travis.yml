@@ -45,8 +45,7 @@ before_deploy:
   - .github/before_deploy.sh
 deploy:
   - provider: releases
-    api_key:
-      secure: AnLW6QtNRTe+3H/fJvmCNe9w9Qt2JZeEKp/w2B+A5txzxNqOcWeS4nXVzTOR3E7Aa4Otx/RdGty24c3UfzBLYEiI9Esl59sVGZ0lzvGCPJ9XRwNryOq6kZj0OYI5Iss5WviHDtx92GQN6y6Jja0OBRH5h3rGL6qmJ9JcspfY7C3Oxzs1WEHbjnzpo6gi2X5HWKOGHIgf3VEqNxJwnHLcVMKvvQG0nz2IIJ9tKYRxHoG1LNvxIWvibOw50lWwsRf4FuigbMDrqeYyj7Yk4V2sXfVVXJXrADcQ5KgU7JUXi0g8PSulCMXIn3RwlL8puRafsDy0/PVC3MNq0aLXy9MWXTtSPrW5aP6Mfmu686qRTP1iGyxzaZ5Qx2jmcLgLgvCRuZQz3AiaA65GJug69x+rSW6rjR8OIZ6S42YA9+Nqv6IcwFRLteTJaNqnKQqmByDXKBkuGaGREaGdswaXFR+mOTpwKxaNmYBCMW89xGuKFb079E81xOYCj6iG/q7JXf/9A/MlMflQw1eVTZB9CNgjJ/fAhw4RVcwg638zi+1cBoRs9hdKD9HDdNT0oVbWiu0ERr/ITU3dSYoTJAmJ2VL0zepDsE/a22s70Mr5C9jJuezu/LCjwbVcRb+zRiq8Hnp68VIOl5Qs+zb7rNV5rmMupdqky/k4goxBPME9pqPd9Dg=
+    api_key: $GITHUB_TOKEN
     file_glob: true
     file:
       - javadoc.zip
