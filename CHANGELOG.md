@@ -1,5 +1,11 @@
 # Change Log
 
+## [8.0.11](https://github.com/martinfrancois/BoxplotFX/tree/8.0.11) (2019-07-27)
+[Full Changelog](https://github.com/martinfrancois/BoxplotFX/compare/8.0.10...8.0.11)
+
+## [8.0.10](https://github.com/martinfrancois/BoxplotFX/tree/8.0.10) (2019-07-27)
+[Full Changelog](https://github.com/martinfrancois/BoxplotFX/compare/8.0.9...8.0.10)
+
 ## [8.0.9](https://github.com/martinfrancois/BoxplotFX/tree/8.0.9) (2019-07-27)
 [Full Changelog](https://github.com/martinfrancois/BoxplotFX/compare/8.0.8...8.0.9)
 
