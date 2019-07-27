@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ "$TRAVIS_PULL_REQUEST" == "true" || ("$TRAVIS_BRANCH" != "master" && "$TRAVIS_BRANCH" != "master-11") ]]
+if [[ "$TRAVIS_PULL_REQUEST" != "false" || ("$TRAVIS_BRANCH" != "master" && "$TRAVIS_BRANCH" != "master-11") ]]
 then
   echo "This commit was made against the $TRAVIS_BRANCH and not master or master-11! Changelog not updated!"
   exit 0
