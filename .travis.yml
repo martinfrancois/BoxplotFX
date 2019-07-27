@@ -49,8 +49,9 @@ deploy:
     file_glob: true
     file:
       - javadoc.zip
-      - /**/target/*!(javadoc|sources).jar
+      - target/*!(javadoc|sources).jar
     skip_cleanup: true
+    body: See [CHANGELOG.md](https://github.com/martinfrancois/BoxplotFX/blob/master/CHANGELOG.md)
     on:
       repo: martinfrancois/BoxplotFX
       tags: true
