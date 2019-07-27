@@ -27,6 +27,7 @@ before_script:
   - git fetch origin -q
   - export TAG_BRANCH=$(git branch --contains $TRAVIS_TAG)
   - export TAG_BRANCH=${TAG_BRANCH#* }
+  - echo TAG_BRANCH=$TAG_BRANCH
 #  - if [[ "${TRAVIS_OS_NAME}" == osx ]]; then brew update; brew cask reinstall caskroom/versions/java9; fi
 # Java 9 only
 
