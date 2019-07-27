@@ -22,9 +22,10 @@ before_install:
 
 install: true
 
+git:
+  - depth: false
+
 before_script:
-  - git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*" 1>/dev/null
-  - git fetch origin -q
   - export TAG_BRANCH=$(git branch --contains $TRAVIS_TAG)
   - export TAG_BRANCH=${TAG_BRANCH##* }
   - echo TAG_BRANCH=$TAG_BRANCH
