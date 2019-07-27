@@ -49,7 +49,7 @@ deploy:
     file_glob: true
     file:
       - javadoc.zip
-      - ./**/target/*!(javadoc|sources).jar
+      - /**/target/*!(javadoc|sources).jar
     skip_cleanup: true
     on:
       repo: martinfrancois/BoxplotFX
