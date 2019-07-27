@@ -75,3 +75,6 @@ gradle-app.setting
 .gradle/
 .idea/
 classes/
+
+*.iml
+*.versionsBackup
