@@ -38,9 +38,9 @@ cache:
 script: mvn test -B
 
 after_success:
-  - .github/deploy_changelog.sh
   - .github/deploy_increment.sh
-  - #bash <(curl -s https://codecov.io/bash)
+#  - .github/deploy_changelog.sh
+#  - bash <(curl -s https://codecov.io/bash)
 
 before_deploy:
   - .github/before_deploy.sh
