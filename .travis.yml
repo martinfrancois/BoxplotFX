@@ -23,7 +23,7 @@ before_install:
 install: true
 
 before_script:
-  - export TAG_BRANCH=$(git branch --contains $TRAVIS_TAG --format='%(refname:short)')
+  - export TAG_BRANCH=$(git branch --contains $TRAVIS_TAG --format=\'%(refname:short)\')
 #  - if [[ "${TRAVIS_OS_NAME}" == osx ]]; then brew update; brew cask reinstall caskroom/versions/java9; fi
 # Java 9 only
 
