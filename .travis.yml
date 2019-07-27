@@ -1,0 +1,62 @@
+language: java
+
+sudo: false   # Linux OS: run in container
+
+# Java 8 only
+jdk: oraclejdk8
+# Java 9 only
+#jdk: oraclejdk9
+
+addons:
+  apt:
+    packages:
+      - p7zip-full
+#    - oracle-java9-installer
+# Java 9 only
+
+env:
+  global:
+    - #CODECOV_TOKEN=59192c3b-8f50-4632-ad63-ca3785dc8bbc
+
+before_install:
+  - if [[ "${TRAVIS_OS_NAME}" == linux ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; fi
+
+install: true
+
+before_script:
+#  - if [[ "${TRAVIS_OS_NAME}" == osx ]]; then brew update; brew cask reinstall caskroom/versions/java9; fi
+# Java 9 only
+
+cache:
+  directories:
+    - $HOME/.m2
+
+script: mvn test -B
+
+after_success:
+  - .github/deploy_changelog.sh
+  - #bash <(curl -s https://codecov.io/bash)
+
+before_deploy:
+  - .github/before_deploy.sh
+deploy:
+  - provider: releases
+    api_key:
+      secure: AnLW6QtNRTe+3H/fJvmCNe9w9Qt2JZeEKp/w2B+A5txzxNqOcWeS4nXVzTOR3E7Aa4Otx/RdGty24c3UfzBLYEiI9Esl59sVGZ0lzvGCPJ9XRwNryOq6kZj0OYI5Iss5WviHDtx92GQN6y6Jja0OBRH5h3rGL6qmJ9JcspfY7C3Oxzs1WEHbjnzpo6gi2X5HWKOGHIgf3VEqNxJwnHLcVMKvvQG0nz2IIJ9tKYRxHoG1LNvxIWvibOw50lWwsRf4FuigbMDrqeYyj7Yk4V2sXfVVXJXrADcQ5KgU7JUXi0g8PSulCMXIn3RwlL8puRafsDy0/PVC3MNq0aLXy9MWXTtSPrW5aP6Mfmu686qRTP1iGyxzaZ5Qx2jmcLgLgvCRuZQz3AiaA65GJug69x+rSW6rjR8OIZ6S42YA9+Nqv6IcwFRLteTJaNqnKQqmByDXKBkuGaGREaGdswaXFR+mOTpwKxaNmYBCMW89xGuKFb079E81xOYCj6iG/q7JXf/9A/MlMflQw1eVTZB9CNgjJ/fAhw4RVcwg638zi+1cBoRs9hdKD9HDdNT0oVbWiu0ERr/ITU3dSYoTJAmJ2VL0zepDsE/a22s70Mr5C9jJuezu/LCjwbVcRb+zRiq8Hnp68VIOl5Qs+zb7rNV5rmMupdqky/k4goxBPME9pqPd9Dg=
+    file_glob: true
+    file:
+      - javadoc.zip
+      - ./**/target/*!(javadoc|sources).jar
+    skip_cleanup: true
+    on:
+      repo: martinfrancois/BoxplotFX
+      tags: true
+      all_branches: true
+      condition: $TRAVIS_BRANCH =~ ^(master|master-11)$
+  - provider: script
+    script: .github/deploy_bintray_central.sh
+    on:
+      repo: martinfrancois/BoxplotFX
+      tags: true
+      all_branches: true
+      condition: $TRAVIS_BRANCH =~ ^(master|master-11)$
