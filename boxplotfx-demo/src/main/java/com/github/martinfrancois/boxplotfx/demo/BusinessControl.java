@@ -1,5 +1,6 @@
-package com.github.martinfrancois.boxplotfx;
+package com.github.martinfrancois.boxplotfx.demo;
 
+import com.github.martinfrancois.boxplotfx.BoxPlotControl;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;

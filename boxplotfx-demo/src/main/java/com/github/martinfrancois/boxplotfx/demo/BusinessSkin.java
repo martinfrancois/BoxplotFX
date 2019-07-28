@@ -1,4 +1,4 @@
-package com.github.martinfrancois.boxplotfx;
+package com.github.martinfrancois.boxplotfx.demo;
 
 import java.util.Arrays;
 import java.util.logging.Logger;

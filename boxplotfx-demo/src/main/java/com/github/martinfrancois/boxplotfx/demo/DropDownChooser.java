@@ -1,5 +1,6 @@
-package com.github.martinfrancois.boxplotfx;
+package com.github.martinfrancois.boxplotfx.demo;
 
+import com.github.martinfrancois.boxplotfx.BoxPlotControl;
 import java.util.logging.Logger;
 import javafx.scene.layout.VBox;
 
@@ -28,7 +29,7 @@ public class DropDownChooser<T> extends VBox {
         String fonts = getClass().getResource(FONTS_CSS).toExternalForm();
         getStylesheets().add(fonts);
 
-        String stylesheet = getClass().getResource(STYLE_CSS).toExternalForm();
+        String stylesheet = DropDownChooser.class.getResource(STYLE_CSS).toExternalForm();
         getStylesheets().add(stylesheet);
     }
 
