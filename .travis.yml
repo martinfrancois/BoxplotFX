@@ -58,7 +58,7 @@ deploy:
     file_glob: true
     file:
       - javadoc.zip
-      - target/*.jar
+      - /**/target/*.jar
     skip_cleanup: true
     body: See [CHANGELOG.md](https://github.com/$TRAVIS_REPO_SLUG/blob/master/CHANGELOG.md)
     on:
