@@ -10,6 +10,17 @@ env:
     # get all the branches referencing this commit
     - TAG_BRANCH=$(git ls-remote origin | sed -n "\|$TRAVIS_COMMIT\s\+refs/heads/|{s///p}")
 
+# Necessary environment variables on Travis CI:
+#
+# GITHUB_TOKEN: Token from here: https://github.com/settings/tokens => with scope "public_repo"
+# BINTRAY_USER: Bintray username
+# BINTRAY_API_KEY: API key from here: https://bintray.com/profile/edit => API Key
+#
+# The Bintray URL follows the following pattern: https://bintray.com/subject/repo/package
+# BINTRAY_SUBJECT=subject
+# BINTRAY_REPO=repo
+# BINTRAY_PACKAGE=package
+
 # Java 8 only
 jdk: oraclejdk8
 # Java 9 only
