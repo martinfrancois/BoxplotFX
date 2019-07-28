@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script will generate the changelog and increment the version in the pom.xml file to the one of the tag
+# Script will zip the javadoc for upload to the release later, generate the changelog and increment the version in the pom.xml file to the one of the tag
 
 echo TRAVIS_TAG=$TRAVIS_TAG
 echo TAG_BRANCH=$TAG_BRANCH
