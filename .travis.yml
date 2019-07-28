@@ -41,8 +41,6 @@ after_success:
   - .github/deploy_prepare.sh
 #  - bash <(curl -s https://codecov.io/bash)
 
-before_deploy:
-  - .github/before_deploy.sh
 deploy:
   - provider: releases
     api_key: $GITHUB_TOKEN

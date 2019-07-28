@@ -11,6 +11,12 @@ then
   exit 0
 fi
 
+echo "Running mvn package"
+mvn package -DskipTests
+echo "Making zip of javadoc"
+cd ${TRAVIS_BUILD_DIR}/target/apidocs
+zip -r ${TRAVIS_BUILD_DIR}/javadoc.zip .
+
 rev=$(git rev-parse --short HEAD)
 
 echo "Install Dependencies for Changelog Generation"
