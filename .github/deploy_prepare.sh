@@ -47,5 +47,5 @@ echo "Finished Push commits"
 echo "Running mvn package"
 mvn package -DskipTests
 echo "Making zip of javadoc"
-cd ${TRAVIS_BUILD_DIR}/target/apidocs
+cd ${TRAVIS_BUILD_DIR}/boxplotfx/target/apidocs
 zip -r ${TRAVIS_BUILD_DIR}/javadoc.zip .
