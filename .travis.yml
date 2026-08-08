@@ -60,12 +60,12 @@ deploy:
       - javadoc.zip
       - /**/target/*.jar
     skip_cleanup: true
-    body: See [CHANGELOG.md](https://github.com/$TRAVIS_REPO_SLUG/blob/master/CHANGELOG.md)
+    body: See [CHANGELOG.md](https://github.com/$TRAVIS_REPO_SLUG/blob/main/CHANGELOG.md)
     on: &on
       repo: $TRAVIS_REPO_SLUG
       tags: true
       all_branches: true
-      condition: $TAG_BRANCH =~ ^(master|master-11)$
+      condition: $TAG_BRANCH =~ ^(main|master-11)$
   - provider: script
     script: .github/deploy_bintray_central.sh
     skip_cleanup: true

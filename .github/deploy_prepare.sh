@@ -5,9 +5,9 @@
 echo TRAVIS_TAG=$TRAVIS_TAG
 echo TAG_BRANCH=$TAG_BRANCH
 
-if [[ "$TRAVIS_PULL_REQUEST" != "false" || ("$TAG_BRANCH" != "master" && "$TAG_BRANCH" != "master-11") || "$TRAVIS_TAG" == "" ]]
+if [[ "$TRAVIS_PULL_REQUEST" != "false" || ("$TAG_BRANCH" != "main" && "$TAG_BRANCH" != "master-11") || "$TRAVIS_TAG" == "" ]]
 then
-  echo "No tag was made from master or master-11, skipping deployment preparation."
+  echo "No tag was made from main or master-11, skipping deployment preparation."
   exit 0
 fi
 
