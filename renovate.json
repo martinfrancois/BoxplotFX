@@ -1,0 +1,55 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests",
+    ":rebaseStalePrs"
+  ],
+  "description": "No CI runs on this repository's pull requests, so no rule here merges automatically: with ignoreTests false Renovate would wait for checks that never report. Add the non-major automerge rule once a workflow checks pull requests.",
+  "reviewers": [
+    "martinfrancois"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "automergeType": "pr",
+  "platformAutomerge": false,
+  "ignoreTests": false,
+  "internalChecksFilter": "strict",
+  "minimumReleaseAge": "7 days",
+  "minimumReleaseAgeBehaviour": "timestamp-required",
+  "statusCheckWhen": {
+    "minimumReleaseAge": "never"
+  },
+  "pinDigests": true,
+  "rangeStrategy": "pin",
+  "dependencyDashboardApproval": false,
+  "prConcurrentLimit": 0,
+  "branchConcurrentLimit": 0,
+  "separateMajorMinor": true,
+  "separateMultipleMajor": true,
+  "separateMinorPatch": false,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": [
+      "security"
+    ],
+    "minimumReleaseAge": null,
+    "schedule": [],
+    "updateNotScheduled": true,
+    "groupName": null,
+    "groupSlug": null
+  },
+  "packageRules": [
+    {
+      "description": "Major updates require human review.",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false,
+      "addLabels": [
+        "major update"
+      ]
+    }
+  ]
+}
