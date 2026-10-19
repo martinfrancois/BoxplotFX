@@ -6,9 +6,6 @@
     ":rebaseStalePrs"
   ],
   "description": "No CI runs on this repository's pull requests, so no rule here merges automatically: with ignoreTests false Renovate would wait for checks that never report. Add the non-major automerge rule once a workflow checks pull requests.",
-  "reviewers": [
-    "martinfrancois"
-  ],
   "labels": [
     "dependencies"
   ],
