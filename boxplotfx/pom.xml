@@ -121,6 +121,13 @@
             <groupId>org.reactfx</groupId>
             <artifactId>reactfx</artifactId>
             <version>2.0-M6</version>
+            <!-- JavaFX comes from the Java 8 JDK, so keep ReactFX's OpenJFX runtime artifacts out. -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Testing -->
