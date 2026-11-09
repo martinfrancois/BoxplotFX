@@ -1,0 +1,31 @@
+name: Bug report
+description: Report something that doesn't work as documented.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Leave out private paths and personal data, also from logs and screenshots.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: A small piece of code or the steps in the demo that show the problem, with the data you passed to BoxPlotControl or BoxPlot.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: BoxplotFX version, JDK vendor and version (for example Zulu 8 with JavaFX), and operating system.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Output or stack trace
+      render: text

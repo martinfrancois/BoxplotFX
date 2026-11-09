@@ -1,0 +1,15 @@
+name: Claim issue
+# `/take` on an issue assigns it to the commenter; see "Solve an issue" in
+# CONTRIBUTING.md. The logic lives in martinfrancois/.github.
+on:
+  issue_comment:
+    types: [created]
+permissions: {}
+jobs:
+  claim:
+    permissions:
+      issues: write
+      pull-requests: read
+    uses: martinfrancois/.github/.github/workflows/claim-issue.yml@3a4983426452a80234ab020fcc0312ded79c922e # v1.1.0
+    with:
+      max-open-claims: 3
